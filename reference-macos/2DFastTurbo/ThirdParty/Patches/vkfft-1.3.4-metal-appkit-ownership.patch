@@ -1,0 +1,90 @@
+--- a/vkFFT/vkFFT/vkFFT_AppManagement/vkFFT_InitializeApp.h
++++ b/vkFFT/vkFFT/vkFFT_AppManagement/vkFFT_InitializeApp.h
+@@ -902,4 +902,9 @@
+ #elif(VKFFT_BACKEND==5)
++	#define METAL2DTURBO_VKFFT_APPKIT_OWNERSHIP_PATCHED 1
++	// METAL2DTURBO_APPKIT_OWNERSHIP:
++	// NS::String::string returns an autoreleased object. AppKit drains the
++	// surrounding autorelease pool, so these strings must not be released
++	// explicitly by VkFFT.
+ 	if (inputLaunchConfiguration.device == 0) {
+ 		deleteVkFFT(app);
+ 		return VKFFT_ERROR_INVALID_DEVICE;
+@@ -961,7 +966,5 @@
+ 	dummy_state->release();
+ 	function->release();
+-	str_name->release();
+ 	dummy_library->release();
+-	str_code->release();
+ 	compileOptions->release();
+ #endif
+--- a/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_API_handles/vkFFT_CompileKernel.h
++++ b/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_API_handles/vkFFT_CompileKernel.h
+@@ -955,6 +955,5 @@
+ 		if (app->configuration.saveApplicationToString) {
+ 
+ 		}
+-		str->release();
+ 	}
+ 	//const char function_name[20] = "VkFFT_main_R2C";
+@@ -961,7 +960,6 @@
+ 	NS::String* str = NS::String::string(axis->VkFFTFunctionName, NS::UTF8StringEncoding);
+ 	MTL::Function* function = axis->library->newFunction(str);
+ 	axis->pipeline = app->configuration.device->newComputePipelineState(function, &error);
+ 	function->release();
+-	str->release();
+ #endif
+ 	return VKFFT_SUCCESS;
+--- a/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_API_handles/vkFFT_ManageMemory.h
++++ b/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_API_handles/vkFFT_ManageMemory.h
+@@ -183,8 +183,6 @@
+ 	blitCommandEncoder->endEncoding();
+ 	copyCommandBuffer->commit();
+ 	copyCommandBuffer->waitUntilCompleted();
+-	blitCommandEncoder->release();
+-	copyCommandBuffer->release();
+ 	stagingBuffer->release();
+ #endif
+ 	return resFFT;
+@@ -307,8 +305,6 @@
+ 	blitCommandEncoder->endEncoding();
+ 	copyCommandBuffer->commit();
+ 	copyCommandBuffer->waitUntilCompleted();
+-	blitCommandEncoder->release();
+-	copyCommandBuffer->release();
+ 	memcpy(cpu_arr, stagingBuffer->contents(), transferSize);
+ 	stagingBuffer->release();
+ #endif
+--- a/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_HostFunctions/vkFFT_RecursiveFFTGenerators.h
++++ b/vkFFT/vkFFT/vkFFT_PlanManagement/vkFFT_HostFunctions/vkFFT_RecursiveFFTGenerators.h
+@@ -539,7 +539,5 @@
+ 			commandEncoder->endEncoding();
+ 			commandBuffer->commit();
+ 			commandBuffer->waitUntilCompleted();
+-			commandEncoder->release();
+-			commandBuffer->release();
+ #endif
+ 		}
+@@ -946,6 +944,4 @@
+ 			commandEncoder->endEncoding();
+ 			commandBuffer->commit();
+ 			commandBuffer->waitUntilCompleted();
+-			commandEncoder->release();
+-			commandBuffer->release();
+ 		}
+@@ -967,7 +963,5 @@
+ 			commandEncoder->endEncoding();
+ 			commandBuffer->commit();
+ 			commandBuffer->waitUntilCompleted();
+-			commandEncoder->release();
+-			commandBuffer->release();
+ 		}
+ #endif
+@@ -1358,7 +1352,5 @@
+ 				commandEncoder->endEncoding();
+ 				commandBuffer->commit();
+ 				commandBuffer->waitUntilCompleted();
+-				commandEncoder->release();
+-				commandBuffer->release();
+ #endif
+ 				resFFT = VkFFT_TransferDataToCPU(&kernelPreparationApplication, axis->specializationConstants.raderContainer[i].raderFFTkernel, &bufferRaderFFT, bufferSize);

@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Build and run the Swift/Metal CNAB2 comparison solver."""
+
+import argparse
+import hashlib
+import math
+import os
+from pathlib import Path
+import platform
+import subprocess
+import sys
+import tempfile
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+
+
+def build():
+    sdk = subprocess.check_output(["xcrun", "--sdk", "macosx", "--show-sdk-path"], text=True).strip()
+    version = subprocess.check_output(["xcrun", "swiftc", "--version"], stderr=subprocess.STDOUT)
+    bridge = ROOT / "Sources/Bridge"
+    vendor = ROOT / "ThirdParty/VkFFTSource"
+    includes = [bridge, vendor / "vkFFT", vendor / "metal-cpp"]
+    inputs = [Path(__file__), HERE / "CNAB2Comparison.swift", HERE / "CNAB2.metal"]
+    inputs += sorted(bridge.glob("*"))
+    inputs += sorted(vendor.rglob("*.h")) + sorted(vendor.rglob("*.hpp"))
+    digest = hashlib.sha256(version + sdk.encode() + platform.machine().encode())
+    for path in inputs:
+        if path.is_file():
+            digest.update(str(path.relative_to(ROOT)).encode())
+            digest.update(path.read_bytes())
+    cache = HERE / ".build"
+    cache.mkdir(exist_ok=True)
+    binary = cache / ("cnab2-" + digest.hexdigest()[:16])
+    if binary.is_file():
+        return binary
+    print("Building Swift/Metal CNAB2 comparison runner…", file=sys.stderr)
+    with tempfile.TemporaryDirectory(prefix="compile-", dir=cache) as directory:
+        out = Path(directory)
+        target = platform.machine() + "-apple-macos15.0"
+        flags = ["-O3", "-std=c++20", "-isysroot", sdk, "-target", target]
+        for include in includes:
+            flags += ["-I" if include == bridge else "-isystem", str(include)]
+        objects = []
+        for name in ["MTTVkFFTCore.cpp", "MTTVkFFTBackend.mm"]:
+            obj = out / (name + ".o")
+            arc = ["-fobjc-arc"] if name.endswith(".mm") else []
+            subprocess.run(["xcrun", "clang++", *flags, *arc, "-c", str(bridge / name), "-o", str(obj)],
+                           check=True, stdout=sys.stderr)
+            objects.append(str(obj))
+        subprocess.run([
+            "xcrun", "swiftc", "-O", "-parse-as-library", "-sdk", sdk, "-target", target,
+            "-module-cache-path", str(cache / "modules"),
+            "-import-objc-header", str(bridge / "MTTFFT2DBackend.h"),
+            str(HERE / "CNAB2Comparison.swift"), *objects, "-lc++",
+            "-framework", "Metal", "-framework", "Foundation", "-framework", "QuartzCore",
+            "-framework", "AppKit", "-o", str(out / "sim"),
+        ], check=True, stdout=sys.stderr)
+        (out / "sim").replace(binary)
+    return binary
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    for name, convert, default in [
+        ("N", int, 512), ("Re", float, 10000.0), ("K0", float, 10.0),
+        ("STEPS", int, 1001), ("CFL", float, 0.25), ("BACKEND", str, "metal"),
+        ("UPDATE", int, 100), ("SPECTRUM", str, "PAO"), ("METHOD", str, "CNAB2"),
+    ]:
+        parser.add_argument(name, type=convert, nargs="?", default=default)
+    parser.add_argument("--python-repo", type=Path, default=ROOT.parent / "palinstrophy",
+                        help="authoritative Python repository for the PAO initializer")
+    parser.add_argument("--python", type=Path, help="Python with palinstrophy dependencies (default: repository .venv)")
+    parser.add_argument("--json", type=Path, help="write full-precision diagnostics and provenance")
+    parser.add_argument("--state-out", type=Path, help="write final omega, nonlinear history, and velocity arrays")
+    args = parser.parse_args()
+    if args.N < 16 or args.N > 2048 or args.N & (args.N - 1):
+        parser.error("N must be a power of two from 16 through 2048")
+    if args.STEPS < 0 or args.UPDATE <= 0:
+        parser.error("STEPS must be nonnegative and UPDATE must be positive")
+    if any(not math.isfinite(v) or v <= 0 for v in [args.Re, args.K0, args.CFL]):
+        parser.error("Re, K0, and CFL must be finite and positive")
+    if (args.BACKEND.lower(), args.SPECTRUM.upper(), args.METHOD.upper()) != ("metal", "PAO", "CNAB2"):
+        parser.error("this comparison tool supports metal PAO CNAB2")
+    try:
+        seed = int(os.environ.get("SCIPYTURBO_SEED", "1"))
+    except ValueError:
+        parser.error("SCIPYTURBO_SEED must be an integer from 1 through 5010")
+    if not 1 <= seed <= 5010:
+        parser.error("SCIPYTURBO_SEED must be an integer from 1 through 5010")
+    if platform.system() != "Darwin":
+        parser.error("the Swift/Metal runner requires macOS 15 or later")
+    source = args.python_repo.resolve()
+    python = (args.python or source / ".venv/bin/python").absolute()
+    if not (source / "palinstrophy/turbo_simulator.py").is_file() or not python.is_file():
+        parser.error("Python initializer unavailable; set --python-repo and/or --python")
+    if args.json:
+        args.json.parent.mkdir(parents=True, exist_ok=True)
+    if args.state_out:
+        args.state_out.mkdir(parents=True, exist_ok=True)
+    binary = build()
+    with tempfile.TemporaryDirectory(prefix="swift-cnab2-pao-") as directory:
+        subprocess.run([str(python), str(HERE / "export_pao.py"), str(source), directory,
+                        str(args.N), str(args.Re), str(args.K0), str(args.CFL), str(seed)],
+                       check=True, stdout=sys.stderr)
+        subprocess.run([str(binary), directory, str(args.STEPS), str(args.UPDATE), str(HERE / "CNAB2.metal"),
+                        str(args.json.resolve()) if args.json else "",
+                        str(args.state_out.resolve()) if args.state_out else ""], check=True)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f"sim: {error}", file=sys.stderr)
+        sys.exit(2)

@@ -1,0 +1,32 @@
+# macOS metadata
+.DS_Store
+# Large local benchmark evidence; summaries, hashes and replay scripts remain trackable.
+Benchmarks/**/*.f32
+Benchmarks/**/*.c64
+Benchmarks/**/*.app/
+Benchmarks/**/executables/
+Benchmarks/**/*-bench
+Benchmarks/**/*.xcresult/
+
+# Build products and local dependency caches
+.build/
+.swiftpm/
+/build/
+DerivedData/
+*.app/
+*.dSYM/
+*.xcarchive/
+*.xcresult/
+Benchmarks
+
+# Per-user Xcode state; keep shared schemes and Package.resolved in version control.
+xcuserdata/
+*.xcuserstate
+
+# Python helper bytecode
+*.egg-info
+.venv
+uv.lock
+__pycache__/
+*.pyc
+*.pyo
