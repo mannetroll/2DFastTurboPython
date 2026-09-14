@@ -1,0 +1,764 @@
+You are GPT-6 Astra running at xhigh reasoning effort inside Codex CLI on Windows 10 Pro.
+
+Work directly on the files in the current repository.
+
+Do not ask clarifying questions.
+Do not stop after producing a plan.
+Do not rewrite working code unnecessarily.
+Inspect the existing implementation first, then implement, build, test, run, compare, fix failures, and iterate until the Windows Python backend works.
+
+PRIMARY TASK
+============
+
+This repository already contains:
+
+1. A WORKING cross-platform-oriented Python/macOS port:
+
+    python/
+
+2. The original authoritative macOS Swift + Metal + VkFFT reference:
+
+    reference-macos/2DFastTurbo/
+
+3. A WORKING native Windows C++ + CUDA + VkFFT reference:
+
+    reference-windows/
+
+The current Python application already works on macOS using a native Metal/VkFFT backend.
+
+Your task is NOT to redesign the application.
+
+Your task is:
+
+    Add Windows support to the existing Python application
+
+so that the same Python/PySide6 application can run on:
+
+    macOS:
+        Python + native Metal + VkFFT backend
+
+    Windows:
+        Python + native CUDA + VkFFT backend
+
+The intended final architecture is:
+
+                        Python / PySide6
+                              |
+                     common application API
+                              |
+                   common native backend API
+                       /               \
+                      /                 \
+             macOS backend          Windows backend
+             Metal + VkFFT          CUDA + VkFFT
+             native render          D3D/native render
+
+The existing macOS Python application must keep working.
+
+The existing Windows native implementation is the authoritative Windows numerical and GPU reference.
+
+DO NOT PORT THE NUMERICAL HOT PATH TO PYTHON.
+
+Python is the control/UI layer.
+
+The native GPU engine remains the compute layer.
+
+SOURCE AUTHORITY
+================
+
+Use these sources in this priority:
+
+GUI / control semantics:
+    python/
+    and reference-macos/2DFastTurbo/
+
+macOS numerical behavior:
+    reference-macos/2DFastTurbo/
+
+Windows CUDA/VkFFT implementation:
+    reference-windows/
+
+Existing architecture documentation:
+    ARCHITECTURE.md
+    PERFORMANCE.md
+    PORT_REFERENCE.md
+    PythonPort.txt
+    reference-windows/README.md
+    reference-windows/PACKAGING.md
+
+Do not infer behavior when the source code already defines it.
+
+FIRST PHASE — INSPECT
+=====================
+
+Before modifying code, inspect the repository thoroughly.
+
+Understand:
+
+1. Current Python package architecture.
+2. Current Python/macOS native binding.
+3. The API exposed by the macOS backend to Python.
+4. GUI control semantics.
+5. Simulation configuration types.
+6. Diagnostics types.
+7. Visualization integration.
+8. Build process under python/.
+9. Tests and verification infrastructure.
+10. Windows native solver structure.
+11. CUDA/VkFFT initialization.
+12. Windows rendering/D3D integration.
+13. Windows solver configuration.
+14. Windows diagnostics.
+15. Windows packaging/runtime dependencies.
+
+Determine the smallest clean interface that allows both native backends to satisfy the SAME Python API.
+
+Do not make large changes before understanding this.
+
+PLATFORM GOAL
+=============
+
+From Python, usage should be conceptually platform-neutral.
+
+For example:
+
+    import fastturbo
+
+    engine = fastturbo.create_engine(...)
+
+On macOS:
+
+    create_engine()
+        -> Metal/VkFFT backend
+
+On Windows:
+
+    create_engine()
+        -> CUDA/VkFFT backend
+
+Python application code should not need widespread:
+
+    if sys.platform == ...
+
+branches.
+
+Platform selection should be localized.
+
+COMMON PYTHON APPLICATION
+=========================
+
+Preserve one shared Python application for:
+
+- main application
+- PySide6 GUI
+- controls
+- presets
+- parameter semantics
+- diagnostics presentation
+- color-map choices
+- field choices
+- Play/Pause/Reset
+- retained N control
+- seed
+- k0
+- Re / viscosity
+- drag
+- CFL
+- integrator selection
+- display controls
+- benchmark UI where applicable
+
+Do not duplicate the entire Python GUI into a Windows version.
+
+There should be ONE Python GUI codebase.
+
+NATIVE BACKEND INTERFACE
+========================
+
+Create or refine a stable backend-neutral interface.
+
+The exact implementation should follow the current codebase, but conceptually it should expose operations such as:
+
+    create
+    destroy
+
+    start
+    pause
+    single_step
+    reset
+
+    set_resolution
+    set_seed
+    set_k0
+    set_viscosity
+    set_drag
+    set_cfl
+    set_integrator
+    set_display_field
+    set_palette
+    set_exposure
+    set_sigma / display normalization
+
+    inject_vortex
+
+    get_diagnostics
+    get_backend_info
+
+Avoid Python callbacks from the hot path.
+
+Avoid one Python call per CUDA kernel or FFT.
+
+A Python call should trigger coarse native operations.
+
+Use opaque native handles where appropriate.
+
+Do not leak C++/CUDA internals into Python.
+
+WINDOWS BACKEND
+===============
+
+Use the native Windows implementation in:
+
+    reference-windows/
+
+as the source.
+
+Do NOT rewrite its CFD solver in Python.
+
+Reuse or adapt its:
+
+- CUDA device management
+- persistent GPU buffers
+- CUDA kernels
+- VkFFT CUDA backend
+- FFT plan reuse
+- classical 3/2 padding
+- time integration
+- diagnostics
+- CUDA Graphs if present
+- CUDA/D3D interoperability
+- native visualization pipeline
+- interaction kernels
+- performance instrumentation
+
+Extract/refactor the minimum native components needed to expose the solver through the Python backend.
+
+Do not copy code blindly if a cleaner reuse approach is possible.
+
+Do not change numerical behavior merely to make binding easier.
+
+NUMERICAL PARITY
+================
+
+The Windows Python-backed solver must preserve the native Windows solver's numerical behavior.
+
+Preserve:
+
+- 2D incompressible vorticity-streamfunction equations
+- Fourier pseudo-spectral method
+- retained spectral N semantics
+- classical 3/2 padding
+- FFT normalization
+- k=0 behavior
+- Nyquist behavior
+- same integrators
+- same stress/form options if present
+- same initial conditions
+- same seed semantics
+- same forcing behavior
+- same physical parameter meanings
+
+Example:
+
+    N = 1024 retained
+    padded nonlinear grid = 1536 x 1536
+
+Do not reinterpret N.
+
+The Python GUI must report this consistently with the macOS version.
+
+NATIVE BINDING
+==============
+
+Use the thinnest robust Windows Python binding.
+
+Prefer reuse of whatever binding design is already used under python/native/.
+
+Acceptable approaches include:
+
+    pybind11
+    CPython extension
+    clean C ABI + ctypes/cffi
+
+Do not introduce a second binding technology unnecessarily.
+
+The Windows Python extension will likely be a:
+
+    .pyd
+
+while macOS uses:
+
+    .so / native extension
+
+Keep the Python-facing API identical.
+
+CUDA TOOLCHAIN
+==============
+
+This Windows machine has a verified native CUDA environment.
+
+Prefer the existing reference-windows build configuration.
+
+If toolchain detection is needed, inspect it rather than replacing it.
+
+The native Windows reference has already worked on:
+
+    Windows 10 Pro
+    RTX-class NVIDIA GPU
+    CUDA
+    MSVC
+    CMake
+    VkFFT
+
+Do not unnecessarily upgrade or reconfigure the CUDA toolchain.
+
+Use Release builds for performance comparisons.
+
+WINDOWS RENDERING
+=================
+
+Do not move visualization through Python arrays.
+
+Keep GPU rendering native.
+
+Preferred flow:
+
+    CUDA solver field
+        ->
+    native GPU visualization conversion
+        ->
+    CUDA / Direct3D interop
+        ->
+    D3D texture/view
+        ->
+    embedded native view or appropriate host
+
+The Python GUI may host or control the rendering surface.
+
+Do NOT:
+
+    cudaMemcpy full field -> CPU
+    convert to NumPy
+    convert to QImage every frame
+
+That is explicitly not acceptable for the production path.
+
+If integrating the native Direct3D view into PySide6 requires a small Windows-specific host/window layer, implement it cleanly.
+
+Platform-specific render hosting is acceptable.
+
+Duplicating the full GUI is not.
+
+MACOS MUST NOT REGRESS
+======================
+
+The current Python/macOS implementation already works.
+
+Do not break it.
+
+After changes, verify the macOS architecture remains valid even if you cannot execute macOS-specific tests from Windows.
+
+Keep platform code separated such that Windows-only includes/libraries are never required on macOS.
+
+Likewise, macOS frameworks must not be required on Windows.
+
+BUILD SYSTEM
+============
+
+The Python project currently contains:
+
+    python/
+        pyproject.toml
+        setup.py
+        uv.lock
+        native/
+        src/
+        tests/
+        scripts/
+
+Preserve the existing development workflow where sensible.
+
+Windows should be buildable from PowerShell.
+
+Aim for commands such as:
+
+    cd python
+    uv sync
+    uv run ...
+
+or an equivalent documented build/install command.
+
+Automate native extension compilation.
+
+Do not require hand-editing Visual Studio project files.
+
+If CMake is the cleanest way to reuse the reference-windows native source, integrate it cleanly into the Python build process.
+
+Create/update useful PowerShell scripts if appropriate:
+
+    python/scripts/build-windows.ps1
+    python/scripts/test-windows.ps1
+    python/scripts/run-windows.ps1
+    python/scripts/benchmark-windows.ps1
+
+Do not remove working macOS scripts.
+
+GUI PARITY
+==========
+
+The current Python GUI is authoritative.
+
+Do not invent a separate Windows control set.
+
+Make all existing controls work on Windows.
+
+For every GUI control, verify:
+
+    GUI control
+        ->
+    Python config/state
+        ->
+    backend-neutral API
+        ->
+    Windows native engine parameter
+
+Create a parity matrix, for example:
+
+    GUI_PARITY.md
+
+with columns:
+
+    Control
+    macOS backend
+    Windows backend
+    status
+    notes
+
+Do not claim completion while controls silently do nothing.
+
+VISUAL PARITY
+=============
+
+Aim for the same Python GUI appearance on both systems.
+
+The turbulence visualization itself should match the native backend behavior:
+
+- same field meaning
+- same palettes
+- same signed normalization
+- same sigma/exposure semantics
+- same overlays
+- same retained/padded resolution text
+
+Small platform font/rendering differences are acceptable.
+
+Do not alter physics to make images look identical.
+
+PERFORMANCE
+===========
+
+The Windows Python version must preserve native performance as closely as practical.
+
+Measure:
+
+    R_turbo_native_windows
+
+versus:
+
+    R_turbo_python_windows
+
+under the same numerical configuration.
+
+At minimum benchmark:
+
+    N = 1024 retained
+    classical 3/2 padding
+    same seed
+    same numerical settings
+
+Also benchmark 2048 if practical.
+
+Report:
+
+    native steps/s
+    Python-hosted steps/s
+
+    native R_turbo
+    Python-hosted R_turbo
+
+    native ms/step
+    Python-hosted ms/step
+
+and:
+
+    Python host overhead %
+
+The Python layer should not be in the timestep.
+
+If performance drops materially, profile before accepting the implementation.
+
+Likely causes to investigate:
+
+- Python/native call frequency
+- unintended synchronization
+- D3D/PySide6 integration
+- diagnostic readback
+- GIL contention
+- render scheduling
+- unnecessary CPU copies
+
+Do not accept a major performance regression simply because the port works.
+
+THREADING / GIL
+===============
+
+Ensure the GPU simulation can execute without the Python GUI blocking it.
+
+Release the GIL around long-running native operations where appropriate.
+
+Do not let the Python event loop serialize every simulation timestep.
+
+The GUI must remain responsive while the native GPU engine runs.
+
+Use a clean threading model.
+
+Avoid uncontrolled cross-thread calls into Qt.
+
+TESTS
+=====
+
+Preserve existing tests.
+
+Add Windows backend tests.
+
+At minimum verify:
+
+1. Native module imports on Windows.
+2. Engine can initialize RTX GPU.
+3. VkFFT initializes.
+4. Correct retained N.
+5. Correct padded N = 3N/2.
+6. Deterministic seed behavior.
+7. FFT normalization.
+8. k=0 handling.
+9. 3/2 padding/truncation.
+10. Finite fields after stepping.
+11. Diagnostics return valid values.
+12. Pause/Resume.
+13. Reset.
+14. Resolution changes.
+15. GUI controls change native state correctly.
+16. Vortex injection works.
+17. Rendering uses actual solver state.
+18. No full-field Python readback in normal operation.
+19. Native Windows and Python-hosted Windows outputs agree.
+20. macOS backend API remains compatible.
+
+Where possible, compare deterministic Windows Python results against the existing native Windows executable.
+
+Do not require bitwise identity if asynchronous FP32 GPU execution makes that unreasonable.
+
+Require tight numerical agreement.
+
+REFERENCE DIRECTORIES
+=====================
+
+Treat:
+
+    reference-macos/
+    reference-windows/
+
+as reference source trees.
+
+Do not casually mutate them.
+
+Prefer implementing/refactoring under:
+
+    python/
+
+If some native source should genuinely be shared, copy/adapt it deliberately into python/native/ and document its origin.
+
+DOCUMENTATION
+=============
+
+Update:
+
+    ARCHITECTURE.md
+    PERFORMANCE.md
+
+and relevant documentation under python/.
+
+Add or update documentation describing:
+
+    Python common layer
+    backend interface
+    macOS Metal/VkFFT backend
+    Windows CUDA/VkFFT backend
+    native rendering paths
+    build process
+    platform selection
+    packaging
+
+Create:
+
+    WINDOWS_PORT.md
+
+summarizing:
+
+- Windows implementation
+- reused reference code
+- backend architecture
+- build prerequisites
+- PowerShell build/run commands
+- limitations
+- performance results
+
+PACKAGING
+=========
+
+Do not make packaging the first priority.
+
+First achieve:
+
+    correct backend
+    GUI parity
+    numerical parity
+    performance parity
+
+Then, if practical, create a distributable Windows Python application.
+
+The existing native Windows reference already has packaging work under:
+
+    reference-windows/packaging/
+    reference-windows/dist/
+    reference-windows/PACKAGING.md
+
+Study it.
+
+A final Windows package should ideally not require:
+
+    Visual Studio
+    CMake
+    CUDA Toolkit
+    Python installation
+
+on the destination machine.
+
+It may require:
+
+    Windows 10/11
+    compatible NVIDIA GPU
+    compatible NVIDIA driver
+
+Do not compromise solver performance just to achieve packaging.
+
+WORKFLOW
+========
+
+Use this sequence:
+
+1. Inspect all three implementations.
+2. Document existing Python native interface.
+3. Define common backend API.
+4. Map native Windows functionality to that API.
+5. Implement Windows native binding.
+6. Make Python GUI launch on Windows.
+7. Make all controls functional.
+8. Integrate native D3D visualization.
+9. Run correctness tests.
+10. Compare against native Windows reference.
+11. Fix parity problems.
+12. Establish performance baseline.
+13. Profile Python overhead.
+14. Remove measurable overhead.
+15. Re-run complete test suite.
+16. Document.
+17. Package only after the above is stable.
+
+Do not start by rewriting architecture that already works.
+
+OPTIMIZATION RULE
+=================
+
+For every performance change:
+
+    measure baseline
+        ->
+    isolated change
+        ->
+    correctness tests
+        ->
+    benchmark
+        ->
+    KEEP or REVERT
+
+Do not combine speculative optimizations.
+
+Do not optimize Python syntax while the real bottleneck is native synchronization.
+
+SUCCESS CRITERIA
+================
+
+The task is complete when:
+
+1. The existing Python project runs on macOS with Metal/VkFFT.
+2. The same Python project runs on Windows with CUDA/VkFFT.
+3. The same PySide6 GUI is used on both.
+4. The Windows controls preserve the semantics of the macOS/Python app.
+5. The numerical Windows backend agrees with the native Windows reference.
+6. Classical 3/2 padding remains correct.
+7. The full CFD timestep remains native and GPU-resident.
+8. Visualization does not round-trip through Python.
+9. Python overhead is measured and acceptably small.
+10. Build/run instructions are reproducible.
+
+FINAL RESPONSE
+==============
+
+When finished, give a concise engineering report containing:
+
+1. final cross-platform architecture
+2. files/directories changed
+3. common Python API
+4. native backend interface
+5. macOS backend status
+6. Windows CUDA/VkFFT backend status
+7. rendering integration
+8. GUI control parity
+9. numerical parity tests and results
+10. Windows performance versus native reference
+11. measured Python overhead
+12. remaining platform differences
+13. exact PowerShell commands to build/test/run
+14. packaging status
+15. known limitations
+
+Do not report completion unless the application has actually been built and tested on Windows.
+
+Most importantly:
+
+DO NOT turn this into a Python CFD solver.
+
+The desired result is:
+
+    ONE Python/PySide6 application
+
+driving:
+
+    macOS -> native Metal + VkFFT
+
+or:
+
+    Windows -> native CUDA + VkFFT
+
+with native GPU-class performance on both platforms.
