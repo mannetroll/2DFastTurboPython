@@ -1,11 +1,12 @@
 # 2DFastTurbo Python
 
-A Python-hosted macOS turbulence application with the original native
-Swift/Metal/VkFFT solver and HDR renderer. Python supplies the PySide6 controls;
+A shared Python-hosted turbulence application for macOS and Windows, using
+native Swift/Metal/VkFFT or C++/CUDA/VkFFT backends. Python supplies the PySide6 controls;
 all CFD timesteps, FFTs, buffers and high-rate field rendering stay native.
 
-Requires Apple Silicon, macOS 15+, and Python 3.13+. Development builds also need
-Xcode with the Metal toolchain and [uv](https://docs.astral.sh/uv/).
+Requires Python 3.13+ and either Apple Silicon/macOS 15+ or Windows 10/11 x64
+with a compatible NVIDIA GPU. Source builds need Xcode/Metal on macOS, or
+CUDA 13.0, MSVC C++ tools, CMake and Ninja on Windows, plus [uv](https://docs.astral.sh/uv/).
 
 ```sh
 cd python
@@ -21,6 +22,21 @@ is ETD RK4, stress form, CFL 3, k₀=4, seed 2, with native palinstrophy regulat
 Space pauses/resumes, Right advances one step, R resets, Cmd-Shift-R increments
 the seed, F focuses the flow, and Cmd-S exports a PNG. Closing or minimizing the
 window keeps the simulation running; View → Show Simulation or the Dock reopens it.
+On Windows, use Ctrl in place of Cmd; the tray icon can reopen the retained run.
+
+Windows build, test and run from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File python/scripts/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File python/scripts/test-windows.ps1 -AllResolutions
+powershell -ExecutionPolicy Bypass -File python/scripts/run-windows.ps1
+```
+
+The portable Windows ZIP is generated under `python/dist/` by
+`python/scripts/package-windows.ps1`; it includes Python, Qt and native runtimes.
+See the [Windows port report](WINDOWS_PORT.md), [GUI parity matrix](GUI_PARITY.md)
+and [Windows validation evidence](python/evidence/windows/validation.json).
+The default Windows build targets compute capability 8.6 or later.
 
 ```sh
 # Verify the native bridge, mathematics, Swift parity and actual GUI.
@@ -46,3 +62,8 @@ for public distribution. No app is installed into `/Applications` automatically.
 Five matched M1 Max benchmark pairs measured 0.40% headless overhead; native GPU
 step times matched within 0.02%. Live Python throughput was 1.52% higher in this
 sample, with about 60 FPS. All paired endpoint spectra were byte-identical.
+
+Windows RTX 3090 measurements found 0.52% headless time overhead at N1024 and
+0.33% at N2048; visible GUI timings were within 1% of native. All 52 Python tests,
+two native CTest checks and 57 GUI checks passed. Native numerical comparisons
+were bitwise equal. macOS execution was not repeated on the Windows machine.

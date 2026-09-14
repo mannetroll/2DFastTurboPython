@@ -1,6 +1,63 @@
 # Measured performance and parity
 
-Measured 2026-09-14 on this Apple M1 Max, 64 GiB, macOS 15.7.9, Python 3.13.11,
+## Windows CUDA/VkFFT, 2026-09-14
+
+Built and tested on Windows 10 Pro build 19045, RTX 3090, NVIDIA driver 616.56,
+CUDA 13.0.88, MSVC 19.44, Python 3.13.9 and PySide6 6.11.2. Both hosts link the
+same unchanged Release CUDA/VkFFT core, with the reference floating-point flags.
+Three interleaved five-second runs per host/mode/resolution, with no concurrent
+GPU tests. N is retained, M=3N/2. Seed=2, k0=4, Re=50000 (regulation disabled),
+CFL=3, ETDRK4/stress. Headless uses batch 8 and eight warmup steps followed by
+reset. GUI uses automatic native batching, a two-second warmup followed by reset,
+and a 640-point Vorticity/Ember/Sigma canvas. Startup, plan creation and exports
+are excluded; final inspection and normal rendering/telemetry costs are included.
+
+| N / mode | Native steps/s | Python steps/s | Native R_turbo | Python R_turbo | Native ms/step | Python ms/step | Host time overhead |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1024 headless | 760.17 | 756.23 | 1.256196 | 1.250329 | 1.31549 | 1.32235 | +0.52% |
+| 1024 GUI | 692.12 | 698.42 | 1.155744 | 1.165038 | 1.44483 | 1.43180 | -0.90% |
+| 2048 headless | 197.67 | 197.02 | 0.177490 | 0.176909 | 5.05893 | 5.07554 | +0.33% |
+| 2048 GUI | 184.95 | 185.24 | 0.165345 | 0.165615 | 5.40692 | 5.39838 | -0.16% |
+
+Values are medians. R_turbo is simulated time per wall second. Host time overhead
+is `100*(Python ms/step / native ms/step - 1)`; the corresponding headless
+R_turbo losses are 0.47% and 0.33%. Negative GUI values indicate a small measured
+advantage in this sample, not a general Python speedup. In particular, N2048 GUI
+R_turbo ranges overlap: native 0.165248–0.167117, Python 0.163042–0.167769.
+
+The initial child-window renderer submitted duplicate frames without a native
+deadline and reduced N1024 GUI R_turbo from about 1.153 to 0.830. An isolated
+change restored the reference's 60 Hz deadline and scoped timer precision.
+Correctness was rerun, then the interleaved comparison repeated. This change was
+kept; no numerical kernel, FFT plan or physics parameter was altered. The native
+worker test now observes 36 presentations while Python processes no events for
+0.6 seconds, while thousands of complete N128 timesteps continue.
+
+Separate N1024 profiling measured median batch-8 work at 10.35585 ms, inspection
+at 0.09525 ms, vorticity snapshots at 0.12490 ms, velocity snapshots at 0.20240 ms,
+and a coarse no-op ABI call at 0.02170 ms. That last value includes JSON, ctypes,
+native dispatch and response allocation; it bounds the control-call cost rather
+than isolating Python alone. The GUI timestep and render scheduling are native;
+the Python dashboard polls at 4 Hz. The benchmark driver additionally polls at
+50 Hz, included in the measured host cost.
+
+Validation: **52 Python tests, 2 native CTest checks, 57 GUI checks**, all passing.
+Windows spectra are bitwise equal to the native executable for all six
+integrator/form combinations and at N1024/N2048. Independent FP64 checks cover
+normalization, zero/Nyquist modes, padding/truncation and evolution. Independent
+shader equations validate all 24 field/palette/range combinations. The portable
+EXE and wheel also pass without CUDA Toolkit paths; frozen GUI and headless
+spectra match the native executable exactly.
+
+Reproduce with `python/scripts/benchmark-windows.ps1`. Compact evidence, raw run
+records, binary hashes, GUI captures and runtime audits are in
+[`python/evidence/windows`](python/evidence/windows), including
+[performance.json](python/evidence/windows/performance.json) and
+[validation.json](python/evidence/windows/validation.json).
+
+## Preserved macOS measurements
+
+Measured 2026-09-14 on Apple M1 Max, 64 GiB, macOS 15.7.9, Python 3.13.11,
 PySide6 6.11.2, Xcode Swift 6.2.4. These are new measurements of the supplied Swift
 reference and this port, not the historical numbers in the reference README.
 

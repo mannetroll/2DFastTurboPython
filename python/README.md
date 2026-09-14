@@ -1,7 +1,23 @@
 # FastTurbo Python
 
-Python 3.13+, macOS 15+, Apple Silicon. Source builds need Xcode with Metal tools.
+Python 3.13+, with macOS 15+ / Apple Silicon / Metal, or Windows 10/11 x64 /
+NVIDIA CUDA. macOS source builds need Xcode with Metal tools. Windows source
+builds use the existing CUDA 13.0, MSVC x64 C++ tools, CMake and Ninja.
 Dependencies are pinned in `uv.lock`; the native bridge builds automatically.
+
+From the repository root in PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File python/scripts/build-windows.ps1
+powershell -ExecutionPolicy Bypass -File python/scripts/test-windows.ps1 -AllResolutions
+powershell -ExecutionPolicy Bypass -File python/scripts/run-windows.ps1
+powershell -ExecutionPolicy Bypass -File python/scripts/benchmark-windows.ps1
+```
+
+Alternatively, from `python/`, use `uv sync --python 3.13` and `uv run 2dfastturbo`.
+The scripts use a project-local uv cache. The Windows DLL and native baseline are
+built together under `build/windows`; CUDA runtime DLLs and licenses are staged
+under `src/fastturbo/_native`. See `../WINDOWS_PORT.md` and `../GUI_PARITY.md`.
 
 ```sh
 uv sync
@@ -15,10 +31,14 @@ The source checkout references `../reference-macos/2DFastTurbo` directly. Source
 archives include the necessary reference sources and vendored headers. Installed
 wheels and packaged applications load prebuilt resources without compiling.
 
+`fastturbo.create_engine` aliases `Engine`; `fastturbo.get_backend_info()` reports
+the selected native backend, GPU, defaults and capabilities. Windows loaders
+preload bundled NVRTC builtins by absolute path so no CUDA Toolkit PATH is needed.
+
 Python controls the original native engine. There are no NumPy/CPU FFTs, Python
 CFD kernels, field readbacks for interactive rendering, or callbacks per timestep.
-The PySide6 window embeds the original HDR Metal canvas and native transport
-controls; the original native pump handles batching, diagnostics and regulation.
+The shared PySide6 window embeds a native Metal or Direct3D canvas and transport
+controls; the native controller handles batching, diagnostics and regulation.
 
 ```python
 from fastturbo import Configuration, Engine
@@ -75,3 +95,11 @@ are the remaining presentation differences.
 
 See `../PORT_REFERENCE.md`, `../ARCHITECTURE.md`, and `../PERFORMANCE.md` for the
 complete control map, numerical conventions, measured overhead and evidence.
+
+Windows distributions are created with `scripts/package-windows.ps1` (portable
+EXE folder and ZIP) or `uv build` (source archive and `py3-none-win_amd64` wheel).
+`scripts/check_windows_package.py` audits the frozen app under Windows-only PATH;
+`scripts/check_windows_wheel.py` validates isolated wheel loading. The portable
+folder includes Python and Qt. A wheel needs Python and the declared PySide6
+dependency. The default CUDA target is compute capability 8.6 or later; see
+`../WINDOWS_PORT.md` for other build targets and the hardware validation limits.

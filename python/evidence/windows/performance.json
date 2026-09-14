@@ -1,0 +1,129 @@
+{
+  "hardware": {
+    "abi_version": 1,
+    "backend": "CUDA / VkFFT",
+    "capabilities": {
+      "drag": false,
+      "forcing": false,
+      "native_rendering": true,
+      "vortex_injection": false
+    },
+    "defaults": {
+      "cfl": 3.0,
+      "fixed_dt": null,
+      "integrator": "etdrk4",
+      "k0": 4,
+      "operator": "stress",
+      "padded_resolution": 1536,
+      "resolution": 1024,
+      "reynolds": 27898.36614974335,
+      "seed": "2",
+      "viscosity": 3.5844394005835056e-05
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "os": "Windows",
+    "physical_memory_bytes": 274546290688
+  },
+  "runs": 3,
+  "seconds": 5.0,
+  "native_sha256": "0da49cecf5534ee5bfc5ca0805bef7a91ccab3dafa114642989fc43233d50398",
+  "dll_sha256": "8f86ef4fbd8a0056a6718798d429307bbb66d06bca2aa352938ad4588b09bbe8",
+  "measurements": [
+    {
+      "n": 1024,
+      "mode": "headless",
+      "native": {
+        "steps_per_s": 760.1705145507976,
+        "R_turbo": 1.2561963627185362,
+        "ms_per_step": 1.3154943277310922,
+        "R_turbo_range": [
+          1.256059260169458,
+          1.259185924491624
+        ]
+      },
+      "python": {
+        "steps_per_s": 756.2285634483246,
+        "R_turbo": 1.2503294956356554,
+        "ms_per_step": 1.3223515327695408,
+        "R_turbo_range": [
+          1.246276544842191,
+          1.252499030135677
+        ]
+      },
+      "python_time_overhead_percent": 0.5212645082457668,
+      "python_throughput_loss_percent": 0.4670342358088275
+    },
+    {
+      "n": 1024,
+      "mode": "gui",
+      "native": {
+        "steps_per_s": 692.1223715547884,
+        "R_turbo": 1.1557439311061481,
+        "ms_per_step": 1.444831204854126,
+        "R_turbo_range": [
+          1.1531250923952234,
+          1.1585052157995681
+        ]
+      },
+      "python": {
+        "steps_per_s": 698.4228659927502,
+        "R_turbo": 1.1650375326922298,
+        "ms_per_step": 1.4317973375321598,
+        "R_turbo_range": [
+          1.1643422481029497,
+          1.1658685617791185
+        ]
+      },
+      "python_time_overhead_percent": -0.9021031161409843,
+      "python_throughput_loss_percent": -0.8041228974645653
+    },
+    {
+      "n": 2048,
+      "mode": "headless",
+      "native": {
+        "steps_per_s": 197.67023312653208,
+        "R_turbo": 0.17749008404548353,
+        "ms_per_step": 5.058930645161343,
+        "R_turbo_range": [
+          0.17683560200428353,
+          0.1774959693836223
+        ]
+      },
+      "python": {
+        "steps_per_s": 197.0234483921711,
+        "R_turbo": 0.17690932954823163,
+        "ms_per_step": 5.075538004032498,
+        "R_turbo_range": [
+          0.1767441777542828,
+          0.17740035624132358
+        ]
+      },
+      "python_time_overhead_percent": 0.3282780499677118,
+      "python_throughput_loss_percent": 0.32720391134812843
+    },
+    {
+      "n": 2048,
+      "mode": "gui",
+      "native": {
+        "steps_per_s": 184.94824105634342,
+        "R_turbo": 0.1653447298058559,
+        "ms_per_step": 5.406918142548626,
+        "R_turbo_range": [
+          0.1652484135343943,
+          0.16711661442440864
+        ]
+      },
+      "python": {
+        "steps_per_s": 185.24080775462815,
+        "R_turbo": 0.16561508001758726,
+        "ms_per_step": 5.398378532901941,
+        "R_turbo_range": [
+          0.16304203987065582,
+          0.1677685558786412
+        ]
+      },
+      "python_time_overhead_percent": -0.15793857834621727,
+      "python_throughput_loss_percent": -0.16350700264156082
+    }
+  ]
+}

@@ -4,8 +4,9 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
 import time
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QPoint, Qt
 from PySide6.QtTest import QTest
 from fastturbo.app import MainWindow, create_application
 from fastturbo.controls import RESOLUTIONS, WAVENUMBERS, FIELDS, METHODS, PALETTES
@@ -187,7 +188,17 @@ try:
     window.sigma.slider.setValue(5000)
     QTest.qWait(150)
     window.native.call("export", png=str(args.output.with_name("gui-field.png")), pixel_size=800)
-    screen = app.primaryScreen().grabWindow(int(window.winId()))
+    if sys.platform == "win32":
+        import ctypes
+        native_windows = ctypes.WinDLL("user32")
+        native_windows.SetWindowPos.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int,
+            ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
+        native_windows.SetWindowPos(int(window.winId()), ctypes.c_void_p(-1), 0, 0, 0, 0, 0x13)
+        QTest.qWait(100)
+        origin = window.mapToGlobal(QPoint(0, 0))
+        screen = window.screen().grabWindow(0, origin.x(), origin.y(), window.width(), window.height())
+    else:
+        screen = app.primaryScreen().grabWindow(int(window.winId()))
     screen.save(str(args.output.with_name("gui-window.png")))
     result = {"passed": True, "checks": checks, "state": state()}
 except Exception as error:

@@ -1,4 +1,4 @@
-"""PySide controls around a native, GPU-resident HDR Metal canvas."""
+"""Shared PySide controls around the platform's native GPU canvas."""
 from __future__ import annotations
 import math
 import time
@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
 
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
 from .engine import NativeUI
+from .platform_ui import fonts, install_lifecycle
 
 STYLE = """
 QMainWindow, QWidget#root { background: #090c13; color: #e6e8ec; }
@@ -36,6 +37,8 @@ QScrollArea > QWidget > QWidget { background: transparent; }
 QScrollBar:vertical { background: transparent; width: 5px; }
 QScrollBar::handle:vertical { background: #384456; border-radius: 2px; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+QMenuBar, QMenu { background: #10141c; color: #e6e8ec; }
+QMenuBar::item:selected, QMenu::item:selected { background: #304746; }
 QCheckBox { spacing: 5px; font-size: 10px; }
 QCheckBox::indicator { width: 23px; height: 12px; border-radius: 6px; background: #344051; }
 QCheckBox::indicator:checked { background: #70e8d1; }
@@ -91,7 +94,8 @@ class MainWindow(QMainWindow):
         self._attached = False
         self._canvas_side = canvas_size
         self.setWindowTitle("2DFastTurbo Python")
-        self.setStyleSheet(STYLE)
+        regular_font, self.mono_font = fonts()
+        self.setStyleSheet(STYLE.replace(".AppleSystemUIFont", regular_font).replace("Menlo", self.mono_font))
         self.setMinimumSize(834, 761)
         root = QWidget()
         root.setObjectName("root")
@@ -152,6 +156,7 @@ class MainWindow(QMainWindow):
         QApplication.instance().installEventFilter(self)
         QApplication.instance().applicationStateChanged.connect(self.application_state_changed)
         self.poll()
+        self.tray = install_lifecycle(self)
 
     def _header(self):
         header = QWidget()
@@ -167,7 +172,7 @@ class MainWindow(QMainWindow):
         titles.addWidget(label("DECAYING TURBULENCE IN HDR", "secondary"))
         row.addLayout(titles)
         row.addStretch()
-        self.backend = label("●  METAL / VkFFT", "accent")
+        self.backend = label("●  " + self.native.backend_info.get("backend", "METAL / VkFFT"), "accent")
         self.backend.setFixedHeight(28)
         self.backend.setStyleSheet("background:#122427; border-radius:12px; padding:8px; font-size:9px")
         row.addWidget(self.backend)
@@ -177,7 +182,7 @@ class MainWindow(QMainWindow):
         self.focus_button.clicked.connect(self.toggle_focus)
         row.addWidget(self.focus_button)
         self.save_button = QPushButton("↥")
-        self.save_button.setToolTip("Save PNG · ⌘S")
+        self.save_button.setToolTip("Save PNG · " + QKeySequence(QKeySequence.StandardKey.Save).toString(QKeySequence.SequenceFormat.NativeText))
         self.save_button.setAccessibleName("Save PNG")
         self.save_button.clicked.connect(lambda: self.send("save"))
         row.addWidget(self.save_button)
@@ -310,7 +315,7 @@ class MainWindow(QMainWindow):
             values.setSpacing(3)
             value = label("—", "metricValue")
             if key in ("turbo", "turnovers"):
-                value.setStyleSheet("color:#70e8d1; font-size:16px; font-family:'Menlo'")
+                value.setStyleSheet(f"color:#70e8d1; font-size:16px; font-family:'{self.mono_font}'")
             values.addWidget(value)
             if key == "energy":
                 self.sparkline = Sparkline()
@@ -333,9 +338,9 @@ class MainWindow(QMainWindow):
         file.addAction("Close Window", self.close, QKeySequence.StandardKey.Close)
         file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence.StandardKey.Quit)
         about = file.addAction("About 2DFastTurbo", lambda: QMessageBox.about(self, "2DFastTurbo Python",
-            "Decaying two-dimensional turbulence on Apple Metal.\n"
+            "Decaying two-dimensional turbulence on the native GPU backend.\n"
             "3/2-padded pseudospectral Navier–Stokes with VkFFT.\n\n"
-            "Space pauses; → advances once; R resets; F focuses; ⌘S saves a PNG."))
+            "Space pauses; → advances once; R resets; F focuses; Save Snapshot exports a PNG."))
         about.setMenuRole(QAction.MenuRole.AboutRole)
         edit = menu.addMenu("Edit")
         for title, method, shortcut in [("Undo", "undo", QKeySequence.StandardKey.Undo),
@@ -508,6 +513,8 @@ class MainWindow(QMainWindow):
     def shutdown(self):
         self._closing = True
         self.poll_timer.stop()
+        if self.tray:
+            self.tray.hide()
         self.native.close()
 
 

@@ -1,5 +1,23 @@
 # Python/native architecture
 
+The application now selects a native backend locally in `fastturbo.build`:
+macOS loads the existing `libfastturbo.dylib` (Metal/VkFFT), and Windows loads
+`fastturbo.dll` (CUDA/VkFFT). Both implement version 1 of `python/native/fastturbo.h`.
+The common Python `Configuration`, `Engine` / `create_engine`, `NativeUI`, CLI,
+controls, palettes and PySide6 dashboard are shared. ctypes releases the GIL for
+all native calls. `GUI_PARITY.md` records the control mapping.
+
+The Windows CMake project links the reference solver directly, including its
+unchanged CUDA kernels and VkFFT implementation. The original C++ controller owns
+the simulation worker; a separate native thread owns the embedded HWND's Direct3D
+renderer. CUDA snapshots remain on the device and are copied device-to-device
+into registered D3D resources. Python polls only JSON telemetry at 4 Hz. Field and
+PNG readbacks occur only for explicit exports. No Python callbacks schedule GPU
+steps or frames. See `python/native/windows/README.md` for the small, guarded
+controller/resource adaptations and `WINDOWS_PORT.md` for build and validation.
+
+The remainder of this document describes the preserved macOS backend.
+
 The Python package lives in `python/`; the reference tree is read-only input.
 `PORT_REFERENCE.md` is the source-derived numerical and control contract.
 

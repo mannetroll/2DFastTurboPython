@@ -11,7 +11,7 @@ from .engine import Configuration, Engine, native_library
 
 
 def parser():
-    p = argparse.ArgumentParser(description="2DFastTurbo Python · native Metal/VkFFT")
+    p = argparse.ArgumentParser(description="2DFastTurbo Python · native Metal or CUDA / VkFFT")
     modes = p.add_mutually_exclusive_group()
     modes.add_argument("--benchmark", action="store_true", help="Headless batch benchmark")
     modes.add_argument("--gui-benchmark", action="store_true", help="Visible GUI benchmark, then exit")
@@ -239,4 +239,6 @@ def main(argv=None):
         return benchmark(args) if args.benchmark else gui(args)
     except Exception as error:
         print(f"2DFastTurbo: {error}", file=sys.stderr)
+        if args.output:
+            emit({"passed": False, "error": str(error)}, args.output)
         return 2

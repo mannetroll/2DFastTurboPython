@@ -1,5 +1,9 @@
 include native/*.swift native/*.h
 include scripts/*.py
+include scripts/*.ps1
+recursive-include native/windows *
 include uv.lock
 recursive-include native/reference *
+recursive-include native/reference-windows *
+recursive-include native/reference-macos *
 prune src/fastturbo/_native

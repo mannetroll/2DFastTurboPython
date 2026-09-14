@@ -49,7 +49,15 @@ class _Library:
     def __init__(self):
         if threading.current_thread() is not threading.main_thread():
             raise NativeError("Initialize the native library on the main thread before using workers")
-        self.lib = C.CDLL(str(build()))  # CDLL releases the GIL during native calls.
+        library = build()
+        # Keep the DLL directory alive, including NVRTC's delayed builtins load.
+        import os
+        self._dll_directory = os.add_dll_directory(str(library.parent)) if os.name == "nt" else None
+        # NVRTC uses a legacy delayed LoadLibrary for its builtins, which does
+        # not honor AddDllDirectory in an ordinary Python process. Preload the
+        # packaged module by absolute path and retain it for the library lifetime.
+        self._runtime_libraries = [C.CDLL(str(p)) for p in library.parent.glob("nvrtc-builtins*.dll")] if os.name == "nt" else []
+        self.lib = C.CDLL(str(library))  # CDLL releases the GIL during native calls.
         specs = {
             "ft_string_free": ([C.c_void_p], None),
             "ft_initialize": ([C.c_char_p], C.c_void_p),
@@ -93,6 +101,16 @@ def native_library():
     return _library
 
 
+def get_backend_info():
+    """Return backend identity, GPU, defaults and available capabilities."""
+    from copy import deepcopy
+    info = deepcopy(native_library().info)
+    info.setdefault("backend", "METAL / VkFFT")
+    info.setdefault("capabilities", {"native_rendering": True, "forcing": False,
+                                     "drag": False, "vortex_injection": False})
+    return info
+
+
 def encode(value):
     return json.dumps(value, allow_nan=False, separators=(",", ":")).encode()
 
@@ -101,7 +119,7 @@ class Engine:
     """Headless, synchronous batch API with an independently serialized native core.
 
     Use a context manager or close(). A Python lock excludes calls racing close;
-    the solver's own execution queue owns all Metal state. No Python callbacks.
+    the native backend owns all GPU state. No Python callbacks.
     """
     def __init__(self, config: Configuration | None = None, *, initial: str | Path | None = None):
         self._native = native_library()
@@ -165,6 +183,10 @@ class NativeUI:
         if not self._handle:
             raise NativeError("Could not create native UI controller")
 
+    @property
+    def backend_info(self):
+        return get_backend_info()
+
     def call(self, op="get", **kwargs):
         if threading.current_thread() is not threading.main_thread():
             raise NativeError("UI operations require the main thread")
@@ -172,8 +194,10 @@ class NativeUI:
             raise NativeError("UI is closed")
         return self._native.result(self._native.lib.ft_ui_call(self._handle, encode({"op": op, **kwargs})))
 
-    def attach(self, nsview: int):
-        return self._native.result(self._native.lib.ft_ui_attach(self._handle, nsview))
+    def attach(self, native_window: int):
+        if threading.current_thread() is not threading.main_thread() or not self._handle:
+            raise NativeError("Attach requires a live UI on the main thread")
+        return self._native.result(self._native.lib.ft_ui_attach(self._handle, native_window))
 
     def close(self):
         if self._handle:

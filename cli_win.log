@@ -1,0 +1,14 @@
+  powershell -ExecutionPolicy Bypass -File python/scripts/build-windows.ps1
+  powershell -ExecutionPolicy Bypass -File python/scripts/test-windows.ps1 -AllResolutions
+  powershell -ExecutionPolicy Bypass -File python/scripts/run-windows.ps1
+
+  macOS code was preserved but could not be executed here. Windows 11, HDR monitors, and other GPUs remain untested; the default
+  package targets compute capability 8.6+. Drag, forcing, and vortex injection remain unavailable because neither reference
+  implements them.
+
+  Full details, changed files, packaging instructions, and evidence: WINDOWS_PORT.md.
+
+─ Worked for 1h 03m 12s ─────────────────────────────────────────────────────────────────────────────────────────────────────────────Token usage: total=353,479 input=269,463 (+ 12,614,528 cached) output=84,016 (reasoning 37,007)
+To continue this session, run:
+  codex resume 01a0a08f-5e98-70d2-8353-5f03c4cb2b39
+Or run codex resume and select Do PythonPortWindows.txt.s

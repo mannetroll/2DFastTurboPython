@@ -1,4 +1,6 @@
-"""Python control plane for the native FastTurbo Metal/VkFFT solver."""
-from .engine import Configuration, Engine
+"""Python control plane for native Metal/VkFFT and CUDA/VkFFT solvers."""
+from .engine import Configuration, Engine, get_backend_info
 
-__all__ = ["Configuration", "Engine"]
+create_engine = Engine
+
+__all__ = ["Configuration", "Engine", "create_engine", "get_backend_info"]

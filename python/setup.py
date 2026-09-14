@@ -1,6 +1,7 @@
 from pathlib import Path
 import runpy
 import shutil
+import sys
 from setuptools import Distribution, setup
 from setuptools.command.build_py import build_py
 from setuptools.command.editable_wheel import editable_wheel
@@ -31,8 +32,8 @@ class BinaryDistribution(Distribution):
 
 class Wheel(bdist_wheel):
     def get_tag(self):
-        # ctypes has no CPython ABI dependency; the dylib requires macOS 15 arm64.
-        return "py3", "none", "macosx_15_0_arm64"
+        # The C ABI has no CPython version dependency.
+        return "py3", "none", "win_amd64" if sys.platform == "win32" else "macosx_15_0_arm64"
 
 
 class Source(sdist):
@@ -47,6 +48,16 @@ class Source(sdist):
         target = Path(base_dir) / "native/reference"
         for name in ("Sources", "ThirdParty", "Resources"):
             shutil.copytree(reference / name, target / name, dirs_exist_ok=True)
+        windows = project.parent / "reference-windows"
+        if not windows.is_dir():
+            windows = project / "native/reference-windows"
+        if windows.is_dir():
+            destination = Path(base_dir) / "native/reference-windows"
+            for name in ("src", "tools", "tests", "assets"):
+                shutil.copytree(windows / name, destination / name, dirs_exist_ok=True)
+            shutil.copy2(windows / "CMakeLists.txt", destination / "CMakeLists.txt")
+            # Keep the Windows reference's relative VkFFT/license paths valid.
+            shutil.copytree(reference / "ThirdParty", Path(base_dir) / "native/reference-macos/2DFastTurbo/ThirdParty", dirs_exist_ok=True)
 
 
 setup(cmdclass={"build_py": Build, "editable_wheel": Editable, "bdist_wheel": Wheel, "sdist": Source},

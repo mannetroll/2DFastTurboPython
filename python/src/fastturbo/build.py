@@ -1,7 +1,6 @@
 """Reproducible, content-addressed native build; no third-party build tools."""
 from __future__ import annotations
 import argparse
-import fcntl
 import hashlib
 import json
 import os
@@ -25,6 +24,16 @@ def run(args: list[str | Path], **kwargs):
 
 
 def build(force: bool = False) -> Path:
+    if platform.system() == "Windows":
+        if __package__:
+            # An explicit import also makes the loader available inside a frozen
+            # PyInstaller archive, where Python source files are not on disk.
+            from .build_windows import build as windows_build
+        else:
+            import runpy
+            windows_build = runpy.run_path(str(PACKAGE / "build_windows.py"))["build"]
+        return windows_build(PROJECT, NATIVE, force)
+    import fcntl
     library = NATIVE / "libfastturbo.dylib"
     if not REFERENCE.exists() and library.exists():
         return library  # Installed wheel / frozen .app needs no compiler or sources.

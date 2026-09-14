@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "native_save_dialog_cancel": true,
+  "native_transport_buttons": true,
+  "unchanged_configuration_retains_generation": true,
+  "tray_reopen": true,
+  "visible_canvas_sample_colors": 352,
+  "steps_without_python_events": 4814,
+  "presentations_without_python_events": 36
+}

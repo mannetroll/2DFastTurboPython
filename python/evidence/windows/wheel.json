@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "module": "D:\\CODEX\\2DFastTurboPython\\python\\build\\wheel-check-ory_gnyc\\fastturbo\\__init__.py",
+  "steps": 17,
+  "padded_resolution": 51,
+  "backend": {
+    "abi_version": 1,
+    "backend": "CUDA / VkFFT",
+    "capabilities": {
+      "drag": false,
+      "forcing": false,
+      "native_rendering": true,
+      "vortex_injection": false
+    },
+    "defaults": {
+      "cfl": 3.0,
+      "fixed_dt": null,
+      "integrator": "etdrk4",
+      "k0": 4,
+      "operator": "stress",
+      "padded_resolution": 1536,
+      "resolution": 1024,
+      "reynolds": 27898.36614974335,
+      "seed": "2",
+      "viscosity": 3.5844394005835056e-05
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "os": "Windows",
+    "physical_memory_bytes": 274546290688
+  }
+}
