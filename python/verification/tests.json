@@ -1,0 +1,21 @@
+{
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "40",
+    "time": "28.084",
+    "timestamp": "2026-09-14T15:16:58.175559+02:00",
+    "hostname": "MacBookPro"
+  },
+  "reference_native_tests": {
+    "passed": 10,
+    "failed": 0
+  },
+  "reference_python_tests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "reference_source_unchanged": true
+}

@@ -216,3 +216,9 @@ __marimo__/
 /profile.json
 /fps/fps_sweep.csv
 /palinstrophy_*
+
+# Native products, local validation fields, frozen bundles
+src/fastturbo/_native/
+results/
+*.c64
+*.f32

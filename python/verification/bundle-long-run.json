@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "solver": "FastTurbo Python",
+  "config": {
+    "cfl": 3,
+    "fixed_dt": null,
+    "integrator": "etdrk4",
+    "k0": 4,
+    "operator": "stress",
+    "padded_resolution": 1536,
+    "resolution": 1024,
+    "reynolds": 27898.36614974335,
+    "seed": "2",
+    "viscosity": 3.5844394005835056e-05
+  },
+  "regulated": true,
+  "stats": {
+    "allocated_bytes": 107253288,
+    "dt": 0.0020094681531190872,
+    "energy": 0.4852012690803349,
+    "enstrophy": 2.286811280529946,
+    "gpu_milliseconds": 2.5161250014207326,
+    "initial_turnover_time": 1.5707962921002714,
+    "is_finite": true,
+    "palinstrophy": 3668.922317504883,
+    "palinstrophy_ratio": 0.003072107401807483,
+    "reynolds": 58112.07707542509,
+    "simulation_time": 19.045562313869596,
+    "steps": 10584
+  },
+  "seconds": 30.000040749997424,
+  "presentation": {
+    "frames": 1801,
+    "presented_frames_per_second": 60.03325178817148
+  },
+  "canvas": {
+    "height_points": 640,
+    "scale": 2,
+    "visible": true,
+    "width_points": 640
+  }
+}

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastturbo"
+version = "0.1.0"
+description = "Python-hosted macOS turbulence with the native Metal/VkFFT engine"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["PySide6>=6.9,<7"]
+
+[project.scripts]
+2dfastturbo = "fastturbo.main:main"
+fastturbo-build = "fastturbo.build:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "numpy>=2", "pyinstaller>=6.16"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+fastturbo = ["_native/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["gpu: requires Apple Metal", "gui: requires a visible macOS desktop"]

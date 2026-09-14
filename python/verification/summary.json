@@ -1,0 +1,59 @@
+{
+  "runs": 5,
+  "until": 3.0,
+  "config": [
+    "--resolution",
+    "1024",
+    "--reynolds",
+    "50000",
+    "--k0",
+    "4",
+    "--seed",
+    "2",
+    "--cfl",
+    "3",
+    "--integrator",
+    "etdrk4",
+    "--operator",
+    "stress",
+    "--until",
+    "3.0"
+  ],
+  "measurements": {
+    "headless": {
+      "swift": {
+        "median_R_turbo": 0.6225512713126341,
+        "min": 0.6213461555931286,
+        "max": 0.6231475748303608,
+        "median_gpu_ms_per_step": 2.484928627950287,
+        "median_fps": null
+      },
+      "python": {
+        "median_R_turbo": 0.6200330081887725,
+        "min": 0.6191329362248825,
+        "max": 0.623210617291375,
+        "median_gpu_ms_per_step": 2.4851795074956597,
+        "median_fps": null
+      },
+      "python_overhead_percent": 0.40450694423158307
+    },
+    "gui": {
+      "swift": {
+        "median_R_turbo": 0.5488623402481734,
+        "min": 0.5447236542382713,
+        "max": 0.5522007612378892,
+        "median_gpu_ms_per_step": null,
+        "median_fps": 57.24382233239674
+      },
+      "python": {
+        "median_R_turbo": 0.557193489448384,
+        "min": 0.5559676880534521,
+        "max": 0.5593088328670371,
+        "median_gpu_ms_per_step": null,
+        "median_fps": 60.229832872457315
+      },
+      "python_overhead_percent": -1.5178941219475177
+    }
+  },
+  "all_paired_spectra_bitwise_equal": true
+}

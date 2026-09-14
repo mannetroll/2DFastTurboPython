@@ -1,0 +1,94 @@
+# Python/native architecture
+
+The Python package lives in `python/`; the reference tree is read-only input.
+`PORT_REFERENCE.md` is the source-derived numerical and control contract.
+
+```text
+Python 3.13 / PySide6 controls and dashboard (4 Hz telemetry)
+                 │ opaque C ABI, small JSON commands
+                 ▼
+libfastturbo.dylib — Swift native controller and completion-driven pump
+                 │ native batches, no Python callback
+                 ▼
+unchanged FastTurboCore + existing Objective-C++/C++ VkFFT bridge
+                 │
+     persistent Metal buffers / VkFFT plans / compute pipelines
+                 │ immutable Metal frame leases, no Python field copies
+                 ▼
+native SwiftUI canvas / MTKView / HDR Metal renderer
+                 │
+           PySide6 parent NSView
+```
+
+`native/PortBridge.swift` exports the functions declared in `native/fastturbo.h`.
+ctypes uses opaque retained object handles and owned UTF-8 result strings; every
+result is freed in a `finally` block. Python never sees Swift/C++ layouts or Metal
+pointers except the host NSView handle. `Engine` provides synchronous native batch
+work for scripts; `NativeUI` controls the original `SimulationController` and
+`SimulationPump`. All UI calls are checked for main-thread affinity. Headless
+calls are protected against close races by a Python lock and serialized on the
+native core's execution queue. ctypes releases the GIL during native execution.
+
+The GUI has **no Python timestep loop**. Native completions schedule subsequent
+batches even when Python is idle or the window is hidden. Existing native
+palinstrophy regulation, adaptive batching, inspection cadence, generation checks,
+and run-average throughput are retained. The canvas observes native frame
+publication directly at 60Hz. Its small seed/time/transport overlays remain native
+inside the embedded view; Python supplies the inspector, dashboard, menus and
+keyboard actions. This avoids crossing the language boundary for each frame.
+The embedding uses the macOS NSView handle exposed by Qt; see
+[Qt's native window embedding contract](https://doc.qt.io/qt-6/qtdoc-demos-windowembedding-example.html).
+
+The only adaptation to an existing source is a generated copy of
+`FastTurboCanvas.swift` with its single main-bundle metallib lookup changed to an
+explicit package resource URL. It is guarded by an exact-match check in the build.
+`FastTurboCore.swift`, compute MSL, render MSL, FFT bridge, native controller and
+presentation types compile directly from the reference tree, without edits.
+
+GPU commands retain the same allocation, synchronization and math semantics as
+Swift. The main simulation uses shared Metal buffers as native GPU resources;
+"shared" storage does not imply Python reads them. Spectra and physical fields
+can only be exported through explicit developer file operations. Normal rendering
+samples completed Metal frame buffers directly. PNG export performs the same
+one-off rendered-pixel readback as the reference. Frame extrema and diagnostic
+reductions return tiny scalars, not field arrays.
+
+## Build and distribution
+
+`src/fastturbo/build.py` compiles with the reference deployment target (macOS 15,
+arm64), Swift 5 language mode, `-O` whole module, C++20 `-O3`, safe compute math and
+fast render math. It compiles vendored VkFFT and metal-cpp without downloading or
+copying their source. The installed Metal toolchain is selected with `xcrun metal`;
+the SDK is passed explicitly (on this Xcode, `xcrun --sdk macosx metal` incorrectly
+selects the placeholder executable). The native library is locally signed.
+
+Setuptools invokes the builder for both editable installs and wheels. First
+launch also checks source/compiler/SDK hashes; a file lock prevents concurrent
+builds and atomic replacement publishes only successful builds. A manifest and
+third-party licenses accompany the dylib/metallib. Wheels and app bundles use
+packaged native resources and need neither Xcode nor the reference tree at run
+time. Development builds use this checkout; source distribution archives stage
+the necessary reference sources and vendored headers into the archive only.
+`uv.lock` pins the resolved Python dependencies.
+
+The PyInstaller packaging script explicitly collects the ctypes dylib and Metal
+resources, freezes Python/Qt into an arm64 `.app`, includes the reference icon,
+and verifies the local signature. This follows PyInstaller's
+[ctypes and macOS packaging guidance](https://pyinstaller.org/en/stable/feature-notes.html).
+It does not install the app into Applications or publish/notarize it.
+
+## Deliberate differences and limits
+
+The scientific behavior, field rendering, parameter semantics and default values
+are retained. Surrounding widgets are Qt rather than SwiftUI: typography, switches,
+spacing, palette previews and native menu styling differ slightly. Qt sliders
+quantize the continuous ranges to 10,001 positions while preserving endpoints.
+The square canvas, focus mode, flow overlay, seed/time labels and transport remain.
+The original UI has no Streamfunction, forcing/drag, vortex painting, contour,
+preset or manual-dt/batch controls; these were not invented. Fixed dt/batch are
+available in the API and benchmark CLI as in the reference.
+
+Headless `advance` returns cached energy/enstrophy until `inspect` refreshes them,
+matching the native API. Automatic Re regulation depends on diagnostic cadence;
+comparisons disable it and explicitly use a common Re. Independent NumPy FP64
+code exists only under the supplied validation tools and the test dependency group.
