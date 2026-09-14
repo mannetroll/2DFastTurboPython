@@ -14,6 +14,28 @@ macOS and CUDA / VkFFT on Windows handle the simulation and rendering.
 
 ## Install and launch
 
+### Run with uv (recommended)
+
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed,
+launch FastTurbo in an isolated environment:
+
+```sh
+uv tool run --python 3.13 --no-build --from fastturbo 2dfastturbo
+```
+
+Or use the equivalent `uvx` shortcut:
+
+```sh
+uvx --python 3.13 --no-build --from fastturbo 2dfastturbo
+```
+
+uv manages the environment, downloads Python 3.13 if needed, and installs
+FastTurbo and PySide6 automatically. `--no-build` requires prebuilt wheels.
+Add application options after `2dfastturbo`, such as `--help` or
+`--benchmark --steps 200`.
+
+### Install with pip
+
 Use **Python 3.13 or later** in a virtual environment on a supported platform:
 
 ```sh
@@ -24,7 +46,7 @@ python -m pip install --only-binary=:all: fastturbo
 You can also launch with `python -m fastturbo`.
 
 Prebuilt wheels include the native engine. **No Xcode, CUDA Toolkit, C++
-compiler, or source checkout is needed to install and run a wheel.** pip
+compiler, or source checkout is needed to install and run a wheel.** uv or pip
 installs the PySide6 desktop dependency automatically. The binary-only option
 ensures installation uses available wheels.
 
