@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "comparison": "GUI adaptive batching vs headless batch 8",
+  "resolution": 128,
+  "steps": 20,
+  "dt": 0.001,
+  "bitwise_identical": true,
+  "spectrum_sha256": "a07b12e2df6ac885a67bf52b9a6620ff2df17bbbc2de1064bfde78a9c987a8b4"
+}

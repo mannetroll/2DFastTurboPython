@@ -1,0 +1,186 @@
+{
+  "runs": [
+    {
+      "variant": "original",
+      "mode": "headless",
+      "run": 1,
+      "R_turbo": 1.2631671211728022,
+      "ms_per_step": 1.30778080543967,
+      "gpu_ms_per_step": 1.2917844079528378,
+      "steps_per_s": 764.6541345770895,
+      "presented_fps": 0,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "packaged",
+      "mode": "headless",
+      "run": 1,
+      "R_turbo": 1.2630324570800855,
+      "ms_per_step": 1.30792024058613,
+      "gpu_ms_per_step": 1.2928709195747534,
+      "steps_per_s": 764.5726161037626,
+      "presented_fps": 0,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    },
+    {
+      "variant": "original",
+      "mode": "gui",
+      "run": 1,
+      "R_turbo": 1.1646135786389171,
+      "ms_per_step": 1.4324145803480592,
+      "gpu_ms_per_step": 1.3751374725215002,
+      "steps_per_s": 698.1219080840493,
+      "presented_fps": 52.965723392632064,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "packaged",
+      "mode": "gui",
+      "run": 1,
+      "R_turbo": 1.1665073812916573,
+      "ms_per_step": 1.4298009150709798,
+      "gpu_ms_per_step": 1.3796700894372382,
+      "steps_per_s": 699.3980696608778,
+      "presented_fps": 50.11586808592677,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    },
+    {
+      "variant": "packaged",
+      "mode": "headless",
+      "run": 2,
+      "R_turbo": 1.2624313145771886,
+      "ms_per_step": 1.3085430439322898,
+      "gpu_ms_per_step": 1.2933968946524743,
+      "steps_per_s": 764.2087164323688,
+      "presented_fps": 0,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    },
+    {
+      "variant": "original",
+      "mode": "headless",
+      "run": 2,
+      "R_turbo": 1.2606683457205319,
+      "ms_per_step": 1.3106003930823544,
+      "gpu_ms_per_step": 1.294565038361139,
+      "steps_per_s": 763.00907986769,
+      "presented_fps": 0,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "packaged",
+      "mode": "gui",
+      "run": 2,
+      "R_turbo": 1.1624451969947949,
+      "ms_per_step": 1.4354215843873035,
+      "gpu_ms_per_step": 1.3686711920252057,
+      "steps_per_s": 696.6594419902365,
+      "presented_fps": 56.004915836464974,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    },
+    {
+      "variant": "original",
+      "mode": "gui",
+      "run": 2,
+      "R_turbo": 1.159353782630923,
+      "ms_per_step": 1.4397713792114089,
+      "gpu_ms_per_step": 1.3681153663804926,
+      "steps_per_s": 694.55471503241,
+      "presented_fps": 57.235537545257365,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "original",
+      "mode": "headless",
+      "run": 3,
+      "R_turbo": 1.2584129913023931,
+      "ms_per_step": 1.3131771533623402,
+      "gpu_ms_per_step": 1.2979389000840549,
+      "steps_per_s": 761.5118778449183,
+      "presented_fps": 0,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "packaged",
+      "mode": "headless",
+      "run": 3,
+      "R_turbo": 1.256623013294972,
+      "ms_per_step": 1.3150476890755156,
+      "gpu_ms_per_step": 1.299371186174263,
+      "steps_per_s": 760.4286964703192,
+      "presented_fps": 0,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    },
+    {
+      "variant": "original",
+      "mode": "gui",
+      "run": 3,
+      "R_turbo": 1.1653714347108857,
+      "ms_per_step": 1.4313390383529498,
+      "gpu_ms_per_step": 1.3782950155245044,
+      "steps_per_s": 698.6464933917443,
+      "presented_fps": 51.05973278688951,
+      "executable_sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089"
+    },
+    {
+      "variant": "packaged",
+      "mode": "gui",
+      "run": 3,
+      "R_turbo": 1.1558704847301384,
+      "ms_per_step": 1.4446730135797194,
+      "gpu_ms_per_step": 1.3745773821268334,
+      "steps_per_s": 692.1981587529795,
+      "presented_fps": 56.23072221738293,
+      "executable_sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+    }
+  ],
+  "means": [
+    {
+      "mode": "headless",
+      "variant": "original",
+      "R_turbo": 1.2607494860652424,
+      "ms_per_step": 1.3105194506281215,
+      "gpu_ms_per_step": 1.2947627821326773,
+      "presented_fps": 0,
+      "minimum_R_turbo": 1.2584129913023931,
+      "maximum_R_turbo": 1.2631671211728022
+    },
+    {
+      "mode": "headless",
+      "variant": "packaged",
+      "R_turbo": 1.2606955949840821,
+      "ms_per_step": 1.3105036578646452,
+      "gpu_ms_per_step": 1.2952130001338302,
+      "presented_fps": 0,
+      "minimum_R_turbo": 1.256623013294972,
+      "maximum_R_turbo": 1.2630324570800855
+    },
+    {
+      "mode": "gui",
+      "variant": "original",
+      "R_turbo": 1.1631129319935753,
+      "ms_per_step": 1.4345083326374726,
+      "gpu_ms_per_step": 1.3738492848088324,
+      "presented_fps": 53.75366457492631,
+      "minimum_R_turbo": 1.159353782630923,
+      "maximum_R_turbo": 1.1653714347108857
+    },
+    {
+      "mode": "gui",
+      "variant": "packaged",
+      "R_turbo": 1.1616076876721968,
+      "ms_per_step": 1.4366318376793343,
+      "gpu_ms_per_step": 1.3743062211964259,
+      "presented_fps": 54.11716871325822,
+      "minimum_R_turbo": 1.1558704847301384,
+      "maximum_R_turbo": 1.1665073812916573
+    }
+  ],
+  "n": 1024,
+  "m": 1536,
+  "seed": 2,
+  "k0": 4,
+  "reynolds": 50000,
+  "cfl": 3,
+  "integrator": "etdrk4",
+  "operator": "stress"
+}

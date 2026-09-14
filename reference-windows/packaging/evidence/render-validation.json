@@ -1,0 +1,167 @@
+{
+  "passed": true,
+  "reference": "Independent NumPy evaluation of TurboRendering.metal; SDR pixels including orientation/wrap",
+  "tolerance_bytes": 2,
+  "checks": [
+    {
+      "file": "p0-f0-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030080159505208332
+    },
+    {
+      "file": "p0-f0-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.033772786458333336
+    },
+    {
+      "file": "p0-f0-r1-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0344085693359375
+    },
+    {
+      "file": "p0-f0-r1-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0251617431640625
+    },
+    {
+      "file": "p0-f1-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.028981526692708332
+    },
+    {
+      "file": "p0-f1-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.025105794270833332
+    },
+    {
+      "file": "p0-f2-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.025767008463541668
+    },
+    {
+      "file": "p0-f2-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.024424235026041668
+    },
+    {
+      "file": "p1-f0-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.025004069010416668
+    },
+    {
+      "file": "p1-f0-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.025197347005208332
+    },
+    {
+      "file": "p1-f0-r1-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0237579345703125
+    },
+    {
+      "file": "p1-f0-r1-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.022313435872395832
+    },
+    {
+      "file": "p1-f1-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.03094482421875
+    },
+    {
+      "file": "p1-f1-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.031834920247395836
+    },
+    {
+      "file": "p1-f2-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0259246826171875
+    },
+    {
+      "file": "p1-f2-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.029459635416666668
+    },
+    {
+      "file": "p2-f0-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.027033487955729168
+    },
+    {
+      "file": "p2-f0-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.028508504231770832
+    },
+    {
+      "file": "p2-f0-r1-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.025324503580729168
+    },
+    {
+      "file": "p2-f0-r1-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0226898193359375
+    },
+    {
+      "file": "p2-f1-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.020263671875
+    },
+    {
+      "file": "p2-f1-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0274200439453125
+    },
+    {
+      "file": "p2-f2-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.020233154296875
+    },
+    {
+      "file": "p2-f2-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.0224761962890625
+    },
+    {
+      "file": "p3-f0-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.027913411458333332
+    },
+    {
+      "file": "p3-f0-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030298868815104168
+    },
+    {
+      "file": "p3-f0-r1-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030176798502604168
+    },
+    {
+      "file": "p3-f0-r1-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.029541015625
+    },
+    {
+      "file": "p3-f1-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.045323689778645836
+    },
+    {
+      "file": "p3-f1-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.024017333984375
+    },
+    {
+      "file": "p3-f2-r0-e0.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.038309733072916664
+    },
+    {
+      "file": "p3-f2-r0-e1.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030726114908854168
+    }
+  ]
+}

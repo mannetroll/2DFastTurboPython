@@ -1,0 +1,9 @@
+{
+    "passed":  true,
+    "single_exe":  true,
+    "read_only_install_verified":  true,
+    "permissions_restored":  true,
+    "physical_clean_OS":  false,
+    "gui_checked":  true,
+    "sha256":  "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+}

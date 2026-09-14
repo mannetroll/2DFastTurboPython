@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "executable": "D:\\CODEX\\2DFastTurboWin\\windows\\dist\\2DFastTurbo.exe",
+  "resolution": 128,
+  "operator": "stress",
+  "padded_resolution": 192,
+  "reference": "independent NumPy FP64 advective RK4",
+  "all_passed": true,
+  "tests": [
+    {
+      "name": "initial_projection",
+      "passed": true,
+      "details": {
+        "spectrum": {
+          "vorticity": 3.071269990526253e-07,
+          "energy": 3.2983537776526357e-07,
+          "enstrophy": 3.2424917279172145e-07
+        },
+        "snapshot": {
+          "divergence": 1.7923265776740587e-07,
+          "curl": 5.229849337314223e-07,
+          "snapshot_vorticity": 5.337466650671714e-07
+        }
+      },
+      "wall_seconds": 2.103671299999405
+    },
+    {
+      "name": "imexRK3_analytic_diffusion",
+      "passed": true,
+      "details": {
+        "vorticity": 3.873176316081831e-07,
+        "energy": 4.5037012503434645e-07,
+        "enstrophy": 4.503701113395045e-07
+      },
+      "wall_seconds": 2.0508523999960744
+    },
+    {
+      "name": "imexRK3_long_low_viscosity_diffusion",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.4412693315534356e-07,
+          "energy": 4.699337321567671e-08,
+          "enstrophy": 3.260432703296184e-08
+        },
+        "tolerance": 2e-06,
+        "steps": 3500,
+        "simulation_time": 0.3499999911582563,
+        "dt": 0.0001,
+        "viscosity": 2e-05,
+        "modes": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "operator": "stress",
+        "reused_trajectory": false,
+        "reference": "exact independent exponential decay of collinear Fourier modes"
+      },
+      "wall_seconds": 2.376759700004186
+    },
+    {
+      "name": "imexRK3_nonlinear_reference",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.097169517944696e-06,
+          "energy": 3.7888972591336895e-07,
+          "enstrophy": 3.7946288229902334e-07
+        },
+        "reference_uncertainty": {
+          "vorticity": 8.024659359030658e-16,
+          "energy": 2.7859544252251987e-16,
+          "enstrophy": 3.172431198561214e-16
+        },
+        "snapshot_error": {
+          "vorticity": 3.5614283547838846e-07,
+          "energy": 5.017113083374883e-07,
+          "enstrophy": 5.065888893202812e-07
+        },
+        "snapshot_curl_error": 2.1815875800137057e-06
+      },
+      "wall_seconds": 2.035525699997379
+    },
+    {
+      "name": "imexRK3_retained_high_modes",
+      "passed": true,
+      "details": {
+        "vorticity": 2.707788500016548e-07,
+        "energy": 3.228784414536356e-07,
+        "enstrophy": 3.2040570126002283e-07
+      },
+      "wall_seconds": 4.450585200000205
+    },
+    {
+      "name": "imexRK3_inviscid_conservation",
+      "passed": true,
+      "details": {
+        "energy": 4.5154775363265287e-07,
+        "enstrophy": 4.421003862997708e-07
+      },
+      "wall_seconds": 2.0528018999975757
+    },
+    {
+      "name": "imexRK3_batch_and_endpoint",
+      "passed": true,
+      "details": {
+        "batch_error": {
+          "vorticity": 0.0,
+          "energy": 0.0,
+          "enstrophy": 0.0
+        },
+        "endpoint": 0.12345000000000006
+      },
+      "wall_seconds": 6.127564499998698
+    },
+    {
+      "name": "ifHeunRK3_analytic_diffusion",
+      "passed": true,
+      "details": {
+        "vorticity": 3.871808255110315e-07,
+        "energy": 4.5037012503434645e-07,
+        "enstrophy": 4.503701116128888e-07
+      },
+      "wall_seconds": 2.019219100002374
+    },
+    {
+      "name": "ifHeunRK3_long_low_viscosity_diffusion",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.441269331597665e-07,
+          "energy": 4.699337321567671e-08,
+          "enstrophy": 3.260432703296184e-08
+        },
+        "tolerance": 2e-06,
+        "steps": 3500,
+        "simulation_time": 0.3499999911582563,
+        "dt": 0.0001,
+        "viscosity": 2e-05,
+        "modes": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "operator": "stress",
+        "reused_trajectory": false,
+        "reference": "exact independent exponential decay of collinear Fourier modes"
+      },
+      "wall_seconds": 2.392942200000107
+    },
+    {
+      "name": "ifHeunRK3_nonlinear_reference",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.1044782780235735e-06,
+          "energy": 3.7892336895971024e-07,
+          "enstrophy": 3.7951375032983356e-07
+        },
+        "reference_uncertainty": {
+          "vorticity": 8.024659359030658e-16,
+          "energy": 2.7859544252251987e-16,
+          "enstrophy": 3.172431198561214e-16
+        },
+        "snapshot_error": {
+          "vorticity": 3.478565040229256e-07,
+          "energy": 5.017750826363649e-07,
+          "enstrophy": 5.066901598918261e-07
+        },
+        "snapshot_curl_error": 2.177968911131314e-06
+      },
+      "wall_seconds": 2.0456531000018003
+    },
+    {
+      "name": "ifHeunRK3_retained_high_modes",
+      "passed": true,
+      "details": {
+        "vorticity": 2.707782281737753e-07,
+        "energy": 3.228786938157326e-07,
+        "enstrophy": 3.2040570354733503e-07
+      },
+      "wall_seconds": 4.30043989999831
+    },
+    {
+      "name": "ifHeunRK3_inviscid_conservation",
+      "passed": true,
+      "details": {
+        "energy": 4.515560405593533e-07,
+        "enstrophy": 4.421241333041337e-07
+      },
+      "wall_seconds": 2.0310444999995525
+    },
+    {
+      "name": "ifHeunRK3_batch_and_endpoint",
+      "passed": true,
+      "details": {
+        "batch_error": {
+          "vorticity": 0.0,
+          "energy": 0.0,
+          "enstrophy": 0.0
+        },
+        "endpoint": 0.12345000000000006
+      },
+      "wall_seconds": 6.110158600000432
+    },
+    {
+      "name": "etdrk4_analytic_diffusion",
+      "passed": true,
+      "details": {
+        "vorticity": 3.860681964377815e-07,
+        "energy": 4.5037012503434645e-07,
+        "enstrophy": 4.5037011229634936e-07
+      },
+      "wall_seconds": 2.0258127999986755
+    },
+    {
+      "name": "etdrk4_long_low_viscosity_diffusion",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.441269331597665e-07,
+          "energy": 4.699337321567671e-08,
+          "enstrophy": 3.260432703296184e-08
+        },
+        "tolerance": 2e-06,
+        "steps": 3500,
+        "simulation_time": 0.3499999911582563,
+        "dt": 0.0001,
+        "viscosity": 2e-05,
+        "modes": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "operator": "stress",
+        "reused_trajectory": false,
+        "reference": "exact independent exponential decay of collinear Fourier modes"
+      },
+      "wall_seconds": 2.440788599997177
+    },
+    {
+      "name": "etdrk4_nonlinear_reference",
+      "passed": true,
+      "details": {
+        "error": {
+          "vorticity": 2.08350711636401e-06,
+          "energy": 3.7890511705788884e-07,
+          "enstrophy": 3.7945948652866844e-07
+        },
+        "reference_uncertainty": {
+          "vorticity": 8.024659359030658e-16,
+          "energy": 2.7859544252251987e-16,
+          "enstrophy": 3.172431198561214e-16
+        },
+        "snapshot_error": {
+          "vorticity": 3.5277942501960155e-07,
+          "energy": 5.017061149063006e-07,
+          "enstrophy": 5.066070031144704e-07
+        },
+        "snapshot_curl_error": 2.087142481242674e-06
+      },
+      "wall_seconds": 2.04444119999971
+    },
+    {
+      "name": "etdrk4_retained_high_modes",
+      "passed": true,
+      "details": {
+        "vorticity": 2.707817702365385e-07,
+        "energy": 3.228784414536356e-07,
+        "enstrophy": 3.2040570126002283e-07
+      },
+      "wall_seconds": 4.260282900002494
+    },
+    {
+      "name": "etdrk4_inviscid_conservation",
+      "passed": true,
+      "details": {
+        "energy": 4.515418341455302e-07,
+        "enstrophy": 4.420837196317251e-07
+      },
+      "wall_seconds": 2.0569528999985778
+    },
+    {
+      "name": "etdrk4_batch_and_endpoint",
+      "passed": true,
+      "details": {
+        "batch_error": {
+          "vorticity": 0.0,
+          "energy": 0.0,
+          "enstrophy": 0.0
+        },
+        "endpoint": 0.12345000000000006
+      },
+      "wall_seconds": 6.100131999999576
+    }
+  ]
+}

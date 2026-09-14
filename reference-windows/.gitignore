@@ -1,0 +1,94 @@
+# Build trees (CMake/Ninja, Visual Studio, and local experiments)
+/build/
+/build-*/
+/build_*/
+/cmake-build-*/
+/out/
+/bin/
+/obj/
+/Debug/
+/Release/
+/RelWithDebInfo/
+/MinSizeRel/
+
+# Dependencies downloaded by scripts/configure.ps1; keep dependencies.lock
+/external/
+
+# CMake/Ninja artifacts, including accidental in-source builds
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Testing/
+build.ninja
+rules.ninja
+.ninja_deps
+.ninja_log
+compile_commands.json
+CMakeUserPresets.json
+
+# Compiled C++/CUDA/shader outputs and debug symbols
+*.obj
+*.o
+*.lib
+*.exp
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.idb
+*.ipdb
+*.iobj
+*.pch
+*.res
+*.cubin
+*.fatbin
+*.cso
+tmpxft_*
+
+# Machine-local IDE state; shared project/editor configuration stays trackable
+.vs/
+.idea/
+ipch/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.db-*
+*.VC.opendb
+*.opensdf
+*.sdf
+
+# Raw Nsight captures and derived databases, including nested profiling runs
+# Keep benchmark CSVs, PNG captures, and Markdown reports versioned.
+/benchmarks/**/*.nsys-rep
+/benchmarks/**/*.qdrep
+/benchmarks/**/*.qdstrm
+/benchmarks/**/*.ncu-rep
+/benchmarks/**/*.nvvp
+/benchmarks/**/*.sqlite
+/benchmarks/**/*.sqlite-*
+
+# Local caches, runtime UI state, and temporary/editor files
+/.cache/
+/logs/
+/imgui.ini
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Windows/macOS filesystem metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Workspace-only validation dependencies and raw numerical artifacts
+/.python/
+/artifacts/
+__pycache__/

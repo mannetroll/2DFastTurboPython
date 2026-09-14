@@ -1,0 +1,943 @@
+{
+  "passed": true,
+  "comparison": "original vs packaged full complex64 spectra",
+  "spectra_checked": 156,
+  "cases": [
+    {
+      "case": "n128-advective\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "8780093bcedf8eb5591ba795c5066887772f98003d7bf5e6b576bf64bbd21066",
+      "packaged_sha256": "8780093bcedf8eb5591ba795c5066887772f98003d7bf5e6b576bf64bbd21066"
+    },
+    {
+      "case": "n128-advective\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "bee38f95e1f89ecfec5f6f81d0ef83ef1961def84b336040f84f9eb5e32ee959",
+      "packaged_sha256": "bee38f95e1f89ecfec5f6f81d0ef83ef1961def84b336040f84f9eb5e32ee959"
+    },
+    {
+      "case": "n128-advective\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "bee38f95e1f89ecfec5f6f81d0ef83ef1961def84b336040f84f9eb5e32ee959",
+      "packaged_sha256": "bee38f95e1f89ecfec5f6f81d0ef83ef1961def84b336040f84f9eb5e32ee959"
+    },
+    {
+      "case": "n128-advective\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "7f35f778ea67e8ab295f184ae701097f0d4eb0a025d8ebfff3c42cf110b05f87",
+      "packaged_sha256": "7f35f778ea67e8ab295f184ae701097f0d4eb0a025d8ebfff3c42cf110b05f87"
+    },
+    {
+      "case": "n128-advective\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "74c6d5d0f0fe4672c4781dd4cd0a6f38ef3931e9ec886f0fb2f05bc5c55c51b8",
+      "packaged_sha256": "74c6d5d0f0fe4672c4781dd4cd0a6f38ef3931e9ec886f0fb2f05bc5c55c51b8"
+    },
+    {
+      "case": "n128-advective\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda",
+      "packaged_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda"
+    },
+    {
+      "case": "n128-advective\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "920913ee7d294ab656bb650a84cc2eed04e591aae67e0c1aa7eded7937ea57cb",
+      "packaged_sha256": "920913ee7d294ab656bb650a84cc2eed04e591aae67e0c1aa7eded7937ea57cb"
+    },
+    {
+      "case": "n128-advective\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "ecdd4808a109df81a16460ecaf7443976680627033f311689a46bc346468717c",
+      "packaged_sha256": "ecdd4808a109df81a16460ecaf7443976680627033f311689a46bc346468717c"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "fb3ba7915f887f6bb12af3a5b1381a29faacc0d2394af709f736eda7d802c875",
+      "packaged_sha256": "fb3ba7915f887f6bb12af3a5b1381a29faacc0d2394af709f736eda7d802c875"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "87ae51bb09fc8b4d88af0721e28313e2923d2bab3aa368174239e14c1b83d08e",
+      "packaged_sha256": "87ae51bb09fc8b4d88af0721e28313e2923d2bab3aa368174239e14c1b83d08e"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "87ae51bb09fc8b4d88af0721e28313e2923d2bab3aa368174239e14c1b83d08e",
+      "packaged_sha256": "87ae51bb09fc8b4d88af0721e28313e2923d2bab3aa368174239e14c1b83d08e"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "368b5026cd24c83de68d298d1ea9bfbc8cef83820f4d70138c9a1980012909dd",
+      "packaged_sha256": "368b5026cd24c83de68d298d1ea9bfbc8cef83820f4d70138c9a1980012909dd"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a3829b2406c6aee6f5dd76f566dfd24a9ff45e322e54bf186d4c3259a1c989b5",
+      "packaged_sha256": "a3829b2406c6aee6f5dd76f566dfd24a9ff45e322e54bf186d4c3259a1c989b5"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda",
+      "packaged_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "20e97c2f1d0c88db8e5d5afe378be7eecee3300bc03a9e85c6bfeaf2eff028d1",
+      "packaged_sha256": "20e97c2f1d0c88db8e5d5afe378be7eecee3300bc03a9e85c6bfeaf2eff028d1"
+    },
+    {
+      "case": "n128-advective\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "865f6f3b31cac5f01d8105ac4519d231792074be33722404f7608804042e6391",
+      "packaged_sha256": "865f6f3b31cac5f01d8105ac4519d231792074be33722404f7608804042e6391"
+    },
+    {
+      "case": "n128-advective\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a3f6317dead45854a51d1d509ee8a8cdc66e7e304ab015f451bec2a15ef312ce",
+      "packaged_sha256": "a3f6317dead45854a51d1d509ee8a8cdc66e7e304ab015f451bec2a15ef312ce"
+    },
+    {
+      "case": "n128-advective\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a57139c3d908765591ab5dcb193b8b2e0c8e91c3fff95134d77b995696548d31",
+      "packaged_sha256": "a57139c3d908765591ab5dcb193b8b2e0c8e91c3fff95134d77b995696548d31"
+    },
+    {
+      "case": "n128-advective\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a57139c3d908765591ab5dcb193b8b2e0c8e91c3fff95134d77b995696548d31",
+      "packaged_sha256": "a57139c3d908765591ab5dcb193b8b2e0c8e91c3fff95134d77b995696548d31"
+    },
+    {
+      "case": "n128-advective\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "72473206213750ad6f5e8199f7a5f9fc80606eb308e624ccf7090e16930e89bf",
+      "packaged_sha256": "72473206213750ad6f5e8199f7a5f9fc80606eb308e624ccf7090e16930e89bf"
+    },
+    {
+      "case": "n128-advective\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f9c661f27d5eecbaa747b59aa24057c3fdd4e043f45f76bc834bee02935d2073",
+      "packaged_sha256": "f9c661f27d5eecbaa747b59aa24057c3fdd4e043f45f76bc834bee02935d2073"
+    },
+    {
+      "case": "n128-advective\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b3489ab90d240f4ae65a858a525817c2f9146b4aa384fd85e84c6d10b672cb6e",
+      "packaged_sha256": "b3489ab90d240f4ae65a858a525817c2f9146b4aa384fd85e84c6d10b672cb6e"
+    },
+    {
+      "case": "n128-advective\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "08e9cc4165ec9d0b0ca2686e55f5b883eab4fa0b1bafc5116ede0077be6445b8",
+      "packaged_sha256": "08e9cc4165ec9d0b0ca2686e55f5b883eab4fa0b1bafc5116ede0077be6445b8"
+    },
+    {
+      "case": "n128-advective\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "4713f15f35ddb3eb37b6ce0be3728e4a40a71c96b1d6b7138fa6ca1815de41a1",
+      "packaged_sha256": "4713f15f35ddb3eb37b6ce0be3728e4a40a71c96b1d6b7138fa6ca1815de41a1"
+    },
+    {
+      "case": "n128-advective\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c11120426b0d4ab365bd801cf6324200f8603615a77f555fa1dc7ad0ecc68810",
+      "packaged_sha256": "c11120426b0d4ab365bd801cf6324200f8603615a77f555fa1dc7ad0ecc68810"
+    },
+    {
+      "case": "n128-stress\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f8966e6b60670fa333bc4424c2a5a225aab6ebd49aaf401c4694592ede63838f",
+      "packaged_sha256": "f8966e6b60670fa333bc4424c2a5a225aab6ebd49aaf401c4694592ede63838f"
+    },
+    {
+      "case": "n128-stress\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "234d5b5fe10399d547b79ff9a5e0b0f25a872327a7fb2cf437dd8aa2206324b3",
+      "packaged_sha256": "234d5b5fe10399d547b79ff9a5e0b0f25a872327a7fb2cf437dd8aa2206324b3"
+    },
+    {
+      "case": "n128-stress\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "234d5b5fe10399d547b79ff9a5e0b0f25a872327a7fb2cf437dd8aa2206324b3",
+      "packaged_sha256": "234d5b5fe10399d547b79ff9a5e0b0f25a872327a7fb2cf437dd8aa2206324b3"
+    },
+    {
+      "case": "n128-stress\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f8898e55f7f8dac18d7cadbca59f77a74f1317059da3d15c0edfa1107d91d84a",
+      "packaged_sha256": "f8898e55f7f8dac18d7cadbca59f77a74f1317059da3d15c0edfa1107d91d84a"
+    },
+    {
+      "case": "n128-stress\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "699aa6c90e05a65416a9c8351ef2081e1ee12f029f7083d5c14a429f03bf782d",
+      "packaged_sha256": "699aa6c90e05a65416a9c8351ef2081e1ee12f029f7083d5c14a429f03bf782d"
+    },
+    {
+      "case": "n128-stress\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda",
+      "packaged_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda"
+    },
+    {
+      "case": "n128-stress\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "4ddb312df4520502000c722e42aa8892a6927d20e65bd4ebfe935a0af087b0ef",
+      "packaged_sha256": "4ddb312df4520502000c722e42aa8892a6927d20e65bd4ebfe935a0af087b0ef"
+    },
+    {
+      "case": "n128-stress\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "3fb937ed13b3b4f340706cb162b571a64e3b836a72cdda48e6f6026b1e26ec34",
+      "packaged_sha256": "3fb937ed13b3b4f340706cb162b571a64e3b836a72cdda48e6f6026b1e26ec34"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "73debf693d2ea32f06b2aa6c68394c1fdfa1314fd9030bdb8a955e4288df2785",
+      "packaged_sha256": "73debf693d2ea32f06b2aa6c68394c1fdfa1314fd9030bdb8a955e4288df2785"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a60d24c1979eeae4cf9a8075ab9bb17f21fdc5ad6f805f12c5b80ec8615597ed",
+      "packaged_sha256": "a60d24c1979eeae4cf9a8075ab9bb17f21fdc5ad6f805f12c5b80ec8615597ed"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a60d24c1979eeae4cf9a8075ab9bb17f21fdc5ad6f805f12c5b80ec8615597ed",
+      "packaged_sha256": "a60d24c1979eeae4cf9a8075ab9bb17f21fdc5ad6f805f12c5b80ec8615597ed"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "ff4caba192c1eb085317e6c9e820a7e653c42935ba7f2355fbfbd3493b195356",
+      "packaged_sha256": "ff4caba192c1eb085317e6c9e820a7e653c42935ba7f2355fbfbd3493b195356"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "31cdf878818dc2e2ab8291a618029b35569bcf2a77ca8fedc4594264dbe083a3",
+      "packaged_sha256": "31cdf878818dc2e2ab8291a618029b35569bcf2a77ca8fedc4594264dbe083a3"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda",
+      "packaged_sha256": "441d7e152897c342e1feaaf67c2c5d158f05ef60661cf7aee09540165790bbda"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "de665272d0214565ab7edcc1187304008f24d8840dc6fb989185c0359110b100",
+      "packaged_sha256": "de665272d0214565ab7edcc1187304008f24d8840dc6fb989185c0359110b100"
+    },
+    {
+      "case": "n128-stress\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "6e55c48dd480943fd441df166449d234e208adc5d2152ee295db128c9fe341ab",
+      "packaged_sha256": "6e55c48dd480943fd441df166449d234e208adc5d2152ee295db128c9fe341ab"
+    },
+    {
+      "case": "n128-stress\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "38303a4c82f516ac316bf76ab906f137b743eb6a0f041321aaf9fdd924553d94",
+      "packaged_sha256": "38303a4c82f516ac316bf76ab906f137b743eb6a0f041321aaf9fdd924553d94"
+    },
+    {
+      "case": "n128-stress\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "0620d79fa2acb93746eddc1ac634263ac0528e37f023705b34e38b6ac80bc1a6",
+      "packaged_sha256": "0620d79fa2acb93746eddc1ac634263ac0528e37f023705b34e38b6ac80bc1a6"
+    },
+    {
+      "case": "n128-stress\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "0620d79fa2acb93746eddc1ac634263ac0528e37f023705b34e38b6ac80bc1a6",
+      "packaged_sha256": "0620d79fa2acb93746eddc1ac634263ac0528e37f023705b34e38b6ac80bc1a6"
+    },
+    {
+      "case": "n128-stress\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "1a9e6bf311168677e5daee0f34a68e0c15a19a2a852ada943433a2e95e8b1d6f",
+      "packaged_sha256": "1a9e6bf311168677e5daee0f34a68e0c15a19a2a852ada943433a2e95e8b1d6f"
+    },
+    {
+      "case": "n128-stress\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5f9a4be5111fbed27e8d122322a12ae2b4bf0e3e36dea521b698028f708c30c0",
+      "packaged_sha256": "5f9a4be5111fbed27e8d122322a12ae2b4bf0e3e36dea521b698028f708c30c0"
+    },
+    {
+      "case": "n128-stress\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b3489ab90d240f4ae65a858a525817c2f9146b4aa384fd85e84c6d10b672cb6e",
+      "packaged_sha256": "b3489ab90d240f4ae65a858a525817c2f9146b4aa384fd85e84c6d10b672cb6e"
+    },
+    {
+      "case": "n128-stress\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "07e974b0893aca7c507333ee05fdb6312766efcdb659a9010973feebf0fe0548",
+      "packaged_sha256": "07e974b0893aca7c507333ee05fdb6312766efcdb659a9010973feebf0fe0548"
+    },
+    {
+      "case": "n128-stress\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "3d46a8b2e6dd4e0798f23f90d3cb8ec323e929c00d2876e84f741c582d770cb1",
+      "packaged_sha256": "3d46a8b2e6dd4e0798f23f90d3cb8ec323e929c00d2876e84f741c582d770cb1"
+    },
+    {
+      "case": "n128-stress\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c11120426b0d4ab365bd801cf6324200f8603615a77f555fa1dc7ad0ecc68810",
+      "packaged_sha256": "c11120426b0d4ab365bd801cf6324200f8603615a77f555fa1dc7ad0ecc68810"
+    },
+    {
+      "case": "n32-advective\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a5c2c66954ae96cf77cc824b05796f22758a4c7740ea0752d5b0038321a49caa",
+      "packaged_sha256": "a5c2c66954ae96cf77cc824b05796f22758a4c7740ea0752d5b0038321a49caa"
+    },
+    {
+      "case": "n32-advective\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5145df52e96e209a65b3fdf7f6c32f348236ee08595fd88c76cde8c3be549f97",
+      "packaged_sha256": "5145df52e96e209a65b3fdf7f6c32f348236ee08595fd88c76cde8c3be549f97"
+    },
+    {
+      "case": "n32-advective\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5145df52e96e209a65b3fdf7f6c32f348236ee08595fd88c76cde8c3be549f97",
+      "packaged_sha256": "5145df52e96e209a65b3fdf7f6c32f348236ee08595fd88c76cde8c3be549f97"
+    },
+    {
+      "case": "n32-advective\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "7559b93fe9096d24acb022fb69336b7ef497d92720c72293f6aee94cc8b9fe5f",
+      "packaged_sha256": "7559b93fe9096d24acb022fb69336b7ef497d92720c72293f6aee94cc8b9fe5f"
+    },
+    {
+      "case": "n32-advective\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a22883c41fd04006602775f815937340339fb46bf06d9fd7cf30092e63dbe8d6",
+      "packaged_sha256": "a22883c41fd04006602775f815937340339fb46bf06d9fd7cf30092e63dbe8d6"
+    },
+    {
+      "case": "n32-advective\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-advective\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "662b14f7a480fd2aca86a72959bdb52e24cc9ce7f99465425a557dc79b1492c1",
+      "packaged_sha256": "662b14f7a480fd2aca86a72959bdb52e24cc9ce7f99465425a557dc79b1492c1"
+    },
+    {
+      "case": "n32-advective\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "75c84978526f6132ca48c3cf8fb900cbcec1634c671886721d62ffd749fe985b",
+      "packaged_sha256": "75c84978526f6132ca48c3cf8fb900cbcec1634c671886721d62ffd749fe985b"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "bb0fa28c519b35edad261bfd04e38fbcff19ed8b4aa23fedd7c97c26a3e0f2ab",
+      "packaged_sha256": "bb0fa28c519b35edad261bfd04e38fbcff19ed8b4aa23fedd7c97c26a3e0f2ab"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b15f6498768744bb52b57d96c4af9dd73c4d131d0f7b3824febe6557e0eabe56",
+      "packaged_sha256": "b15f6498768744bb52b57d96c4af9dd73c4d131d0f7b3824febe6557e0eabe56"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b15f6498768744bb52b57d96c4af9dd73c4d131d0f7b3824febe6557e0eabe56",
+      "packaged_sha256": "b15f6498768744bb52b57d96c4af9dd73c4d131d0f7b3824febe6557e0eabe56"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d3a974dc5df719e6031b604c98737812affabc4325c4d2fb5777a3fa953b9371",
+      "packaged_sha256": "d3a974dc5df719e6031b604c98737812affabc4325c4d2fb5777a3fa953b9371"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "42d902553eb30955882faad7060c6ad5bd714104a4d6f749554fb72f89a5db8e",
+      "packaged_sha256": "42d902553eb30955882faad7060c6ad5bd714104a4d6f749554fb72f89a5db8e"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "0b4408c6b24b9ec99cf6a740eae63c16787864bc4cd1843aab239b7278100811",
+      "packaged_sha256": "0b4408c6b24b9ec99cf6a740eae63c16787864bc4cd1843aab239b7278100811"
+    },
+    {
+      "case": "n32-advective\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c7c2b996a6a4d4ae21e78f467f5132f3319b177405166ebf3b104ed23330fea4",
+      "packaged_sha256": "c7c2b996a6a4d4ae21e78f467f5132f3319b177405166ebf3b104ed23330fea4"
+    },
+    {
+      "case": "n32-advective\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "86d7461e37068cc9fdb635a19eb1fc3294f71318078bfc00d0feb4d34fc8e5cd",
+      "packaged_sha256": "86d7461e37068cc9fdb635a19eb1fc3294f71318078bfc00d0feb4d34fc8e5cd"
+    },
+    {
+      "case": "n32-advective\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d0f25b5b7eccd9f43b0b50c62f349c42b82b84c26e9f3e069aa0f412a6922fb5",
+      "packaged_sha256": "d0f25b5b7eccd9f43b0b50c62f349c42b82b84c26e9f3e069aa0f412a6922fb5"
+    },
+    {
+      "case": "n32-advective\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d0f25b5b7eccd9f43b0b50c62f349c42b82b84c26e9f3e069aa0f412a6922fb5",
+      "packaged_sha256": "d0f25b5b7eccd9f43b0b50c62f349c42b82b84c26e9f3e069aa0f412a6922fb5"
+    },
+    {
+      "case": "n32-advective\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "6d6d3cb69ffb2b334188739fb028920d453e851f49d1bc527be5eb67aa9118b8",
+      "packaged_sha256": "6d6d3cb69ffb2b334188739fb028920d453e851f49d1bc527be5eb67aa9118b8"
+    },
+    {
+      "case": "n32-advective\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f0065ef86dc81e501701b3ab5861dc79d72c225f901dffd0ebc5aaeacc6c2b5e",
+      "packaged_sha256": "f0065ef86dc81e501701b3ab5861dc79d72c225f901dffd0ebc5aaeacc6c2b5e"
+    },
+    {
+      "case": "n32-advective\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-advective\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "ad975c7e24e5256bc11f8089ae9b442ee0dd78d41d34ab0daf2098f4f7e48b34",
+      "packaged_sha256": "ad975c7e24e5256bc11f8089ae9b442ee0dd78d41d34ab0daf2098f4f7e48b34"
+    },
+    {
+      "case": "n32-advective\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "925f53851a8658cc29db650fd4c7c801a195920a6c97ee05acccf00ac6bc0348",
+      "packaged_sha256": "925f53851a8658cc29db650fd4c7c801a195920a6c97ee05acccf00ac6bc0348"
+    },
+    {
+      "case": "n32-advective\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "696c749ba21e19b53c7512629e6c43de0c16112168bf2896c7d81af43971f52e",
+      "packaged_sha256": "696c749ba21e19b53c7512629e6c43de0c16112168bf2896c7d81af43971f52e"
+    },
+    {
+      "case": "n32-stress\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "afa7f0b92f643fd581a1861a8a73137a91cf3272a36b13a4bc48f441e448ee5d",
+      "packaged_sha256": "afa7f0b92f643fd581a1861a8a73137a91cf3272a36b13a4bc48f441e448ee5d"
+    },
+    {
+      "case": "n32-stress\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "e36db4f81a94e745dd9e8a5d6fcfc9da513e9a412e4172a2ffa4df735aa0b70a",
+      "packaged_sha256": "e36db4f81a94e745dd9e8a5d6fcfc9da513e9a412e4172a2ffa4df735aa0b70a"
+    },
+    {
+      "case": "n32-stress\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "e36db4f81a94e745dd9e8a5d6fcfc9da513e9a412e4172a2ffa4df735aa0b70a",
+      "packaged_sha256": "e36db4f81a94e745dd9e8a5d6fcfc9da513e9a412e4172a2ffa4df735aa0b70a"
+    },
+    {
+      "case": "n32-stress\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "4ec1ebcb569d10b552bf4a746c85271e87bb74f3bcebb903c9672b4edf9c2b64",
+      "packaged_sha256": "4ec1ebcb569d10b552bf4a746c85271e87bb74f3bcebb903c9672b4edf9c2b64"
+    },
+    {
+      "case": "n32-stress\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "9e78408a811a992dec435945ceebf38b389c2da738dd388e69f3a49f38d94af2",
+      "packaged_sha256": "9e78408a811a992dec435945ceebf38b389c2da738dd388e69f3a49f38d94af2"
+    },
+    {
+      "case": "n32-stress\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-stress\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5c0d49ea346ff17c4044e1be48cb10be51a86aa28d7a10d3776827f67a915c29",
+      "packaged_sha256": "5c0d49ea346ff17c4044e1be48cb10be51a86aa28d7a10d3776827f67a915c29"
+    },
+    {
+      "case": "n32-stress\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b8ebf282c5a0c81a6a6b9af728704e7b07556f3479f4ff2ad7a1baa3137658a6",
+      "packaged_sha256": "b8ebf282c5a0c81a6a6b9af728704e7b07556f3479f4ff2ad7a1baa3137658a6"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f6c76f69555ca6c76a019c2e76af633bcb3f360409d1ee998a255c3cf9bfe1c6",
+      "packaged_sha256": "f6c76f69555ca6c76a019c2e76af633bcb3f360409d1ee998a255c3cf9bfe1c6"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "78dbb1e5ffa485ec478656440df0ce43dd88ee205a41b7496af7c9cc3b197efa",
+      "packaged_sha256": "78dbb1e5ffa485ec478656440df0ce43dd88ee205a41b7496af7c9cc3b197efa"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "78dbb1e5ffa485ec478656440df0ce43dd88ee205a41b7496af7c9cc3b197efa",
+      "packaged_sha256": "78dbb1e5ffa485ec478656440df0ce43dd88ee205a41b7496af7c9cc3b197efa"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "89c400fc64ca7ecca3f3948dfda3da52b47be8eac3d9ca4bbc3e8edebeeccc9d",
+      "packaged_sha256": "89c400fc64ca7ecca3f3948dfda3da52b47be8eac3d9ca4bbc3e8edebeeccc9d"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f8de75bad4a2ab480da9e8f7526292ca9ea51b818d9b3ba4e574a0f2584538b9",
+      "packaged_sha256": "f8de75bad4a2ab480da9e8f7526292ca9ea51b818d9b3ba4e574a0f2584538b9"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "0513480d0495ad76d646d684d9885e4c81d2768bbaa4b0264aa78c01f9828137",
+      "packaged_sha256": "0513480d0495ad76d646d684d9885e4c81d2768bbaa4b0264aa78c01f9828137"
+    },
+    {
+      "case": "n32-stress\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d462c91fd96e2fd445ff0fbd87e1fef6f530d6d968ea27fc79ff672ae6b7240f",
+      "packaged_sha256": "d462c91fd96e2fd445ff0fbd87e1fef6f530d6d968ea27fc79ff672ae6b7240f"
+    },
+    {
+      "case": "n32-stress\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a41f80e45c48439f1cded5d28b21de25c955fb073022e50ce3bd7715e9f8472f",
+      "packaged_sha256": "a41f80e45c48439f1cded5d28b21de25c955fb073022e50ce3bd7715e9f8472f"
+    },
+    {
+      "case": "n32-stress\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "923bd3f1b584effb506b8cb33e929e2ec688e6bbfaa6ed21132fcabc769c1e2f",
+      "packaged_sha256": "923bd3f1b584effb506b8cb33e929e2ec688e6bbfaa6ed21132fcabc769c1e2f"
+    },
+    {
+      "case": "n32-stress\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "923bd3f1b584effb506b8cb33e929e2ec688e6bbfaa6ed21132fcabc769c1e2f",
+      "packaged_sha256": "923bd3f1b584effb506b8cb33e929e2ec688e6bbfaa6ed21132fcabc769c1e2f"
+    },
+    {
+      "case": "n32-stress\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "32ab8b83e3cdd169127404dcfc2d22b0ffcc3874edf9f0361851aa78a1ac6a25",
+      "packaged_sha256": "32ab8b83e3cdd169127404dcfc2d22b0ffcc3874edf9f0361851aa78a1ac6a25"
+    },
+    {
+      "case": "n32-stress\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "199d4cefd4271e1f11107d11974eb838e89df1fe77e7aea8039d00f310c42c6a",
+      "packaged_sha256": "199d4cefd4271e1f11107d11974eb838e89df1fe77e7aea8039d00f310c42c6a"
+    },
+    {
+      "case": "n32-stress\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a",
+      "packaged_sha256": "f29f043a304f552db29143f366fc3be7c766b07cfad620ba3053ede6b7fce27a"
+    },
+    {
+      "case": "n32-stress\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "53e72f6792403fcc8ee38f870107054a5f7800ee13b3f8e600bd1cb6215b647f",
+      "packaged_sha256": "53e72f6792403fcc8ee38f870107054a5f7800ee13b3f8e600bd1cb6215b647f"
+    },
+    {
+      "case": "n32-stress\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c7b43f472546e03a22859a958de135aec10c682a65a48efc39ec6ac260d63b42",
+      "packaged_sha256": "c7b43f472546e03a22859a958de135aec10c682a65a48efc39ec6ac260d63b42"
+    },
+    {
+      "case": "n32-stress\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "696c749ba21e19b53c7512629e6c43de0c16112168bf2896c7d81af43971f52e",
+      "packaged_sha256": "696c749ba21e19b53c7512629e6c43de0c16112168bf2896c7d81af43971f52e"
+    },
+    {
+      "case": "n34-advective\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "71921a1070bc0819624a7b211a9abe442d449471ad052c4239e68f0f1c148e8c",
+      "packaged_sha256": "71921a1070bc0819624a7b211a9abe442d449471ad052c4239e68f0f1c148e8c"
+    },
+    {
+      "case": "n34-advective\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a1d14fbcbd2efc3b48a13ad1e8f5d9e66610bd149e8e472e8d682494c3416f64",
+      "packaged_sha256": "a1d14fbcbd2efc3b48a13ad1e8f5d9e66610bd149e8e472e8d682494c3416f64"
+    },
+    {
+      "case": "n34-advective\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a1d14fbcbd2efc3b48a13ad1e8f5d9e66610bd149e8e472e8d682494c3416f64",
+      "packaged_sha256": "a1d14fbcbd2efc3b48a13ad1e8f5d9e66610bd149e8e472e8d682494c3416f64"
+    },
+    {
+      "case": "n34-advective\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "20bca923fb01a4b06ff31a4fae0864a111ad705af456b06b8a52a3abddda1461",
+      "packaged_sha256": "20bca923fb01a4b06ff31a4fae0864a111ad705af456b06b8a52a3abddda1461"
+    },
+    {
+      "case": "n34-advective\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "8c0cd4d472e6b23ef27877749fad236b12d4d6474401984fd6e14bac1a208af8",
+      "packaged_sha256": "8c0cd4d472e6b23ef27877749fad236b12d4d6474401984fd6e14bac1a208af8"
+    },
+    {
+      "case": "n34-advective\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548",
+      "packaged_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548"
+    },
+    {
+      "case": "n34-advective\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "abab613d85f8748a38df72e01f1e9eea5f8ba6a78771608b430ff63cb494b09d",
+      "packaged_sha256": "abab613d85f8748a38df72e01f1e9eea5f8ba6a78771608b430ff63cb494b09d"
+    },
+    {
+      "case": "n34-advective\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "2435e5cb22e901526b12ac09de6830ab88efb467c3ca491a4e8a02990c46399f",
+      "packaged_sha256": "2435e5cb22e901526b12ac09de6830ab88efb467c3ca491a4e8a02990c46399f"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "09d743f3e066931a24579b52e733cfb25f0eafbf8459ca70ef576e5fd1c5ff18",
+      "packaged_sha256": "09d743f3e066931a24579b52e733cfb25f0eafbf8459ca70ef576e5fd1c5ff18"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "456f98a000227dafc1264cc8cc0277e0ed30100d3689c6f1376e3063b0d8a5dd",
+      "packaged_sha256": "456f98a000227dafc1264cc8cc0277e0ed30100d3689c6f1376e3063b0d8a5dd"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "456f98a000227dafc1264cc8cc0277e0ed30100d3689c6f1376e3063b0d8a5dd",
+      "packaged_sha256": "456f98a000227dafc1264cc8cc0277e0ed30100d3689c6f1376e3063b0d8a5dd"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "dd2066b94e3984fa147ba3db4cce702bd8b00e3265a16f3041805f42482f5f88",
+      "packaged_sha256": "dd2066b94e3984fa147ba3db4cce702bd8b00e3265a16f3041805f42482f5f88"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "8f043a90fff4ceaf3800f72bfaecff8c61b7e6d3e0a0a3b3c2cdf54dd666aeb7",
+      "packaged_sha256": "8f043a90fff4ceaf3800f72bfaecff8c61b7e6d3e0a0a3b3c2cdf54dd666aeb7"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548",
+      "packaged_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "548ac5b8a699e38751d89acbace83a8cf1ddab7e724d0d0f175b8793cd513851",
+      "packaged_sha256": "548ac5b8a699e38751d89acbace83a8cf1ddab7e724d0d0f175b8793cd513851"
+    },
+    {
+      "case": "n34-advective\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "3856cc649d573e3e0ba8902d8f49667794afa4b543c6ad4cf6118af631070c50",
+      "packaged_sha256": "3856cc649d573e3e0ba8902d8f49667794afa4b543c6ad4cf6118af631070c50"
+    },
+    {
+      "case": "n34-advective\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "986f47d971c53747cf966e6dc80af0de73384b3fab980e06cc88899e88002950",
+      "packaged_sha256": "986f47d971c53747cf966e6dc80af0de73384b3fab980e06cc88899e88002950"
+    },
+    {
+      "case": "n34-advective\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a372ce85ae5de599ffb52e30b68445694e23a69adb53187d7c832c3668977cd4",
+      "packaged_sha256": "a372ce85ae5de599ffb52e30b68445694e23a69adb53187d7c832c3668977cd4"
+    },
+    {
+      "case": "n34-advective\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a372ce85ae5de599ffb52e30b68445694e23a69adb53187d7c832c3668977cd4",
+      "packaged_sha256": "a372ce85ae5de599ffb52e30b68445694e23a69adb53187d7c832c3668977cd4"
+    },
+    {
+      "case": "n34-advective\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "6e02614300c27b3bef6d54146eed4857c27ae78b863a8bf61627afd38e0a2b35",
+      "packaged_sha256": "6e02614300c27b3bef6d54146eed4857c27ae78b863a8bf61627afd38e0a2b35"
+    },
+    {
+      "case": "n34-advective\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "6be90a885edf947e5309eedecaa03d0fad3a9cc657a47ffc9afebd269882f5d2",
+      "packaged_sha256": "6be90a885edf947e5309eedecaa03d0fad3a9cc657a47ffc9afebd269882f5d2"
+    },
+    {
+      "case": "n34-advective\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548",
+      "packaged_sha256": "b42eba469a3335c4ed9c0eac500a80e7cd78b9a87afcb11171b7a1a7785ea548"
+    },
+    {
+      "case": "n34-advective\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "8e3fd556d74d1eaea31d10f0d93bb6745f0d91316d4cfbb7a2aabe31ea33ef1d",
+      "packaged_sha256": "8e3fd556d74d1eaea31d10f0d93bb6745f0d91316d4cfbb7a2aabe31ea33ef1d"
+    },
+    {
+      "case": "n34-advective\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5cfcfbec31450f09194e03f702ab990a30eb28da80fb689bd1eed7452100d44e",
+      "packaged_sha256": "5cfcfbec31450f09194e03f702ab990a30eb28da80fb689bd1eed7452100d44e"
+    },
+    {
+      "case": "n34-advective\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d4c287e2d7b3de67be90f8e9ae3a58a89bedbfb37f9ccd398501ecf3dcb4b3bc",
+      "packaged_sha256": "d4c287e2d7b3de67be90f8e9ae3a58a89bedbfb37f9ccd398501ecf3dcb4b3bc"
+    },
+    {
+      "case": "n34-stress\\etdrk4_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c127b0676795e2432342590ef9155f60832164ce5b94f44d20077f7de873a322",
+      "packaged_sha256": "c127b0676795e2432342590ef9155f60832164ce5b94f44d20077f7de873a322"
+    },
+    {
+      "case": "n34-stress\\etdrk4_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "83fca76cdc7300a075b13cde1200c8681d42d83acefa254a7af068fa60e30d81",
+      "packaged_sha256": "83fca76cdc7300a075b13cde1200c8681d42d83acefa254a7af068fa60e30d81"
+    },
+    {
+      "case": "n34-stress\\etdrk4_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "83fca76cdc7300a075b13cde1200c8681d42d83acefa254a7af068fa60e30d81",
+      "packaged_sha256": "83fca76cdc7300a075b13cde1200c8681d42d83acefa254a7af068fa60e30d81"
+    },
+    {
+      "case": "n34-stress\\etdrk4_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "4e8c275955584f971ebe9088c627a366d9cdb597c6e70c363ee5660a32748edf",
+      "packaged_sha256": "4e8c275955584f971ebe9088c627a366d9cdb597c6e70c363ee5660a32748edf"
+    },
+    {
+      "case": "n34-stress\\etdrk4_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "6e4897497a01d4e39bf28e6e4ce55bb9d4a714ae49f49c00c62046597c5da648",
+      "packaged_sha256": "6e4897497a01d4e39bf28e6e4ce55bb9d4a714ae49f49c00c62046597c5da648"
+    },
+    {
+      "case": "n34-stress\\etdrk4_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "f68940700f77b77bc81e74b31902fb99cc38ad1727160d52f82b6531b5c709f0",
+      "packaged_sha256": "f68940700f77b77bc81e74b31902fb99cc38ad1727160d52f82b6531b5c709f0"
+    },
+    {
+      "case": "n34-stress\\etdrk4_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "64114ae66938988bd6664b5ecc8af64f55eed272f9e3d9d58c3816e483fd4d5a",
+      "packaged_sha256": "64114ae66938988bd6664b5ecc8af64f55eed272f9e3d9d58c3816e483fd4d5a"
+    },
+    {
+      "case": "n34-stress\\etdrk4_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "9333415fabd8a7542187ceb987b0a479220c06f2cdee077300c74bd8225df46e",
+      "packaged_sha256": "9333415fabd8a7542187ceb987b0a479220c06f2cdee077300c74bd8225df46e"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c34e56ae4e0bf69c4cbe510a91422244fa204fae077cfa176e70f09c53b9e0fa",
+      "packaged_sha256": "c34e56ae4e0bf69c4cbe510a91422244fa204fae077cfa176e70f09c53b9e0fa"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "bc907e712c1670a63df7015c7985436edc3f9030871900dbfee0a13c6860c686",
+      "packaged_sha256": "bc907e712c1670a63df7015c7985436edc3f9030871900dbfee0a13c6860c686"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "bc907e712c1670a63df7015c7985436edc3f9030871900dbfee0a13c6860c686",
+      "packaged_sha256": "bc907e712c1670a63df7015c7985436edc3f9030871900dbfee0a13c6860c686"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5e92e2b06091d28f9f76e15020edc887f09af3c8011b0166d27c1bd323c6bc37",
+      "packaged_sha256": "5e92e2b06091d28f9f76e15020edc887f09af3c8011b0166d27c1bd323c6bc37"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c47d5a99955d851bc1b75becfb85a1714612bddbf80681c14c26861d2990e309",
+      "packaged_sha256": "c47d5a99955d851bc1b75becfb85a1714612bddbf80681c14c26861d2990e309"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "3dd3f17e4b293d2d2384848995d04f54d5ac75cbf801939312f6f65d430c832b",
+      "packaged_sha256": "3dd3f17e4b293d2d2384848995d04f54d5ac75cbf801939312f6f65d430c832b"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "c30f928dd9c4176fe3918016971dff3771c740e46bef3f9fe4028c4e87ad0f8e",
+      "packaged_sha256": "c30f928dd9c4176fe3918016971dff3771c740e46bef3f9fe4028c4e87ad0f8e"
+    },
+    {
+      "case": "n34-stress\\ifHeunRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "62166fbb69a65c025061bf03089dcb5d4421cb999e675427c9f307b84787638c",
+      "packaged_sha256": "62166fbb69a65c025061bf03089dcb5d4421cb999e675427c9f307b84787638c"
+    },
+    {
+      "case": "n34-stress\\imexRK3_analytic_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "2d708115b0b5f0426aa759c7e82d66ee1878b19ac65c1b13df575fda81f6e3e7",
+      "packaged_sha256": "2d708115b0b5f0426aa759c7e82d66ee1878b19ac65c1b13df575fda81f6e3e7"
+    },
+    {
+      "case": "n34-stress\\imexRK3_batch_and_endpoint\\batch1\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "1a3a02ecf9d44065bfd8c9d5a1bd20b96874ab3a0cffec8de0a3f294426a79e7",
+      "packaged_sha256": "1a3a02ecf9d44065bfd8c9d5a1bd20b96874ab3a0cffec8de0a3f294426a79e7"
+    },
+    {
+      "case": "n34-stress\\imexRK3_batch_and_endpoint\\batch8\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "1a3a02ecf9d44065bfd8c9d5a1bd20b96874ab3a0cffec8de0a3f294426a79e7",
+      "packaged_sha256": "1a3a02ecf9d44065bfd8c9d5a1bd20b96874ab3a0cffec8de0a3f294426a79e7"
+    },
+    {
+      "case": "n34-stress\\imexRK3_batch_and_endpoint\\endpoint\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "a84038cee8fe6e5222d8848b331364fe4fe10f0b9f49e264b597463f5419af15",
+      "packaged_sha256": "a84038cee8fe6e5222d8848b331364fe4fe10f0b9f49e264b597463f5419af15"
+    },
+    {
+      "case": "n34-stress\\imexRK3_inviscid_conservation\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "e7f8e1cec86fb1c6d233d0d5f152cdb9ed6eb94af6a402f5f39ad3cccfa98a2b",
+      "packaged_sha256": "e7f8e1cec86fb1c6d233d0d5f152cdb9ed6eb94af6a402f5f39ad3cccfa98a2b"
+    },
+    {
+      "case": "n34-stress\\imexRK3_long_low_viscosity_diffusion\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "92dc40cc90b69f008e2e6def2248bf18a06a9572a2e8fb98be2ba6e1d0e7060e",
+      "packaged_sha256": "92dc40cc90b69f008e2e6def2248bf18a06a9572a2e8fb98be2ba6e1d0e7060e"
+    },
+    {
+      "case": "n34-stress\\imexRK3_nonlinear_reference\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "5e8bad1a300a2bf66ba689c9ae7585a1fe88a2a2bb0d6b4d333cb033f639478d",
+      "packaged_sha256": "5e8bad1a300a2bf66ba689c9ae7585a1fe88a2a2bb0d6b4d333cb033f639478d"
+    },
+    {
+      "case": "n34-stress\\imexRK3_retained_high_modes\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "206dbeabf7cc21f919bc5a65dddb283e0341050a13ac72c20d2fdb2f1f1f19a3",
+      "packaged_sha256": "206dbeabf7cc21f919bc5a65dddb283e0341050a13ac72c20d2fdb2f1f1f19a3"
+    },
+    {
+      "case": "n34-stress\\initial_projection\\spectrum.c64",
+      "bitwise_identical": true,
+      "original_sha256": "d4c287e2d7b3de67be90f8e9ae3a58a89bedbfb37f9ccd398501ecf3dcb4b3bc",
+      "packaged_sha256": "d4c287e2d7b3de67be90f8e9ae3a58a89bedbfb37f9ccd398501ecf3dcb4b3bc"
+    },
+    {
+      "case": "native-n128",
+      "bitwise_identical": true,
+      "original_sha256": "15967f37c185131e01f4224358a9668478eda18e9c888d767394c6945da04c0a",
+      "packaged_sha256": "15967f37c185131e01f4224358a9668478eda18e9c888d767394c6945da04c0a"
+    },
+    {
+      "case": "native-n256",
+      "bitwise_identical": true,
+      "original_sha256": "cf03b477f9793c41cbc7952a65e6328d4c369c4c07f62c63478a93bb11e1d540",
+      "packaged_sha256": "cf03b477f9793c41cbc7952a65e6328d4c369c4c07f62c63478a93bb11e1d540"
+    },
+    {
+      "case": "native-n512",
+      "bitwise_identical": true,
+      "original_sha256": "ef0c32c73f00ba27b9809a52e7351d4ae41cf8780dd3cddc0a60c13e9bda5743",
+      "packaged_sha256": "ef0c32c73f00ba27b9809a52e7351d4ae41cf8780dd3cddc0a60c13e9bda5743"
+    },
+    {
+      "case": "native-n1024",
+      "bitwise_identical": true,
+      "original_sha256": "6a4b0baf5e08e421bfee2b51f3fc61943ac56108bf2a517db221c390afcd165a",
+      "packaged_sha256": "6a4b0baf5e08e421bfee2b51f3fc61943ac56108bf2a517db221c390afcd165a"
+    },
+    {
+      "case": "native-n2048",
+      "bitwise_identical": true,
+      "original_sha256": "7fa155fa10f325c83564d77d21702dede6b061786c70089c707b846d4c66ef10",
+      "packaged_sha256": "7fa155fa10f325c83564d77d21702dede6b061786c70089c707b846d4c66ef10"
+    },
+    {
+      "case": "native-n4096",
+      "bitwise_identical": true,
+      "original_sha256": "03e3100a1bbcce2954f19706db2aec33999353b68ecc041b02dea1648406536b",
+      "packaged_sha256": "03e3100a1bbcce2954f19706db2aec33999353b68ecc041b02dea1648406536b"
+    }
+  ]
+}

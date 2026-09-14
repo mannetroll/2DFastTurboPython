@@ -1,0 +1,7 @@
+#include <windows.h>
+101 RCDATA "@CMAKE_CURRENT_BINARY_DIR@/embedded/fieldVertex.cso"
+102 RCDATA "@CMAKE_CURRENT_BINARY_DIR@/embedded/fieldPixel.cso"
+103 RCDATA "@CMAKE_CURRENT_BINARY_DIR@/embedded/flowVertex.cso"
+104 RCDATA "@CMAKE_CURRENT_BINARY_DIR@/embedded/flowPixel.cso"
+201 RCDATA "@TURBO_CUDA_LICENSE@"
+202 RCDATA "@CMAKE_CURRENT_SOURCE_DIR@/../reference-macos/2DFastTurbo/ThirdParty/VkFFTSource/LICENSE"

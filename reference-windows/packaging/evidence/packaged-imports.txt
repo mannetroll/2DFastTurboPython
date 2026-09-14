@@ -1,0 +1,35 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35228.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file C:\Users\tobbe\AppData\Local\Temp\2DFastTurbo-package-test-9d470ca95d974d848a9798ef93937737\application\2DFastTurbo.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    d3d11.dll
+    dxgi.dll
+    d2d1.dll
+    DWrite.dll
+    dwmapi.dll
+    COMDLG32.dll
+    SHELL32.dll
+    ole32.dll
+    WINMM.dll
+    USER32.dll
+    KERNEL32.dll
+    GDI32.dll
+    ADVAPI32.dll
+
+  Summary
+
+      6A9000 .data
+        1000 .fptable
+        1000 .nvFatBi
+       71000 .nv_fatb
+      21D000 .pdata
+     1542000 .rdata
+       73000 .reloc
+       1C000 .rsrc
+     4129000 .text

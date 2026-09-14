@@ -1,0 +1,99 @@
+{
+  "recorded_utc": "2026-09-13T19:49:55.983410+00:00",
+  "single_executable": true,
+  "executable_bytes": 97549312,
+  "executable_mib": 93.0302734375,
+  "sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072",
+  "vkfft_preserved": true,
+  "nvrtc": "statically embedded, including builtins and PTX compiler",
+  "cuda_toolkit_install_required": false,
+  "vc_redist_install_required": false,
+  "external_runtime_categories": [
+    "Windows system components",
+    "NVIDIA display driver"
+  ],
+  "clean_environment": {
+    "passed": true,
+    "single_exe": true,
+    "read_only_install_verified": true,
+    "permissions_restored": true,
+    "physical_clean_OS": false,
+    "gui_checked": true,
+    "sha256": "f864e849ece4a6a15fb04e95d3ac7f49a411584c8adc633dc117b9cb6eb33072"
+  },
+  "physical_clean_OS_test": false,
+  "numerical_checks": 114,
+  "gui_checks": 59,
+  "render_comparisons": 32,
+  "supported_resolutions_checked": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "bitwise_identical_spectral_outputs": 156,
+  "performance": [
+    {
+      "mode": "headless",
+      "original_R_turbo": 1.2607494860652424,
+      "packaged_R_turbo": 1.2606955949840821,
+      "original_ms_per_step": 1.3105194506281215,
+      "packaged_ms_per_step": 1.3105036578646452,
+      "R_turbo_change_percent": -0.0042745273153732555
+    },
+    {
+      "mode": "gui",
+      "original_R_turbo": 1.1631129319935753,
+      "packaged_R_turbo": 1.1616076876721968,
+      "original_ms_per_step": 1.4345083326374726,
+      "packaged_ms_per_step": 1.4366318376793343,
+      "R_turbo_change_percent": -0.12941514791676711
+    }
+  ],
+  "source_sha256": {
+    "windows\\src\\app.cpp": "41a4639d6edd280aa45c436c14322af74c25c9d9ba0ede8f34215bbd95eb74eb",
+    "windows\\src\\application.rc": "b282379a5b0b4a1ea7eb0d54778ffb9cf7709a3d933cf7c3ee31eac21bcaca34",
+    "windows\\src\\controller.cpp": "6c9ae94677c19be3fa48f6bc244553147165fc4b6bc81784b3c9464bc5b1dd47",
+    "windows\\src\\controller.hpp": "dbe1c43dd396afe38adb570d178f694e3a90c6c2e3a290e34b312399a8816be7",
+    "windows\\src\\cuda_support.cuh": "c1b6a59a44be123d5599f1d8c61349c5aabb09dcd6c8824db72b6fd57ad473f5",
+    "windows\\src\\embedded.rc.in": "4baec032fc89937892df49bca39b2c8443b83ed09b8cd9619f3022acf7fcf1ab",
+    "windows\\src\\fft.cpp": "29f81f15323a33edaa8a0fcde4300bc2131a196a1b223d9d794470f455764e9c",
+    "windows\\src\\fft.hpp": "1853b001683b09ed6c3108f0167abddd9e5a062b68fbfdc6c147c60a54435cf9",
+    "windows\\src\\kernels.cuh": "52fe5555973dc2ec78020ec4841a660cb756c86fc76028603210223d6d5bf677",
+    "windows\\src\\main.cpp": "47cc7eff518641aad8243ed49e4235b0e84315bd6bb094161d5b538a3f75f5d5",
+    "windows\\src\\options.hpp": "13fa81924c3a3767971d4983e4933aa5136603eca5d49299727fd660682eac64",
+    "windows\\src\\render.hlsl": "68e956a2cadce9038ea559c553cd1af3bfa563e09496a48f4579356776567e07",
+    "windows\\src\\renderer.cpp": "22d5cc22dd259e0fa9a1e4f301fd29f951277389e7e071ab55e69af9210af59b",
+    "windows\\src\\renderer.hpp": "527dcb058f3ef87643bed5aa8d1f94e46a9d3f79110a9db90fcf4233f1195c5e",
+    "windows\\src\\resources.hpp": "9a2454ca399b651bb3193308e20efaf43034bb44984a0b55d59ff62b53f55bd7",
+    "windows\\src\\solver.cu": "864b468f07e10380e953d5d260cda813a45e548735bb6821a72da7ae16df9042",
+    "windows\\src\\solver.hpp": "22907b0ebe6dc37fc385afa2600acadc57695eb2fd6c06593a58750fc5093d89",
+    "windows\\src\\types.hpp": "0f948dadfb427e340e2e79acb16745106c58d3a2b1cbdaa99a61949068b14774",
+    "windows\\tools\\shader_compiler.cpp": "2543548cb8b0dc0c4c9814b0c5df003fcba3c666ac11f8e262de295c5e403282"
+  },
+  "evidence_sha256": {
+    "clean-location.json": "236bb4b6d7470ea52ce510709b8a87d83da4b94517d46bae177d6825473c674e",
+    "clean-result.json": "5fc5accfeb36ae293a30a747fdd127e27a211abca7d31ad3c9a6c7c7c3181c42",
+    "core-tests.log": "2e96b624c5e44822617c5920ac60cd34129010251c06ab6776dd018ed3afd293",
+    "gui-check.json": "d0d028d636d1823b8040ae4a328e6848e4833d9fc9161b241115452ce53d5d66",
+    "n128-advective.json": "bb1d129cbc8293d7edbb3623184dc6f505d52fc45ff65e5504e53d9403695332",
+    "n128-stress.json": "a57f8ef51a1ec569a7263cc45a3883d2809c92e680bd988508f00774fdc8a21b",
+    "n32-advective.json": "0cceca665a3ec7328cfb43d101f0023b503e02f990ab2c1531e09b1a8da5f3a5",
+    "n32-stress.json": "34e312892fa0947f8fc48796f6829388ff96d9792e90641d82af374376f49b43",
+    "n34-advective.json": "60a8d7e4b71a9c8e4b17f31e6304cad79f300d6692fbd7450511b25274c7917c",
+    "n34-stress.json": "affca6f917f3e25f09c3f08b93c920c1a53c6c78adad659c9549ad7a6afcf823",
+    "native-initialization.json": "6c4bce82ffe358acc1b3f37f125b14c8faf477b4c0ed9398cdee31276ad73b37",
+    "numerics-summary.json": "91f248ed48b7aa2af191870ea1d6f22678abec2f6c47c24ccc1711812848f2ce",
+    "original-audit.json": "6711c28499ac4950b75a7b3780d981d2d3ca22aa7f6530dfa7ac9389740241d9",
+    "original-comparison.json": "3ea465824ae2720b1d63a9a0e2bf247af4e9c0b19fe8716b576c318d5fd88598",
+    "original-imports.txt": "1095bcc23ec202d01fe435fc95f98b165f95ee274acafcd4c59b52affb4b6b5e",
+    "outside-gui-audit.json": "04a7ec0b337221018ddb099e42b447ea6d056962ebc846fbd8ea0eadbcec0dff",
+    "outside-headless-audit.json": "1c28d582bf3483f5b3761407e17c85a4f7b7a7e15c466daebdf30c79b4b411c9",
+    "packaged-imports.txt": "f92f29e6026f531a52bf674a7eedca6a2c08be81eb4f769f70a9c9e911bab87f",
+    "performance.csv": "886aac77d53020023f243844cac69d578fc6b8dd50af53be972bf25be0678816",
+    "performance.json": "848337df687e86fae68c1636a040cfa74462adb2ca38ef1fd1cb2be2b39f5744",
+    "render-validation.json": "699a485188394b9de01217e3dc9562d2df7a08d8d3243c702669a3025a85118e"
+  }
+}

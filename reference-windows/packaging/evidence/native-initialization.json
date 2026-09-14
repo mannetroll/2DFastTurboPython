@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "reference": "Independent transcription of native Swift Float32/SplitMix64 initialization; not Metal captures",
+  "checks": [
+    {
+      "n": 128,
+      "m": 192,
+      "native_relative_l2": 6.756666692808722e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.4900528072027933,
+      "initial_enstrophy": 7.9999999598805225,
+      "one_step_passed": true
+    },
+    {
+      "n": 256,
+      "m": 384,
+      "native_relative_l2": 6.558210685625454e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.4900528131694235,
+      "initial_enstrophy": 8.000000016167695,
+      "one_step_passed": true
+    },
+    {
+      "n": 512,
+      "m": 768,
+      "native_relative_l2": 6.440355093673134e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.49005280832338016,
+      "initial_enstrophy": 7.999999900788117,
+      "one_step_passed": true
+    },
+    {
+      "n": 1024,
+      "m": 1536,
+      "native_relative_l2": 6.541135633142403e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.4900528171932523,
+      "initial_enstrophy": 7.999999881332641,
+      "one_step_passed": true
+    },
+    {
+      "n": 2048,
+      "m": 3072,
+      "native_relative_l2": 7.546863400875736e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.49005282025752805,
+      "initial_enstrophy": 7.99999972079172,
+      "one_step_passed": true
+    },
+    {
+      "n": 4096,
+      "m": 6144,
+      "native_relative_l2": 7.183862038573352e-08,
+      "tolerance": 2e-06,
+      "initial_energy": 0.4900528055150062,
+      "initial_enstrophy": 7.9999997317790985,
+      "one_step_passed": true
+    }
+  ]
+}

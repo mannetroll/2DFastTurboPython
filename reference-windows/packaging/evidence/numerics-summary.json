@@ -1,0 +1,43 @@
+{
+  "all_passed": true,
+  "reference": "Unmodified macOS Scripts/validate.py: independent FP64 advective RK4",
+  "direct_metal_capture_available": false,
+  "groups": [
+    {
+      "resolution": 32,
+      "operator": "stress",
+      "passed": true,
+      "tests": 19
+    },
+    {
+      "resolution": 32,
+      "operator": "advective",
+      "passed": true,
+      "tests": 19
+    },
+    {
+      "resolution": 34,
+      "operator": "stress",
+      "passed": true,
+      "tests": 19
+    },
+    {
+      "resolution": 34,
+      "operator": "advective",
+      "passed": true,
+      "tests": 19
+    },
+    {
+      "resolution": 128,
+      "operator": "stress",
+      "passed": true,
+      "tests": 19
+    },
+    {
+      "resolution": 128,
+      "operator": "advective",
+      "passed": true,
+      "tests": 19
+    }
+  ]
+}

@@ -1,0 +1,403 @@
+{
+  "app": "D:\\CODEX\\2DFastTurboWin\\windows\\build-packaging-baseline\\2DFastTurbo.exe",
+  "sha256": "b9861faaafe91f126423655bc7a1df3c444b2762d5d05fc39ccca6b079f4e089",
+  "size_bytes": 1266176,
+  "exit_code": 0,
+  "clean_environment": false,
+  "PATH": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin/x64;C:\\Users\\tobbe\\.codex\\tmp\\arg0\\codex-arg0SqamTt;C:\\Users\\tobbe\\AppData\\Roaming\\npm\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\codex-path;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX86\\x86;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\VC\\VCPackages;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\bin\\Roslyn;C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\FSharp\\Tools;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Team Tools\\DiagnosticsHub\\Collector;C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\\\x86;C:\\Program Files (x86)\\Windows Kits\\10\\bin\\\\x86;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\\\MSBuild\\Current\\Bin\\amd64;C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\;C:\\Python314\\Scripts\\;C:\\Python314\\;C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot\\bin;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin;D:\\CUDNN\\bin;D:\\CUDA\\bin;D:\\CUDA\\libnvvp;C:\\Program Files\\Microsoft MPI\\Bin\\;C:\\Program Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Windows\\System32\\OpenSSH\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files\\PuTTY\\;C:\\Program Files\\Amazon\\AWSCLIV2\\;C:\\Program Files\\NVIDIA Corporation\\NVIDIA app\\NvDLISR;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.3.1\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\nodejs\\;C:\\ProgramData\\chocolatey\\bin;C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot\\bin;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin;D:\\CUDNN\\bin;D:\\CUDA\\bin;D:\\CUDA\\libnvvp;C:\\Program Files\\Microsoft MPI\\Bin\\;C:\\Program Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Windows\\System32\\OpenSSH\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files\\PuTTY\\;C:\\Program Files\\Amazon\\AWSCLIV2\\;C:\\Program Files\\NVIDIA Corporation\\NVIDIA app\\NvDLISR;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.3.1\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot\\bin;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin;C:\\Users\\tobbe\\ijhttp;;C:\\Users\\tobbe\\.local\\bin;C:\\Users\\tobbe\\AppData\\Local\\Programs\\Ollama;C:\\Users\\tobbe\\AppData\\Roaming\\npm;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\VC\\Linux\\bin\\ConnectionManagerExe;C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\vcpkg",
+  "cwd": "D:\\CODEX\\2DFastTurboWin\\windows\\build-packaging-baseline",
+  "command": [
+    "D:\\CODEX\\2DFastTurboWin\\windows\\build-packaging-baseline\\2DFastTurbo.exe",
+    "--benchmark",
+    "--resolution",
+    "1024",
+    "--reynolds",
+    "50000",
+    "--wall-seconds",
+    "5"
+  ],
+  "module_sampling_ms": 20,
+  "loaded_modules": [
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc-builtins64_130.dll",
+      "category": "VkFFT/NVRTC requirement"
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc64_130_0.dll",
+      "category": "VkFFT/NVRTC requirement"
+    },
+    {
+      "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\apphelp.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\bcrypt.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\bcryptPrimitives.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\cfgmgr32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\combase.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\COMDLG32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\CRYPT32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\cryptbase.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\cryptnet.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\CRYPTSP.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\d2d1.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\d3d11.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\D3DCOMPILER_47.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\devobj.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\Display.NvContainer\\NvMessageBus.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\system32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvapi64_impl.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\system32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvcuda64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvcudart_hybrid64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvdiagclt64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvdxgdmal64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispsi.inf_amd64_8117bef9bb5edac9\\nvobjectloader64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\drvstore.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\dwmapi.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\DWrite.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\dxcore.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\dxgi.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\GDI32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\gdi32full.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\gpapi.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\imagehlp.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\IMM32.DLL",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\msasn1.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "category": "MSVC runtime"
+    },
+    {
+      "path": "C:\\Windows\\System32\\msvcp_win.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\msvcrt.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\nvapi64.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\nvcuda.dll",
+      "category": "NVIDIA driver DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\ole32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\profapi.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\RPCRT4.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\system32\\rsaenh.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\sechost.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\SETUPAPI.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\shcore.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\SHELL32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\SHLWAPI.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\ucrtbase.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\USER32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "category": "MSVC runtime"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll",
+      "category": "MSVC runtime"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\win32u.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\windows.storage.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\WINMM.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\wintrust.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\wldp.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\System32\\WS2_32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "C:\\Windows\\WinSxS\\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.19041.6280_none_792d7c952443c49a\\COMCTL32.dll",
+      "category": "Windows system DLL"
+    },
+    {
+      "path": "D:\\CODEX\\2DFastTurboWin\\windows\\build-packaging-baseline\\2DFastTurbo.exe",
+      "category": "application"
+    }
+  ],
+  "direct_imports": [
+    "d3d11.dll",
+    "dxgi.dll",
+    "D3DCOMPILER_47.dll",
+    "d2d1.dll",
+    "DWrite.dll",
+    "dwmapi.dll",
+    "COMDLG32.dll",
+    "SHELL32.dll",
+    "ole32.dll",
+    "WINMM.dll",
+    "nvrtc64_130_0.dll",
+    "KERNEL32.dll",
+    "USER32.dll",
+    "GDI32.dll",
+    "MSVCP140.dll",
+    "VCRUNTIME140.dll",
+    "VCRUNTIME140_1.dll",
+    "api-ms-win-crt-runtime-l1-1-0.dll",
+    "api-ms-win-crt-math-l1-1-0.dll",
+    "api-ms-win-crt-heap-l1-1-0.dll",
+    "api-ms-win-crt-convert-l1-1-0.dll",
+    "api-ms-win-crt-stdio-l1-1-0.dll",
+    "api-ms-win-crt-filesystem-l1-1-0.dll",
+    "api-ms-win-crt-string-l1-1-0.dll",
+    "api-ms-win-crt-locale-l1-1-0.dll"
+  ],
+  "installation_directory_unchanged": true,
+  "toolkit_modules": [
+    "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc-builtins64_130.dll",
+    "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc64_130_0.dll"
+  ],
+  "non_system_modules": [
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc-builtins64_130.dll",
+      "category": "VkFFT/NVRTC requirement"
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64\\nvrtc64_130_0.dll",
+      "category": "VkFFT/NVRTC requirement"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "category": "MSVC runtime"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "category": "MSVC runtime"
+    },
+    {
+      "path": "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll",
+      "category": "MSVC runtime"
+    }
+  ],
+  "run": {
+    "schema_version": 1,
+    "solver": "2DFastTurbo Windows CUDA/VkFFT",
+    "mode": "headless",
+    "config": {
+      "resolution": 1024,
+      "padded_resolution": 1536,
+      "reynolds": 50000,
+      "viscosity": 1.9999999494757503e-05,
+      "k0": 4,
+      "seed": 2,
+      "cfl": 3,
+      "integrator": "etdrk4",
+      "operator": "stress",
+      "batch": 8,
+      "fixed_dt": null
+    },
+    "initial_stats": {
+      "steps": 0,
+      "simulation_time": 0,
+      "dt": 0.0017286307411268353,
+      "energy": 0.4900528171932523,
+      "enstrophy": 7.999999881332641,
+      "palinstrophy": 255.9999939257744,
+      "palinstrophy_metric": 6.127427459949837e-05,
+      "reynolds": 50000,
+      "initial_turnover_time": 1.5707963384450374,
+      "is_finite": true
+    },
+    "stats": {
+      "steps": 3832,
+      "simulation_time": 6.329160005087033,
+      "dt": 0.0015149106038734317,
+      "energy": 0.4882359497592006,
+      "enstrophy": 5.634088797494769,
+      "palinstrophy": 13211.852615356445,
+      "palinstrophy_metric": 0.004490226378096563,
+      "reynolds": 50000,
+      "initial_turnover_time": 1.5707963384450374,
+      "is_finite": true
+    },
+    "seconds": 5.008365199995751,
+    "simtime_per_s": 1.2637177506728947,
+    "steps_per_s": 765.1199237633971,
+    "turnovers_per_s": 0.8045077008034499,
+    "gpu_seconds": 4.949164799690244,
+    "batches": 479,
+    "snapshots": 0,
+    "presented_fps": 0,
+    "warmup_steps": 8,
+    "spectrum_normalization": "fourier-series",
+    "vorticity_convention": "omega = dx(v) - dy(u)",
+    "initial_source": "seeded-pao",
+    "hardware": {
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "owned_solver_buffer_bytes": 107253288,
+      "vkfft_internal_bytes": 12736
+    }
+  }
+}
