@@ -37,6 +37,11 @@ class Wheel(bdist_wheel):
 
 
 class Source(sdist):
+    def run(self):
+        # Source archives contain Metal headers but no CUDA redistributable DLLs.
+        self.distribution.metadata.license_expression = "MIT AND Apache-2.0"
+        super().run()
+
     def make_release_tree(self, base_dir, files):
         super().make_release_tree(base_dir, files)
         project = Path(__file__).resolve().parent
@@ -61,4 +66,5 @@ class Source(sdist):
 
 
 setup(cmdclass={"build_py": Build, "editable_wheel": Editable, "bdist_wheel": Wheel, "sdist": Source},
-      distclass=BinaryDistribution)
+      distclass=BinaryDistribution,
+      license_expression="MIT AND LicenseRef-NVIDIA-CUDA" if sys.platform == "win32" else "MIT AND Apache-2.0")

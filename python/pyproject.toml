@@ -5,10 +5,30 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fastturbo"
 version = "0.1.0"
-description = "Python-hosted turbulence with native Metal/VkFFT and CUDA/VkFFT engines"
-readme = "README.md"
+description = "Interactive GPU-accelerated 2D turbulence for macOS and Windows"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.13"
 dependencies = ["PySide6>=6.9,<7"]
+authors = [{name = "Torbjörn Sjögren"}]
+# FastTurbo is MIT; the complete distribution also includes platform-specific
+# third-party components. setup.py supplies the corresponding SPDX expression.
+dynamic = ["license"]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "licenses/*.txt"]
+keywords = ["turbulence", "fluid-dynamics", "simulation", "GPU", "Metal", "CUDA", "VkFFT"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+[project.urls]
+Screenshots = "https://github.com/mannetroll/fastturbo-media"
 
 [project.scripts]
 2dfastturbo = "fastturbo.main:main"
@@ -21,7 +41,7 @@ dev = ["pytest>=8", "numpy>=2", "pyinstaller>=6.16"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-fastturbo = ["_native/*"]
+fastturbo = ["_native/*", "assets/*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

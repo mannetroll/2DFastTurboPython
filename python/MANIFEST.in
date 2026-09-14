@@ -3,6 +3,9 @@ include scripts/*.py
 include scripts/*.ps1
 recursive-include native/windows *
 include uv.lock
+include PUBLISHING.md
+include DEVELOPMENT.md
+recursive-include src/fastturbo/assets *.png
 recursive-include native/reference *
 recursive-include native/reference-windows *
 recursive-include native/reference-macos *
