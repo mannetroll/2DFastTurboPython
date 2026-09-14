@@ -59,6 +59,18 @@ The CFD timestep must remain GPU-resident and native.
 
 Python must NOT execute the main numerical kernels.
 
+First inspect and understand the complete macOS implementation.
+
+2DFastTurboPython/
+├── reference-macos/
+│   └── 2DFastTurbo/
+│       ├── Sources...
+│       ├── Tests...
+│       └── ThirdParty...
+│
+└── python/
+
+
 TARGET MACHINE
 ==============
 
