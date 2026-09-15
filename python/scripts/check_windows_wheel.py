@@ -1,17 +1,22 @@
 """Exercise the wheel's native resources without CUDA Toolkit paths or sources."""
+import hashlib
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import zipfile
 
 project = Path(__file__).resolve().parents[1]
-wheel = project / "dist/fastturbo-0.1.0-py3-none-win_amd64.whl"
+version = tomllib.loads((project / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+wheel = project / f"dist/fastturbo-{version}-py3-none-win_amd64.whl"
 target = Path(tempfile.mkdtemp(prefix="wheel-check-", dir=project / "build")).resolve()
 with zipfile.ZipFile(wheel) as archive:
-    assert "Tag: py3-none-win_amd64" in archive.read("fastturbo-0.1.0.dist-info/WHEEL").decode()
+    assert "Tag: py3-none-win_amd64" in archive.read(f"fastturbo-{version}.dist-info/WHEEL").decode()
+    for relative in ("app.py", "assets/header-hurricane.svg", "_native/fastturbo.dll"):
+        assert archive.read(f"fastturbo/{relative}") == (project / "src/fastturbo" / relative).read_bytes(), relative
     assert all((target / name).resolve().is_relative_to(target) for name in archive.namelist())
     archive.extractall(target)
 system = Path(os.environ["SystemRoot"])
@@ -32,5 +37,7 @@ result = subprocess.run([sys.executable, "-c", program], cwd=target, env=environ
 if result.returncode:
     raise RuntimeError(result.stdout[:2000] + result.stderr)
 report = json.loads(result.stdout)
+report.update(wheel=wheel.name, version=version, sha256=hashlib.sha256(wheel.read_bytes()).hexdigest())
+(project / "results").mkdir(exist_ok=True)
 (project / "results/wheel-validation.json").write_text(json.dumps(report, indent=2)+"\n")
 print(json.dumps(report, indent=2))

@@ -5,8 +5,10 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
+import tomllib
 
 project = Path(__file__).resolve().parents[1]
+version = tomllib.loads((project / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
 destination = project / "evidence/windows"
 destination.mkdir(parents=True, exist_ok=True)
 files = {
@@ -33,8 +35,8 @@ for name in ("workers", "package", "wheel"):
 subprocess.run(["git", "diff", "--exit-code", "--", "reference-macos", "reference-windows"], cwd=project.parent, check=True)
 manifest = json.loads((project / "src/fastturbo/_native/build-manifest.json").read_text())
 artifacts = [project / "dist/2DFastTurbo-Python-Windows.zip",
-             project / "dist/fastturbo-0.1.0-py3-none-win_amd64.whl",
-             project / "dist/fastturbo-0.1.0.tar.gz",
+             project / f"dist/fastturbo-{version}-py3-none-win_amd64.whl",
+             project / f"dist/fastturbo-{version}.tar.gz",
              project / "src/fastturbo/_native/fastturbo.dll",
              project / "build/windows/reference/2DFastTurbo.exe"]
 performance = json.loads((destination / "performance.json").read_text())

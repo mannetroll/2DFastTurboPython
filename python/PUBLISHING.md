@@ -9,8 +9,12 @@ new wheels before uploading.
 On an Apple Silicon Mac with macOS 15+, Xcode and its Metal tools:
 
 ```sh
+git pull --ff-only
 uv build --wheel
 ```
+
+The current Windows 0.1.1 wheel is committed under `python/dist/`; pulling the
+repository retrieves it for publishing alongside the freshly built macOS wheel.
 
 On Windows x64 with CUDA 13.0, MSVC x64 C++ tools, CMake and Ninja:
 
@@ -19,8 +23,8 @@ uv build --wheel
 ```
 
 The build selects the backend for the host platform. macOS produces
-`fastturbo-0.1.0-py3-none-macosx_15_0_arm64.whl`; Windows produces
-`fastturbo-0.1.0-py3-none-win_amd64.whl`. Build both from the same source version,
+`fastturbo-0.1.1-py3-none-macosx_15_0_arm64.whl`; Windows produces
+`fastturbo-0.1.1-py3-none-win_amd64.whl`. Build both from the same source version,
 then collect them in `dist/`. The wheels contain the Python package, native
 resources, screenshot, MIT license and third-party license texts.
 
@@ -31,12 +35,12 @@ runtime requirements. See `DEVELOPMENT.md` for native tests and GUI checks.
 ## Validate and upload
 
 ```sh
-uvx twine check --strict dist/*.whl
-uvx twine upload dist/*.whl
+uvx twine check --strict dist/fastturbo-0.1.1-py3-none-macosx_15_0_arm64.whl dist/fastturbo-0.1.1-py3-none-win_amd64.whl
+uvx twine upload dist/fastturbo-0.1.1-py3-none-macosx_15_0_arm64.whl dist/fastturbo-0.1.1-py3-none-win_amd64.whl
 ```
 
-Upload the two wheels for this binary release. Use `dist/*.whl`, since `dist/`
-can also contain a macOS application, ZIP files and older source archives.
+Upload these two 0.1.1 wheels for this binary release. The explicit filenames
+exclude older 0.1.0 wheels, application bundles, ZIP files and source archives.
 `uvx` runs Twine without rebuilding the local project.
 
 Configure PyPI authentication using a PyPI API token or a trusted publisher.
@@ -44,7 +48,7 @@ Keep tokens out of source files and shell command arguments. A successful
 Twine check validates metadata and README rendering; it does not exercise the
 GPU backend or prove that a project name is available.
 
-PyPI cannot replace an uploaded filename. After publishing 0.1.0, change
+PyPI cannot replace an uploaded filename. For each subsequent release, change
 `project.version` in `pyproject.toml`, run `uv lock`, and rebuild both wheels
 before the next release. Keep the same version on both platforms.
 
