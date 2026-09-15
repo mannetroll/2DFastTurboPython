@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
 from .engine import Configuration, NativeUI
 from .environment import environment_summary
-from .platform_ui import fonts, install_lifecycle
+from .platform_ui import fonts, install_lifecycle, prepare_application_name
 
 STYLE = """
 QMainWindow, QWidget#root { background: #090c13; color: #e6e8ec; }
@@ -115,7 +115,7 @@ class MainWindow(QMainWindow):
         self._adjusting = False
         self._attached = False
         self._canvas_side = canvas_size
-        self.setWindowTitle("2DFastTurbo Python")
+        self.setWindowTitle("2DFastTurbo")
         regular_font, self.mono_font = fonts()
         self.setStyleSheet(STYLE.replace(".AppleSystemUIFont", regular_font).replace("Menlo", self.mono_font))
         self.setMinimumSize(834, 761)
@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
         # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
         # unbound on Windows, so specify the requested shortcut explicitly.
         file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence("Ctrl+Q"))
-        about = file.addAction("About 2DFastTurbo", lambda: QMessageBox.about(self, "2DFastTurbo Python",
+        about = file.addAction("About 2DFastTurbo", lambda: QMessageBox.about(self, "2DFastTurbo",
             "Decaying two-dimensional turbulence on the native GPU backend.\n"
             "3/2-padded pseudospectral Navier–Stokes with VkFFT.\n\n"
             "Space pauses; → advances once; R resets; F focuses; Save Snapshot exports a PNG.\n"
@@ -543,8 +543,12 @@ class MainWindow(QMainWindow):
 
 
 def create_application():
-    app = QApplication.instance() or QApplication([])
+    name = "2DFastTurbo"
+    prepare_application_name(name)
+    app = QApplication.instance() or QApplication([name])
+    # Keep the existing QSettings namespace while changing the visible name.
     app.setApplicationName("2DFastTurbo Python")
+    app.setApplicationDisplayName(name)
     app.setOrganizationName("FastTurbo")
     icon_path = Path(__file__).with_name("assets") / "fastturbo.png"
     app.setWindowIcon(QIcon(str(icon_path)))

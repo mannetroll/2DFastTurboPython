@@ -5,6 +5,46 @@ from PySide6.QtGui import QColor, QFontDatabase, QIcon, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 
+def prepare_application_name(name):
+    """Set macOS's in-memory bundle name before Qt creates the native menus."""
+    if sys.platform != "darwin":
+        return
+    import ctypes as C
+    cf = C.CDLL("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")
+    signatures = {
+        "CFBundleGetMainBundle": (C.c_void_p, []),
+        "CFBundleGetInfoDictionary": (C.c_void_p, [C.c_void_p]),
+        "CFStringCreateWithCString": (C.c_void_p, [C.c_void_p, C.c_char_p, C.c_uint32]),
+        "CFDictionarySetValue": (None, [C.c_void_p, C.c_void_p, C.c_void_p]),
+        "CFRelease": (None, [C.c_void_p]),
+    }
+    for symbol, (result, arguments) in signatures.items():
+        function = getattr(cf, symbol)
+        function.restype = result
+        function.argtypes = arguments
+    info = cf.CFBundleGetInfoDictionary(cf.CFBundleGetMainBundle())
+    if not info:
+        return
+
+    def string(value):
+        result = cf.CFStringCreateWithCString(None, value.encode("utf-8"), 0x08000100)
+        if not result:
+            raise MemoryError("Could not create the macOS application name")
+        return result
+
+    title = string(name)
+    try:
+        # Only the current process's cached dictionary changes; no plist is written.
+        for key in ("CFBundleName", "CFBundleDisplayName"):
+            property_name = string(key)
+            try:
+                cf.CFDictionarySetValue(info, property_name, title)
+            finally:
+                cf.CFRelease(property_name)
+    finally:
+        cf.CFRelease(title)
+
+
 def fonts():
     if sys.platform == "darwin":
         return ".AppleSystemUIFont", "Menlo"

@@ -32,7 +32,8 @@ subprocess.run(command, check=True, env=env)
 app = output / "2DFastTurbo Python.app"
 info_path = app / "Contents/Info.plist"
 info = plistlib.loads(info_path.read_bytes())
-info.update(LSMinimumSystemVersion="15.0", CFBundleShortVersionString="0.1.0", CFBundleVersion="1")
+info.update(LSMinimumSystemVersion="15.0", CFBundleShortVersionString="0.1.0", CFBundleVersion="1",
+            CFBundleName="2DFastTurbo", CFBundleDisplayName="2DFastTurbo")
 info_path.write_bytes(plistlib.dumps(info))
 subprocess.run(["codesign", "--force", "--sign", "-", str(app)], check=True)
 # PyInstaller signs collected binaries. Verify the full bundle after assembly.
