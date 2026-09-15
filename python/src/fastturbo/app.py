@@ -410,6 +410,8 @@ class MainWindow(QMainWindow):
                 unit_label = label(unit, "secondary")
                 unit_label.setStyleSheet("font-size:7px")
                 values.addWidget(unit_label)
+                if key == "memory":
+                    self.memory_unit_label = unit_label
             values.addStretch()
             stack.addLayout(values)
             row.addLayout(stack, 1)
@@ -555,10 +557,14 @@ class MainWindow(QMainWindow):
             if not state["ready"]:
                 return "—"
             return f"{value:.2e}" if value and (abs(value) < 0.001 or abs(value) >= 10000) else f"{value:.3f}"
+        allocation_mib = state["allocated_bytes"] / 1048576
+        allocation_gib = allocation_mib >= 1024
+        memory = f"{allocation_mib / 1024:.1f}" if allocation_gib else f"{allocation_mib:.0f}"
+        self.memory_unit_label.setText("GiB" if allocation_gib else "MiB")
         values = {"turbo": number(perf["simtime_per_s"]), "turnovers": number(perf["turnovers_per_s"]),
                   "energy": number(stats.get("energy", 0)), "enstrophy": number(stats.get("enstrophy", 0)),
                   "dt": number(stats.get("dt", 0)), "integration": f'{perf["steps_per_s"]:.0f}',
-                  "steps": str(stats.get("steps", 0)), "memory": f'{state["allocated_bytes"] / 1048576:.0f}'}
+                  "steps": str(stats.get("steps", 0)), "memory": memory}
         for key, value in values.items():
             self.metric_labels[key].setText(value)
         if self.sparkline.samples != state["history"]:

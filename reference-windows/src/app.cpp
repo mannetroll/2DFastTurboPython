@@ -236,9 +236,12 @@ public:
     }
     void drawMetrics(float width) {
         float top=111+side+8;renderer->rectangle(box(22,top,width-44,54),panel,10);renderer->rectangle(box(22,top,width-44,54),border,10,true);
+        const double allocationMiB=double(view.stats.allocatedBytes+view.stats.fftBytes+renderer->allocation())/1048576;
+        const bool allocationGiB=allocationMiB>=1024;
+        std::wostringstream allocation;allocation<<std::fixed<<std::setprecision(allocationGiB?1:0)<<(allocationGiB?allocationMiB/1024:allocationMiB);
         const wchar_t* labels[]={L"SIMULATED TIME",L"INITIAL TURNOVERS",L"KINETIC ENERGY",L"ENSTROPHY",L"TIMESTEP",L"FPS",L"STEP",L"GPU ALLOCATION"};
-        std::wstring vals[]={number(view.rate),number(view.turnoversRate),number(view.stats.energy),number(view.stats.enstrophy),number(view.stats.dt),number(view.stepsRate,0),std::to_wstring(view.stats.step),number(double(view.stats.allocatedBytes+view.stats.fftBytes+renderer->allocation())/1048576,0)};
-        const wchar_t* units[]={L"per wall s",L"per wall s",L"",L"",L"Δt",L"steps/s",L"",L"MiB"};
+        std::wstring vals[]={number(view.rate),number(view.turnoversRate),number(view.stats.energy),number(view.stats.enstrophy),number(view.stats.dt),number(view.stepsRate,0),std::to_wstring(view.stats.step),allocation.str()};
+        const wchar_t* units[]={L"per wall s",L"per wall s",L"",L"",L"Δt",L"steps/s",L"",allocationGiB?L"GiB":L"MiB"};
         float x=36,available=width-72,others=(available-220-14)/6;
         for(int i=0;i<8;++i){float w=i<2?110:others;
             renderer->text(labels[i],box(x,top+7,w-6,12),7,secondary,true);

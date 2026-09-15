@@ -244,8 +244,8 @@ try:
     assert report["passed"] and len(report["checks"]) == 67, report
     print("67/67 checks passed; recording title-bar close", flush=True)
 
-    # Finish with the shipped build's real X-button behavior.
-    process = subprocess.Popen([str(REF / "dist/2DFastTurbo.exe"), "--resolution", "2048", "--canvas-size", "680"])
+    # Show the GiB allocation display, then the shipped build's real X-button behavior.
+    process = subprocess.Popen([str(REF / "dist/2DFastTurbo.exe"), "--resolution", "4096", "--canvas-size", "680"])
     hwnd = None
     until = time.monotonic() + 20
     while not hwnd:
@@ -256,7 +256,7 @@ try:
     place(hwnd, x, y)
     until = time.monotonic() + 2.5
     while time.monotonic() < until:
-        write_frame("Final check: X quits the running application", "67/67 passed")
+        write_frame("GPU allocation in GiB; X quits the application", "67/67 passed")
     r = W.RECT()
     dwm.DwmGetWindowAttribute(hwnd, 9, C.byref(r), C.sizeof(r))
     dpi = user.GetDpiForWindow(hwnd) / 96
