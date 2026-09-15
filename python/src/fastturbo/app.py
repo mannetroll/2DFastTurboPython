@@ -1,6 +1,7 @@
 """Shared PySide controls around the platform's native GPU canvas."""
 from __future__ import annotations
 import math
+from pathlib import Path
 import time
 from PySide6.QtCore import QEvent, QSettings, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeySequence, QPainter, QPainterPath, QPen
@@ -545,6 +546,8 @@ def create_application():
     app = QApplication.instance() or QApplication([])
     app.setApplicationName("2DFastTurbo Python")
     app.setOrganizationName("FastTurbo")
+    icon_path = Path(__file__).with_name("assets") / "fastturbo.png"
+    app.setWindowIcon(QIcon(str(icon_path)))
     app.setQuitOnLastWindowClosed(False)
     app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
     return app
