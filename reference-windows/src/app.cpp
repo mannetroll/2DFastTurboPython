@@ -385,7 +385,7 @@ public:
         case WM_CAPTURECHANGED:dragging=0;flush();return 0;
         case WM_MOUSEWHEEL:if(!focused){POINT p{GET_X_LPARAM(l),GET_Y_LPARAM(l)};ScreenToClient(hwnd,&p);if(float(p.x)/scale>side+40){scroll=std::clamp(scroll-float(GET_WHEEL_DELTA_WPARAM(w))/120*36,0.f,std::max(0.f,676-side-34));commitSeed(true);}}return 0;
         case WM_CTLCOLOREDIT:SetTextColor(reinterpret_cast<HDC>(w),RGB(230,230,230));SetBkColor(reinterpret_cast<HDC>(w),RGB(26,33,45));return reinterpret_cast<LRESULT>(editBrush);
-        case WM_CLOSE:if(options.guiBenchmark||options.liveCheck){done=true;exitCode=2;}else hideToTray();return 0;
+        case WM_CLOSE:done=true;if(options.guiBenchmark||options.liveCheck)exitCode=2;return 0;
         case WM_DESTROY:done=true;return 0;
         case WM_APP+1:if(l==WM_LBUTTONUP||l==WM_LBUTTONDBLCLK)show();else if(l==WM_RBUTTONUP){HMENU menu=CreatePopupMenu();AppendMenuW(menu,MF_STRING,ShowSimulation,L"Show Simulation");AppendMenuW(menu,MF_STRING,ToggleRunning,L"Pause / Resume");AppendMenuW(menu,MF_STRING,Quit,L"Quit 2DFastTurbo");POINT p;GetCursorPos(&p);SetForegroundWindow(hwnd);int choice=TrackPopupMenu(menu,TPM_RETURNCMD,p.x,p.y,0,hwnd,nullptr);DestroyMenu(menu);desktopCommand(choice);}return 0;
         }

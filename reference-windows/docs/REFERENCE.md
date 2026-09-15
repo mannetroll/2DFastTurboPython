@@ -34,8 +34,9 @@ exist in this reference version; do not invent them from the porting brief.
 
 These are interactive GUI defaults. Headless and GUI benchmark defaults remain
 N=1024, k₀=4 and Re=27898.36614974335. Explicit command-line values take precedence.
-Ctrl+W closes to the tray, Ctrl+M minimizes, and Ctrl+Q quits, including while
-editing the seed. Editing does not interpret Space as a simulation shortcut.
+The window's X button and Alt+F4 quit the application. Ctrl+W closes to the tray,
+Ctrl+M minimizes, and Ctrl+Q quits, including while editing the seed. Editing
+does not interpret Space as a simulation shortcut.
 
 Sliders coalesce live updates to 30 Hz and flush on release/transport. Structural
 changes reset state, clock, and history. Paused recoloring reuses the frame.

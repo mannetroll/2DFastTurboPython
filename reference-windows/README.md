@@ -48,10 +48,10 @@ executable can also be opened directly when CUDA's `bin` is on PATH. This is
 a native GUI executable, without a separate console window.
 
 Space pauses/resumes, Right advances one step, R resets the same seed, F toggles
-focus, Ctrl+S saves a 1800×1800 PNG, and Ctrl+Shift+R increments the seed. Closing
-the window keeps the simulation running in the notification area. Click its
-icon to reopen; choose Quit from its menu or press Ctrl+Q to exit. Minimize also
-keeps computing. Ctrl+W closes to the tray and Ctrl+M minimizes. Sliders and seed
+focus, Ctrl+S saves a 1800×1800 PNG, and Ctrl+Shift+R increments the seed. The
+window's X button quits the application, as do Alt+F4 and Ctrl+Q. Ctrl+W closes
+to the notification area, where the simulation keeps running; click its icon
+to reopen. Minimize also keeps computing, and Ctrl+M minimizes. Sliders and seed
 fields support keyboard focus; the Edit menu supports seed undo/redo and clipboard
 actions. The tray also offers Pause/Resume.
 
