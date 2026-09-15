@@ -315,6 +315,7 @@ final class FastTurboAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
         about.accessoryView = content
         about.addButton(withTitle: "OK")
         about.window.title = "About 2DFastTurbo"
+        about.window.appearance = NSAppearance(named: .darkAqua)
         about.runModal()
     }
 }

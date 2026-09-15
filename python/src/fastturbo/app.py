@@ -100,6 +100,34 @@ class EnvironmentLabel(QLabel):
             self.summary, Qt.TextElideMode.ElideRight, self.contentsRect().width()))
 
 
+class ColorLegend(QWidget):
+    def __init__(self):
+        super().__init__()
+        self._display = None
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(5)
+        self.low = label("−ω", "secondary")
+        self.gradient = QFrame()
+        self.gradient.setFixedSize(54, 4)
+        self.high = label("+ω", "secondary")
+        for widget in (self.low, self.gradient, self.high):
+            layout.addWidget(widget)
+        self.set_display("vorticity", "ember")
+
+    def set_display(self, field, palette):
+        if self._display == (field, palette):
+            return
+        self._display = (field, palette)
+        self.low.setText("−ω" if field == "vorticity" else "0")
+        self.high.setText({"vorticity": "+ω", "enstrophy": "ω²", "speed": "|u|"}[field])
+        a, b, c = PALETTES[palette]
+        self.gradient.setStyleSheet(
+            "QFrame { border: none; border-radius: 2px; background: "
+            f"qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 {a},stop:0.5 {b},stop:1 {c}); }}")
+        self.setAccessibleName(f"{palette.title()} palette: {self.low.text()} to {self.high.text()}")
+
+
 class EquationLabel(QLabel):
     """Draw the transparent equation with the dialog's current text color."""
     def __init__(self, parent=None):
@@ -168,7 +196,7 @@ class MainWindow(QMainWindow):
         field_row = QHBoxLayout(field_header)
         field_row.setContentsMargins(14, 0, 14, 0)
         self.field_title = label("●  VORTICITY", "accent")
-        self.legend = label("−ω   ▰▰▰   +ω", "secondary")
+        self.legend = ColorLegend()
         self.grid_title = label(f'{config["resolution"]}² · {3 * config["resolution"] // 2}² padded', "secondary")
         field_row.addWidget(self.field_title)
         field_row.addStretch()
@@ -279,7 +307,7 @@ class MainWindow(QMainWindow):
         row.addWidget(self.seed, 1)
         dice = QPushButton("↻")
         dice.setFixedWidth(26)
-        dice.setToolTip("New seed · ⇧⌘R")
+        dice.setToolTip("New seed · " + QKeySequence("Ctrl+Shift+R").toString(QKeySequence.SequenceFormat.NativeText))
         dice.clicked.connect(lambda: self.send("seed"))
         row.addWidget(dice)
         layout.addLayout(row)
@@ -292,7 +320,7 @@ class MainWindow(QMainWindow):
         self.regulated.setToolTip("Automatically adjusts Reynolds number from 10,000·P/(Z·kmax²).")
         self.regulated.toggled.connect(lambda v: self.send("set", regulated=v))
         layout.addWidget(self.regulated)
-        self.palinstrophy = label("P/(Zkmax2) ~ 0.00", "secondary")
+        self.palinstrophy = label("10⁴P/(Z kmax²) ≈ 0.00", "secondary")
         layout.addWidget(self.palinstrophy)
         self._separator(layout)
         self.fields = self._buttons(layout, FIELDS, "display")
@@ -300,7 +328,11 @@ class MainWindow(QMainWindow):
         for key, button in self.palettes.items():
             a, b, c = PALETTES[key]
             button.setStyleSheet(f"QPushButton {{ background: qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 {a},stop:0.5 {b},stop:1 {c}); color:white; }}")
-        self.color_range = self._combo(layout, "Color range", [("Sigma", "sigma"), ("Exposure", "exposure")], lambda v: self.send("set", color_range=v))
+        self.color_range_row = QWidget()
+        range_layout = QVBoxLayout(self.color_range_row)
+        range_layout.setContentsMargins(0, 0, 0, 0)
+        self.color_range = self._combo(range_layout, "Color range", [("Sigma", "sigma"), ("Exposure", "exposure")], lambda v: self.send("set", color_range=v))
+        layout.addWidget(self.color_range_row)
         self.sigma = FloatSlider("Sigma", 1.5, 3.5, 2.5, lambda v: f"±{v:.1f}σ")
         self.sigma.changed.connect(lambda v: self.send("set", refresh=False, sigma=v))
         layout.addWidget(self.sigma)
@@ -497,13 +529,13 @@ class MainWindow(QMainWindow):
         sigma = state["display"] == "vorticity" and state["color_range"] == "sigma"
         self.sigma.setVisible(sigma)
         self.exposure.setVisible(not sigma)
-        self.color_range.setEnabled(state["display"] == "vorticity")
-        self.palinstrophy.setText(f'P/(Zkmax2) ~ {state["palinstrophy_control"]:.2f}')
+        self.color_range_row.setVisible(state["display"] == "vorticity")
+        self.palinstrophy.setText(f'10⁴P/(Z kmax²) ≈ {state["palinstrophy_control"]:.2f}')
         self.backend.setToolTip(state["gpu"])
         self.field_title.setText(("●  " if state["running"] else "○  ") + state["display"].upper())
         self.canvas.setAccessibleName("Decaying turbulence: " + state["display"].title())
         self.grid_title.setText(f'{config["resolution"]}² · {config["padded_resolution"]}² padded')
-        self.legend.setText("−ω  ▰▰▰  +ω" if state["display"] == "vorticity" else "0  ▰▰▰  " + ("ω²" if state["display"] == "enstrophy" else "|u|"))
+        self.legend.set_display(state["display"], state["palette"])
         self.pause_action.setText("Pause" if state["running"] else "Resume")
         for action in [self.pause_action, self.step_action]:
             action.setEnabled(state["ready"])

@@ -69,7 +69,7 @@ final class LiveControlDisplay: ObservableObject {
         cfl: FastTurboConfiguration().cfl,
         reynolds: Int(FastTurboConfiguration().reynolds.rounded()),
         logarithmicReynolds: log10(FastTurboConfiguration().reynolds),
-        isPalinstrophyRegulated: false, palinstrophy: "P/(Zkmax2) ~ 0.00")
+        isPalinstrophyRegulated: false, palinstrophy: "10⁴P/(Z kmax²) ≈ 0.00")
 
     func update(cfl: Float, reynolds: Double, regulated: Bool, palinstrophy: Double) {
         // Invalid programmatic configurations are reported by the solver; keep
@@ -78,7 +78,7 @@ final class LiveControlDisplay: ObservableObject {
         let next = Values(cfl: cfl, reynolds: integer,
                           logarithmicReynolds: log10(reynolds),
                           isPalinstrophyRegulated: regulated,
-                          palinstrophy: String(format: "P/(Zkmax2) ~ %.2f", palinstrophy))
+                          palinstrophy: String(format: "10⁴P/(Z kmax²) ≈ %.2f", palinstrophy))
         if next != values { values = next }
     }
 }

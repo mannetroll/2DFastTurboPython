@@ -193,7 +193,7 @@ public:
         renderer->text(view.regulated?L"AUTO":L"MANUAL",box(x+116,y+93,52,20),8,secondary,true,true);
         slider(Re,x,y+117,168,(localLogRe-3)/3,!view.regulated,L"Reynolds number · logarithmic 1,000–1,000,000");
         toggle(Regulate,x,y+143,L"Regulate with palinstrophy",view.regulated);
-        renderer->text(L"P/(Zkmax2) ~ "+number(10000*view.stats.metric,2),box(x,y+166,168,20),10,foreground,true);
+        renderer->text(L"10⁴P/(Z kmax²) ≈ "+number(10000*view.stats.metric,2),box(x,y+166,168,20),10,foreground,true);
         renderer->line(x,y+195,x+168,y+195,border);
         const int fields[]={Enstrophy,Vorticity,Speed};const int fieldIndex[]={2,0,1};const wchar_t* names[]={L"Enstrophy",L"Vorticity",L"Speed"};
         for(int i=0;i<3;++i){float row=y+207+i*28.f;button(fields[i],box(x,row,168,24),names[i],names[i],display.field==fieldIndex[i],true,true);renderer->circle(x+154,row+12,4.5f,display.field==fieldIndex[i]?accent:secondary,display.field!=fieldIndex[i]);}
