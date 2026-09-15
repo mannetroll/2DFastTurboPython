@@ -92,7 +92,7 @@ private final class TurboPipeline {
 
     func encode(frame: FastTurboFrame, uniforms: inout TurboUniforms,
                 descriptor: MTLRenderPassDescriptor, command: any MTLCommandBuffer) throws {
-        guard frame.gridSize > 1, frame.gridSize <= 4096,
+        guard frame.gridSize > 1, frame.gridSize <= 16384,
               frame.buffer.length >= 3 * frame.gridSize * frame.gridSize * MemoryLayout<Float>.stride else {
             throw CanvasError.unavailable("The solver supplied an invalid field buffer. Reset the simulation to try again.")
         }

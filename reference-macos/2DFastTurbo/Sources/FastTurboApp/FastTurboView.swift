@@ -1,4 +1,5 @@
 import SwiftUI
+import Metal
 
 // The window sizes itself around the complete square simulation domain.
 enum TurboLayout {
@@ -32,6 +33,23 @@ private enum TurboTheme {
 struct FastTurboView: View {
     @ObservedObject var model: SimulationController
     @State private var seedText = "2"
+
+    private static let environment: (subtitle: String, details: String) = {
+        let device = MTLCreateSystemDefaultDevice()
+        let system = ProcessInfo.processInfo.operatingSystemVersion
+        let os = "macOS \(system.majorVersion).\(system.minorVersion).\(system.patchVersion)"
+        var parts = [device?.name ?? "Apple Metal"]
+        var details = ["GPU: \(parts[0])"]
+        if let device, device.recommendedMaxWorkingSetSize > 0 {
+            let memory = String(format: "%.1f GiB", Double(device.recommendedMaxWorkingSetSize) / 1_073_741_824)
+            parts.append(memory)
+            details.append("Metal recommended working set: \(memory)")
+        }
+        parts.append(os)
+        details.append("OS: \(ProcessInfo.processInfo.operatingSystemVersionString)")
+        details.append("Native Metal / VkFFT · arm64")
+        return (parts.joined(separator: " · "), details.joined(separator: "\n"))
+    }()
 
     private var integratorSelection: Binding<Integrator> {
         Binding(get: { model.configuration.integrator }, set: { method in
@@ -75,8 +93,12 @@ struct FastTurboView: View {
             .frame(width: 42, height: 42)
             VStack(alignment: .leading, spacing: 4) {
                 Text("2D FAST TURBO").font(.system(size: 16, weight: .semibold, design: .rounded)).tracking(2.6)
-                Text("DECAYING TURBULENCE IN HDR").font(.system(size: 8, weight: .medium, design: .monospaced)).tracking(2)
+                Text(Self.environment.subtitle).font(.system(size: 9, weight: .medium, design: .monospaced))
                     .foregroundStyle(TurboTheme.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .help(Self.environment.details)
+                    .accessibilityLabel(Self.environment.details)
             }
             Spacer(minLength: 10)
             HStack(spacing: 6) {
@@ -206,7 +228,7 @@ struct FastTurboView: View {
             metricDivider
             metric("TIMESTEP", number(model.timeStep), unit: "Δt")
             metricDivider
-            metric("INTEGRATION", String(format: "%.0f", model.performance.stepsPerSecond), unit: "steps/s")
+            metric("FPS", String(format: "%.0f", model.performance.stepsPerSecond), unit: "steps/s")
                 .help("Last measured simulation steps per wall-clock second. Retained while paused.")
             metricDivider
             metric("STEP", "\(model.step)")
@@ -243,7 +265,7 @@ struct FastTurboView: View {
                 }
                 compactChoice("N") {
                     Picker("Resolution", selection: $model.configuration.resolution) {
-                        ForEach([128, 256, 512, 1024, 2048, 4096], id: \.self) { Text("\($0)").tag($0) }
+                        ForEach([128, 256, 512, 1024, 2048, 3072, 4096, 6144, 8192, 9216, 12288, 16384], id: \.self) { Text("\($0)").tag($0) }
                     }
                 }
                 ReynoldsControls(controls: model.liveControls,

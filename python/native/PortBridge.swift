@@ -54,7 +54,7 @@ private func configuration(_ values: [String: Any], base: FastTurboConfiguration
         c.nonlinearFormulation = form
     }
     if let value = values["fixed_dt"] { c.fixedTimeStep = (value as? Double).map(Float.init) }
-    guard (16...4096).contains(c.resolution), c.resolution % 2 == 0,
+    guard (16...16384).contains(c.resolution), c.resolution % 2 == 0,
           c.initialWaveNumber > 0, c.initialWaveNumber <= 1_000_000,
           c.reynolds.isFinite, c.reynolds > 0, c.viscosity.isFinite,
           c.cfl.isFinite, c.cfl > 0,
@@ -128,6 +128,7 @@ public func ftInitialize(_ directory: UnsafePointer<CChar>?) -> UnsafeMutablePoi
         guard let device = MTLCreateSystemDefaultDevice() else { throw FastTurboError.noMetalDevice }
         return ["abi_version": 1, "defaults": configReport(FastTurboConfiguration()),
                 "gpu": device.name, "os": ProcessInfo.processInfo.operatingSystemVersionString,
+                "recommended_working_set_bytes": device.recommendedMaxWorkingSetSize,
                 "physical_memory_bytes": ProcessInfo.processInfo.physicalMemory]
     }
 }

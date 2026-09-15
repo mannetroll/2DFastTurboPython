@@ -23,7 +23,7 @@ struct Config {
     Form form = Form::stress;
     int m() const { return 3*n/2; }
     void validate() const {
-        if (n < 16 || n > 4096 || n % 2 || k0 <= 0 || !(reynolds > 0) ||
+        if (n < 16 || n > 16384 || n % 2 || k0 <= 0 || !(reynolds > 0) ||
             !std::isfinite(float(1/reynolds)) || !(cfl > 0) || !std::isfinite(cfl) ||
             fixedDt < 0 || !std::isfinite(fixedDt) || int(integrator)<0 || int(integrator)>2 || int(form)<0 || int(form)>1)
             throw std::invalid_argument("Invalid resolution, Reynolds number, k0, CFL, fixed timestep or method.");

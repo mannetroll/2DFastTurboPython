@@ -338,9 +338,15 @@ char* ft_initialize(const char*) {
         CUDA_CHECK(cudaSetDevice(deviceId));
         cudaDeviceProp prop{};CUDA_CHECK(cudaGetDeviceProperties(&prop,deviceId));gpuName=prop.name;
         MEMORYSTATUSEX memory{};memory.dwLength=sizeof(memory);GlobalMemoryStatusEx(&memory);
-        return Json{{"abi_version",1},{"defaults",configReport(Config{})},{"backend","CUDA / VkFFT"},
+        Json info{{"abi_version",1},{"defaults",configReport(Config{})},{"backend","CUDA / VkFFT"},
             {"gpu",gpuName},{"os","Windows"},{"physical_memory_bytes",memory.ullTotalPhys},
+            {"gpu_memory_bytes",prop.totalGlobalMem},
             {"capabilities",{{"native_rendering",true},{"forcing",false},{"drag",false},{"vortex_injection",false}}}};
+        int version=0;
+        if(cudaRuntimeGetVersion(&version)==cudaSuccess)info["cuda_runtime_version"]=version;
+        version=0;
+        if(cudaDriverGetVersion(&version)==cudaSuccess)info["cuda_driver_version"]=version;
+        return info;
     });
 }
 void* ft_engine_create(const char* input,char** error) {

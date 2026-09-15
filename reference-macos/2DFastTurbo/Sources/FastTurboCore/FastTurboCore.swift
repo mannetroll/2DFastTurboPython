@@ -44,8 +44,8 @@ public final class FastTurboCore: @unchecked Sendable {
     public init(configuration: FastTurboConfiguration, device requestedDevice: MTLDevice? = nil,
                 vorticity: [Float]? = nil) throws {
         let n = configuration.resolution
-        guard n >= 16, n <= 4096, n % 2 == 0 else {
-            throw FastTurboError.invalidConfiguration("Resolution must be even, between 16 and 4096.")
+        guard n >= 16, n <= 16384, n % 2 == 0 else {
+            throw FastTurboError.invalidConfiguration("Resolution must be even, between 16 and 16384.")
         }
         guard configuration.reynolds > 0, !configuration.reynolds.isNaN,
               configuration.viscosity.isFinite, configuration.cfl > 0, configuration.cfl.isFinite,

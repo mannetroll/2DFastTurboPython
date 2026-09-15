@@ -2,7 +2,7 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSlider, QVBoxLayout, QWidget
 
-RESOLUTIONS = (128, 256, 512, 1024, 2048, 4096)
+RESOLUTIONS = (128, 256, 512, 1024, 2048, 3072, 4096, 6144, 8192, 9216, 12288, 16384)
 WAVENUMBERS = (2, 4, 6, 8, 10, 12, 16, 20)
 FIELDS = (("Enstrophy", "enstrophy"), ("Vorticity", "vorticity"), ("Speed", "speed"))
 METHODS = (("IMEX RK3", "imexRK3"), ("Integrating-factor RK3", "ifHeunRK3"), ("ETD RK4", "etdrk4"))

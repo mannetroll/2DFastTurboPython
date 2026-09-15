@@ -479,7 +479,16 @@ private final class SimulationPump: @unchecked Sendable {
 
 @MainActor
 final class SimulationController: ObservableObject {
-    var configuration = FastTurboConfiguration() {
+    private static let startupConfiguration: FastTurboConfiguration = {
+        var configuration = FastTurboConfiguration()
+        configuration.resolution = 2048
+        configuration.initialWaveNumber = 10
+        configuration.reynolds = FastTurboConfiguration.reynoldsFromNAndK0(
+            configuration.resolution, configuration.initialWaveNumber)
+        return configuration
+    }()
+
+    var configuration = SimulationController.startupConfiguration {
         willSet {
             var structural = newValue
             structural.cfl = configuration.cfl
@@ -516,8 +525,8 @@ final class SimulationController: ObservableObject {
     }
     /// The slider's value in manual mode. Automatic mode displays the effective
     /// value here but does not let a drag alter the running PID controller.
-    private(set) var manualReynolds = FastTurboConfiguration().reynolds
-    private(set) var effectiveReynolds = FastTurboConfiguration().reynolds
+    private(set) var manualReynolds = SimulationController.startupConfiguration.reynolds
+    private(set) var effectiveReynolds = SimulationController.startupConfiguration.reynolds
     var isPalinstrophyRegulated = true {
         didSet {
             guard isPalinstrophyRegulated != oldValue else { return }

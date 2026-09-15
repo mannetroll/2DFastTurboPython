@@ -126,7 +126,7 @@ enum BenchmarkCLI {
         } else {
             wallSeconds = nil
         }
-        guard configuration.resolution >= 16, configuration.resolution <= 4096,
+        guard configuration.resolution >= 16, configuration.resolution <= 16384,
               configuration.resolution % 2 == 0, configuration.reynolds > 0,
               configuration.initialWaveNumber > 0, configuration.cfl > 0, configuration.cfl.isFinite else {
             throw Failure(message: "Invalid grid, Reynolds number, spectrum scale, or CFL.")

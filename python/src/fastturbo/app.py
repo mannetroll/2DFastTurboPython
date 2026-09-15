@@ -9,7 +9,8 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
     QSizePolicy, QVBoxLayout, QWidget)
 
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
-from .engine import NativeUI
+from .engine import Configuration, NativeUI
+from .environment import environment_summary
 from .platform_ui import fonts, install_lifecycle
 
 STYLE = """
@@ -81,9 +82,29 @@ class Sparkline(QWidget):
         painter.drawPath(path)
 
 
+class EnvironmentLabel(QLabel):
+    def __init__(self, info):
+        summary, details = environment_summary(info)
+        super().__init__(summary)
+        self.summary = summary
+        self.setObjectName("secondary")
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        self.setToolTip(details)
+        self.setAccessibleName("Runtime environment")
+        self.setAccessibleDescription(details)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.setText(self.fontMetrics().elidedText(
+            self.summary, Qt.TextElideMode.ElideRight, self.contentsRect().width()))
+
+
 class MainWindow(QMainWindow):
     def __init__(self, *, config=None, regulated=True, canvas_size=640, restore=True):
         super().__init__()
+        config = {"resolution": 2048, "k0": 10, **(config or {})}
+        if regulated:
+            config["reynolds"] = Configuration.calibrated_reynolds(config["resolution"], config["k0"])
         self.native = NativeUI()
         self.state = {}
         self.poll_seconds = 0.0
@@ -118,7 +139,7 @@ class MainWindow(QMainWindow):
         field_row.setContentsMargins(14, 0, 14, 0)
         self.field_title = label("●  VORTICITY", "accent")
         self.legend = label("−ω   ▰▰▰   +ω", "secondary")
-        self.grid_title = label("1024² · 1536² padded", "secondary")
+        self.grid_title = label(f'{config["resolution"]}² · {3 * config["resolution"] // 2}² padded', "secondary")
         field_row.addWidget(self.field_title)
         field_row.addStretch()
         field_row.addWidget(self.legend)
@@ -147,8 +168,7 @@ class MainWindow(QMainWindow):
             if geometry:
                 self.restoreGeometry(geometry)
         self.native.call("set", regulated=regulated)
-        if config:
-            self.native.call("configure", **config)
+        self.native.call("configure", **config)
         self.poll_timer = QTimer(self)
         self.poll_timer.setInterval(250)
         self.poll_timer.timeout.connect(self.poll)
@@ -169,9 +189,9 @@ class MainWindow(QMainWindow):
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("2D FAST TURBO", "title"))
-        titles.addWidget(label("DECAYING TURBULENCE IN HDR", "secondary"))
-        row.addLayout(titles)
-        row.addStretch()
+        self.environment = EnvironmentLabel(self.native.backend_info)
+        titles.addWidget(self.environment)
+        row.addLayout(titles, 1)
         self.backend = label("●  " + self.native.backend_info.get("backend", "METAL / VkFFT"), "accent")
         self.backend.setFixedHeight(28)
         self.backend.setStyleSheet("background:#122427; border-radius:12px; padding:8px; font-size:9px")
@@ -303,7 +323,7 @@ class MainWindow(QMainWindow):
         self.metric_labels = {}
         entries = [("turbo", "SIMULATED TIME", "per wall s"), ("turnovers", "INITIAL TURNOVERS", "per wall s"),
                    ("energy", "KINETIC ENERGY", ""), ("enstrophy", "ENSTROPHY", ""),
-                   ("dt", "TIMESTEP", "Δt"), ("integration", "INTEGRATION", "steps/s"),
+                   ("dt", "TIMESTEP", "Δt"), ("integration", "FPS", "steps/s"),
                    ("steps", "STEP", ""), ("memory", "GPU ALLOCATION", "MiB")]
         for key, title, unit in entries:
             stack = QVBoxLayout()
