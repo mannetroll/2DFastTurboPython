@@ -28,6 +28,7 @@ Space pauses/resumes, Right advances one step, R resets, Cmd-Shift-R increments
 the seed, F focuses the flow, and Cmd-S exports a PNG. Closing or minimizing the
 window keeps the simulation running; View → Show Simulation or the Dock reopens it.
 On Windows, use Ctrl in place of Cmd; the tray icon can reopen the retained run.
+Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
 
 Windows build, test and run from the repository root:
 

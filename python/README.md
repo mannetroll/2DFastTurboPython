@@ -75,6 +75,8 @@ Python version, operating system and architecture.
 The GUI starts with a 1024 × 1024 grid, ETD RK4 integration, stress form, CFL 3,
 seed 2 and automatic Reynolds-number regulation based on palinstrophy. Press
 **Space** to pause or resume, **Right Arrow** to single-step and **R** to reset.
+Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
+Closing the window keeps the simulation running.
 
 ## Use from Python
 

@@ -356,11 +356,14 @@ class MainWindow(QMainWindow):
         file = menu.addMenu("File")
         self.save_action = file.addAction("Save Snapshot…", lambda: self.send("save"), QKeySequence.StandardKey.Save)
         file.addAction("Close Window", self.close, QKeySequence.StandardKey.Close)
-        file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence.StandardKey.Quit)
+        # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
+        # unbound on Windows, so specify the requested shortcut explicitly.
+        file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence("Ctrl+Q"))
         about = file.addAction("About 2DFastTurbo", lambda: QMessageBox.about(self, "2DFastTurbo Python",
             "Decaying two-dimensional turbulence on the native GPU backend.\n"
             "3/2-padded pseudospectral Navier–Stokes with VkFFT.\n\n"
-            "Space pauses; → advances once; R resets; F focuses; Save Snapshot exports a PNG."))
+            "Space pauses; → advances once; R resets; F focuses; Save Snapshot exports a PNG.\n"
+            "Ctrl+Q on Windows or Cmd+Q on macOS quits the application."))
         about.setMenuRole(QAction.MenuRole.AboutRole)
         edit = menu.addMenu("Edit")
         for title, method, shortcut in [("Undo", "undo", QKeySequence.StandardKey.Undo),
