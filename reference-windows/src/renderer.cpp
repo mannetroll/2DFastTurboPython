@@ -83,6 +83,19 @@ void Renderer::text(const std::wstring& value,D2D1_RECT_F rect,float size,D2D1_C
     auto key=std::make_pair(int(size*10),mono);auto& font=fonts[key];if(!font){hrCheck(write->CreateTextFormat(mono?L"Consolas":L"Segoe UI",nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,size,L"en-us",&font),"Create font");font->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);font->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);}
     font->SetTextAlignment(right?DWRITE_TEXT_ALIGNMENT_TRAILING:DWRITE_TEXT_ALIGNMENT_LEADING);brush->SetColor(linearColor(color,hdr));d2d->DrawTextW(value.c_str(),UINT32(value.size()),font.Get(),rect,brush.Get(),D2D1_DRAW_TEXT_OPTIONS_CLIP);
 }
+void Renderer::elidedText(const std::wstring& value,D2D1_RECT_F rect,float size,D2D1_COLOR_F color){
+    if(!subtitleLayout||subtitleValue!=value){
+        ComPtr<IDWriteTextFormat> font;ComPtr<IDWriteInlineObject> ellipsis;
+        hrCheck(write->CreateTextFormat(L"Consolas",nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,size,L"en-us",&font),"Create subtitle font");
+        font->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);font->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+        hrCheck(write->CreateEllipsisTrimmingSign(font.Get(),&ellipsis),"Create subtitle ellipsis");
+        DWRITE_TRIMMING trimming{DWRITE_TRIMMING_GRANULARITY_CHARACTER,0,0};font->SetTrimming(&trimming,ellipsis.Get());
+        subtitleLayout.Reset();hrCheck(write->CreateTextLayout(value.c_str(),UINT32(value.size()),font.Get(),rect.right-rect.left,rect.bottom-rect.top,&subtitleLayout),"Create subtitle layout");
+        subtitleValue=value;
+    }
+    subtitleLayout->SetMaxWidth(rect.right-rect.left);subtitleLayout->SetMaxHeight(rect.bottom-rect.top);
+    brush->SetColor(linearColor(color,hdr));d2d->DrawTextLayout(D2D1::Point2F(rect.left,rect.top),subtitleLayout.Get(),brush.Get(),D2D1_DRAW_TEXT_OPTIONS_CLIP);
+}
 void Renderer::title(float x,float y,D2D1_COLOR_F color){
     if(!titleLayout){
         ComPtr<IDWriteTextFormat> font;ComPtr<IDWriteTextLayout> layout;

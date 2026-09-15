@@ -26,6 +26,8 @@ class Renderer {
     ComPtr<ID2D1SolidColorBrush> brush;
     ComPtr<IDWriteFactory> write;
     ComPtr<IDWriteTextLayout1> titleLayout;
+    ComPtr<IDWriteTextLayout> subtitleLayout;
+    std::wstring subtitleValue;
     std::map<std::pair<int,bool>,ComPtr<IDWriteTextFormat>> fonts;
     ComPtr<ID3D11VertexShader> fieldVS,flowVS;
     ComPtr<ID3D11PixelShader> fieldPS,flowPS;
@@ -63,6 +65,7 @@ public:
     void circle(float x,float y,float radius,D2D1_COLOR_F color,bool outline=false);
     void text(const std::wstring& text,D2D1_RECT_F rect,float size,D2D1_COLOR_F color,bool mono=false,bool right=false);
     void title(float x,float y,D2D1_COLOR_F color);
+    void elidedText(const std::wstring& text,D2D1_RECT_F rect,float size,D2D1_COLOR_F color);
     void gradient(D2D1_RECT_F rect,int palette);
     void clip(D2D1_RECT_F rect);
     void unclip();

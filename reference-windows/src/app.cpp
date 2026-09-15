@@ -1,5 +1,7 @@
 #include "controller.hpp"
 #include "renderer.hpp"
+#include "desktop_ui.hpp"
+#include <richedit.h>
 #include <windowsx.h>
 #include <commdlg.h>
 #include <dwmapi.h>
@@ -21,7 +23,8 @@ Rect box(float x,float y,float w,float h){return {x,y,x+w,y+h};}
 bool contains(Rect r,float x,float y){return x>=r.left&&x<r.right&&y>=r.top&&y<r.bottom;}
 std::wstring widen(const std::string& text){if(text.empty())return {};int n=MultiByteToWideChar(CP_UTF8,0,text.data(),int(text.size()),nullptr,0);std::wstring result(n,0);MultiByteToWideChar(CP_UTF8,0,text.data(),int(text.size()),result.data(),n);return result;}
 std::wstring number(double value,int digits=3){std::wostringstream out;if(value!=0&&(std::abs(value)<.001||std::abs(value)>=10000))out<<std::scientific<<std::setprecision(2);else out<<std::fixed<<std::setprecision(digits);out<<value;return out.str();}
-enum Id {Focus=1,Save,Play,Step,Reset,K0,Seed,Dice,Resolution,Re,Regulate,Enstrophy,Vorticity,Speed,Inferno,Ember,Aurora,Glacier,Range,Contrast,Flow,Method,Formulation,CFL,Dismiss};
+enum Id {Focus=1,Save,Play,Step,Reset,K0,Seed,Dice,Resolution,Re,Regulate,Enstrophy,Vorticity,Speed,Inferno,Ember,Aurora,Glacier,Range,Contrast,Flow,Method,Formulation,CFL,Dismiss,Environment,Gpu};
+constexpr int resolutions[]={128,256,512,1024,2048,3072,4096,6144,8192,9216,12288,16384};
 struct Hit {int id;Rect rect;std::wstring help;bool enabled;bool slider;};
 class App {
 public:
@@ -44,6 +47,9 @@ public:
     double firstPresentation=0,lastPresentation=0;
     HBRUSH editBrush{};
     HFONT editFont{};
+    HMODULE richEditModule{};
+    RuntimeEnvironment environment;
+    MenuTheme menuTheme;
     NOTIFYICONDATAW tray{};
     bool trayVisible=false;
     bool checking=false;
@@ -58,24 +64,33 @@ public:
     float testSide=0;
     Config testConfig;
     explicit App(Options o):options(o),display(o.display){}
-    ~App(){controller.reset();renderer.reset();if(trayVisible)Shell_NotifyIconW(NIM_DELETE,&tray);if(editFont)DeleteObject(editFont);if(editBrush)DeleteObject(editBrush);}
+    ~App(){controller.reset();renderer.reset();if(trayVisible)Shell_NotifyIconW(NIM_DELETE,&tray);if(editFont)DeleteObject(editFont);if(editBrush)DeleteObject(editBrush);if(richEditModule)FreeLibrary(richEditModule);}
     void initialize() {
         scale=float(GetDpiForWindow(hwnd))/96;side=float(options.canvasSide);
         BOOL dark=TRUE;DwmSetWindowAttribute(hwnd,20,&dark,sizeof(dark));
+        HMENU menu=createDesktopMenus();menuTheme.apply(menu);SetMenu(hwnd,menu);
         resizeAround(side);
         renderer=std::make_unique<Renderer>(hwnd);
+        environment=runtimeEnvironment(renderer->gpu());
         controller=std::make_unique<Controller>(options,renderer->gpu());
         localCFL=options.config.cfl;localLogRe=float(std::log10(options.config.reynolds));
         editBrush=CreateSolidBrush(RGB(26,33,45));
         editFont=CreateFontW(-int(12*scale),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Consolas");
-        edit=CreateWindowExW(0,L"EDIT",L"2",WS_CHILD|ES_RIGHT|ES_AUTOHSCROLL,0,0,0,0,hwnd,reinterpret_cast<HMENU>(100),GetModuleHandleW(nullptr),nullptr);
+        richEditModule=LoadLibraryW(L"Msftedit.dll");
+        if(!richEditModule)throw std::runtime_error("Cannot load the Windows seed editor.");
+        edit=CreateWindowExW(0,MSFTEDIT_CLASS,L"",WS_CHILD|ES_RIGHT|ES_AUTOHSCROLL,0,0,0,0,hwnd,reinterpret_cast<HMENU>(100),GetModuleHandleW(nullptr),nullptr);
+        if(!edit)throw std::runtime_error("Cannot create the seed editor.");
+        SendMessageW(edit,EM_SETTEXTMODE,TM_PLAINTEXT,0);
+        SendMessageW(edit,EM_SETBKGNDCOLOR,0,RGB(26,33,45));
+        CHARFORMAT2W format{};format.cbSize=sizeof(format);format.dwMask=CFM_COLOR;format.crTextColor=RGB(230,232,236);
+        SendMessageW(edit,EM_SETCHARFORMAT,SCF_ALL,reinterpret_cast<LPARAM>(&format));
         SendMessageW(edit,WM_SETFONT,reinterpret_cast<WPARAM>(editFont),TRUE);SendMessageW(edit,EM_SETLIMITTEXT,20,0);
         SetTimer(hwnd,1,16,nullptr);
         if(options.liveCheck)prepareChecks();
     }
     void resizeAround(float desired) {
         MONITORINFO info{sizeof(info)};GetMonitorInfoW(MonitorFromWindow(hwnd,MONITOR_DEFAULTTONEAREST),&info);
-        RECT chrome{0,0,0,0};AdjustWindowRectExForDpi(&chrome,WS_OVERLAPPEDWINDOW,FALSE,0,UINT(scale*96));
+        RECT chrome{0,0,0,0};AdjustWindowRectExForDpi(&chrome,WS_OVERLAPPEDWINDOW,GetMenu(hwnd)!=nullptr,0,UINT(scale*96));
         float extraW=focused?44.f:258.f,extraH=focused?123.f:185.f;
         float maxSide=std::min(float(info.rcWork.right-info.rcWork.left-(chrome.right-chrome.left))/scale-extraW,float(info.rcWork.bottom-info.rcWork.top-(chrome.bottom-chrome.top))/scale-extraH);
         side=std::clamp(desired,std::min(576.f,maxSide),maxSide);
@@ -132,10 +147,13 @@ public:
             renderer->line(45+sign*px,38.5f+sign*py,45+sign*x,38.5f+sign*y,accent,1.2f);px=x;py=y;}}
         renderer->circle(45,38.5f,5.2f,accent);renderer->circle(45,38.5f,1.5f,D2D1::ColorF(.035f,.047f,.073f));
         renderer->title(79,21,foreground);
-        renderer->text(L"D E C A Y I N G   T U R B U L E N C E   I N   H D R",box(79,45,290,14),7.5f,secondary,true);
+        auto subtitle=box(79,45,width-310,14);
+        renderer->elidedText(environment.subtitle,subtitle,9,secondary);
+        add(Environment,subtitle,environment.details.c_str(),false);
         renderer->rectangle(box(width-220,25,118,27),D2D1::ColorF(accent.r,accent.g,accent.b,.065f),14);
         renderer->circle(width-208,38,2.5f,view.ready?accent:secondary);
         renderer->text(L"CUDA / VkFFT",box(width-200,25,98,27),9,accent,true);
+        add(Gpu,box(width-220,25,118,27),environment.gpu.c_str(),false);
         button(Focus,box(width-88,23,32,32),focused?L"↙":L"↗",L"Focus mode · F");
         button(Save,box(width-46,23,32,32),L"↥",L"Save PNG · Ctrl+S",false,view.ready&&!exporting);
         renderer->rectangle(box(22,77,side,side+34),panel,15);
@@ -166,7 +184,14 @@ public:
         if(!focused){drawInspector();drawMetrics(width);}
         auto hit=hitAt(mouseX,mouseY);int hovered=hit?hit->id:0;
         if(hovered!=hoverId){hoverId=hovered;hoverSince=nowSeconds();}
-        if(hit&&nowSeconds()-hoverSince>.6&&!dragging&&!options.guiBenchmark&&!options.liveCheck){float w=std::min(float(hit->help.size())*6+18,width-20);float x=std::clamp(mouseX,10.f,width-w-10),y=std::min(mouseY+25,height-34);renderer->rectangle(box(x,y,w,26),D2D1::ColorF(.12f,.15f,.20f,.98f),5);renderer->text(hit->help,box(x+8,y,w-16,26),10,foreground);}
+        if(hit&&nowSeconds()-hoverSince>.6&&!dragging&&!options.guiBenchmark&&!options.liveCheck){
+            std::wistringstream text(hit->help);std::vector<std::wstring> lines;std::wstring line;size_t longest=0;
+            while(std::getline(text,line)){longest=std::max(longest,line.size());lines.push_back(line);}
+            float w=std::min(float(longest)*6+18,width-20),h=12+16.f*float(lines.size());
+            float x=std::clamp(mouseX,10.f,width-w-10),y=std::min(mouseY+25,height-h-8);
+            renderer->rectangle(box(x,y,w,h),D2D1::ColorF(.12f,.15f,.20f,.98f),5);
+            for(size_t i=0;i<lines.size();++i)renderer->text(lines[i],box(x+8,y+6+16.f*float(i),w-16,16),10,foreground);
+        }
         renderer->end();
         if(!options.capture.empty()&&view.ready&&view.finished)renderer->capturePNG(options.capture);
         renderer->present();
@@ -192,7 +217,7 @@ public:
         renderer->text(std::to_wstring(uint64_t(std::llround(std::pow(10.,localLogRe)))),box(x+23,y+93,82,20),11,accent,true);
         renderer->text(view.regulated?L"AUTO":L"MANUAL",box(x+116,y+93,52,20),8,secondary,true,true);
         slider(Re,x,y+117,168,(localLogRe-3)/3,!view.regulated,L"Reynolds number · logarithmic 1,000–1,000,000");
-        toggle(Regulate,x,y+143,L"Regulate with palinstrophy",view.regulated);
+        toggle(Regulate,x,y+143,L"Regulate with Palinstrophy",view.regulated);
         renderer->text(L"10⁴P/(Z kmax²) ≈ "+number(10000*view.stats.metric,2),box(x,y+166,168,20),10,foreground,true);
         renderer->line(x,y+195,x+168,y+195,border);
         const int fields[]={Enstrophy,Vorticity,Speed};const int fieldIndex[]={2,0,1};const wchar_t* names[]={L"Enstrophy",L"Vorticity",L"Speed"};
@@ -216,7 +241,7 @@ public:
     }
     void drawMetrics(float width) {
         float top=111+side+8;renderer->rectangle(box(22,top,width-44,54),panel,10);renderer->rectangle(box(22,top,width-44,54),border,10,true);
-        const wchar_t* labels[]={L"SIMULATED TIME",L"INITIAL TURNOVERS",L"KINETIC ENERGY",L"ENSTROPHY",L"TIMESTEP",L"INTEGRATION",L"STEP",L"GPU ALLOCATION"};
+        const wchar_t* labels[]={L"SIMULATED TIME",L"INITIAL TURNOVERS",L"KINETIC ENERGY",L"ENSTROPHY",L"TIMESTEP",L"FPS",L"STEP",L"GPU ALLOCATION"};
         std::wstring vals[]={number(view.rate),number(view.turnoversRate),number(view.stats.energy),number(view.stats.enstrophy),number(view.stats.dt),number(view.stepsRate,0),std::to_wstring(view.stats.step),number(double(view.stats.allocatedBytes+view.stats.fftBytes+renderer->allocation())/1048576,0)};
         const wchar_t* units[]={L"per wall s",L"per wall s",L"",L"",L"Δt",L"steps/s",L"",L"MiB"};
         float x=36,available=width-72,others=(available-220-14)/6;
@@ -260,7 +285,7 @@ public:
         case Seed:editSeed();break;
         case Dice:++c.seed;controller->configure(c);break;
         case K0:{int vals[]={2,4,6,8,10,12,16,20};std::vector<std::wstring> labels;int cur=0;for(int i=0;i<8;++i){labels.push_back(std::to_wstring(vals[i]));if(vals[i]==c.k0)cur=i;}int k=popup(labels,cur,r);if(k>=0&&c.k0!=vals[k]){c.k0=vals[k];controller->configure(c);}break;}
-        case Resolution:{int vals[]={128,256,512,1024,2048,4096};std::vector<std::wstring> labels;int cur=0;for(int i=0;i<6;++i){labels.push_back(std::to_wstring(vals[i]));if(vals[i]==c.n)cur=i;}int k=popup(labels,cur,r);if(k>=0&&c.n!=vals[k]){c.n=vals[k];controller->configure(c);}break;}
+        case Resolution:{std::vector<std::wstring> labels;int cur=0;for(int i=0;i<int(std::size(resolutions));++i){labels.push_back(std::to_wstring(resolutions[i]));if(resolutions[i]==c.n)cur=i;}int k=popup(labels,cur,r);if(k>=0&&c.n!=resolutions[k]){c.n=resolutions[k];controller->configure(c);}break;}
         case Regulate:controller->regulate(!view.regulated);break;
         case Enstrophy:display.field=2;break;case Vorticity:display.field=0;break;case Speed:display.field=1;break;
         case Inferno:display.palette=3;break;case Ember:display.palette=1;break;case Aurora:display.palette=0;break;case Glacier:display.palette=2;break;
@@ -289,8 +314,34 @@ public:
         }
         if(GetSaveFileNameW(&dialog)){exporting=true;try{renderer->exportPNG(view.frame,display,path);}catch(const std::exception& e){uiError=e.what();}exporting=false;}
     }
-    void hideToTray(){commitSeed(true);ShowWindow(hwnd,SW_HIDE);controller->visible(false);tray={};tray.cbSize=sizeof(tray);tray.hWnd=hwnd;tray.uID=1;tray.uFlags=NIF_MESSAGE|NIF_ICON|NIF_TIP;tray.uCallbackMessage=WM_APP+1;tray.hIcon=LoadIconW(GetModuleHandleW(nullptr),MAKEINTRESOURCEW(1));wcscpy_s(tray.szTip,L"2D FAST TURBO · simulation continues");trayVisible=Shell_NotifyIconW(NIM_ADD,&tray)!=FALSE;if(!trayVisible)show();}
+    void hideToTray(){commitSeed(true);ShowWindow(hwnd,SW_HIDE);controller->visible(false);tray={};tray.cbSize=sizeof(tray);tray.hWnd=hwnd;tray.uID=1;tray.uFlags=NIF_MESSAGE|NIF_ICON|NIF_TIP;tray.uCallbackMessage=WM_APP+1;tray.hIcon=LoadIconW(GetModuleHandleW(nullptr),MAKEINTRESOURCEW(1));wcscpy_s(tray.szTip,L"2DFastTurbo · simulation continues while hidden");trayVisible=Shell_NotifyIconW(NIM_ADD,&tray)!=FALSE;if(!trayVisible)show();}
     void show(){ShowWindow(hwnd,SW_RESTORE);SetForegroundWindow(hwnd);controller->visible(true);if(trayVisible){Shell_NotifyIconW(NIM_DELETE,&tray);trayVisible=false;}}
+    void updateMenus() {
+        if(!controller)return;
+        view=controller->view();HMENU menu=GetMenu(hwnd);
+        auto enable=[&](UINT id,bool yes){EnableMenuItem(menu,id,MF_BYCOMMAND|(yes?MF_ENABLED:MF_GRAYED));};
+        auto title=[&](UINT id,const wchar_t* value){menuTheme.title(menu,id,value);};
+        title(ToggleRunning,view.running?L"&Pause\tSpace":L"&Resume\tSpace");
+        title(FocusFlow,focused?L"Show &Controls\tF":L"&Focus on Flow\tF");
+        enable(ToggleRunning,view.ready);enable(SingleStep,view.ready);enable(ResetFlow,view.ready);enable(SaveSnapshot,view.ready&&!exporting);
+        DWORD first=0,last=0;if(editing)SendMessageW(edit,EM_GETSEL,reinterpret_cast<WPARAM>(&first),reinterpret_cast<LPARAM>(&last));
+        enable(Undo,editing&&SendMessageW(edit,EM_CANUNDO,0,0));enable(Redo,editing&&SendMessageW(edit,EM_CANREDO,0,0));
+        enable(Cut,editing&&first!=last);enable(Copy,editing&&first!=last);
+        enable(Paste,editing&&IsClipboardFormatAvailable(CF_UNICODETEXT));enable(SelectAll,editing&&GetWindowTextLengthW(edit)>0);
+    }
+    void desktopCommand(int id) {
+        switch(id){
+        case SaveSnapshot:activate(Save);break;case CloseWindow:hideToTray();break;case Quit:done=true;break;
+        case About:showAbout(hwnd);break;
+        case ToggleRunning:activate(Play);break;case SingleStep:activate(Step);break;case ResetFlow:activate(Reset);break;
+        case NewSeed:commitSeed(true);activate(Dice);break;case FocusFlow:activate(Focus);break;
+        case ShowSimulation:show();break;case DismissMessage:activate(Dismiss);break;case Minimize:ShowWindow(hwnd,SW_MINIMIZE);break;
+        case Undo:case Redo:case Cut:case Copy:case Paste:case SelectAll:
+            if(editing){SetFocus(edit);if(id==SelectAll)SendMessageW(edit,EM_SETSEL,0,-1);
+                else {UINT message=id==Undo?EM_UNDO:id==Redo?EM_REDO:id==Cut?WM_CUT:id==Copy?WM_COPY:WM_PASTE;SendMessageW(edit,message,0,0);}}
+            break;
+        }
+    }
     void finishBenchmark(){
         if(!options.renderCheck.empty()){
             std::filesystem::create_directories(options.renderCheck);
@@ -314,9 +365,14 @@ public:
         switch(m) {
         case WM_ERASEBKGND:return 1;
         case WM_PAINT:{PAINTSTRUCT ps;BeginPaint(hwnd,&ps);EndPaint(hwnd,&ps);return 0;}
+        case WM_INITMENUPOPUP:updateMenus();return 0;
+        case WM_MEASUREITEM:if(menuTheme.measure(hwnd,*reinterpret_cast<MEASUREITEMSTRUCT*>(l)))return TRUE;break;
+        case WM_DRAWITEM:if(menuTheme.draw(hwnd,*reinterpret_cast<DRAWITEMSTRUCT*>(l)))return TRUE;break;
+        case WM_MENUCHAR:return menuTheme.mnemonic(reinterpret_cast<HMENU>(l),wchar_t(LOWORD(w)));
+        case WM_COMMAND:if(l==0&&LOWORD(w)>=SaveSnapshot&&LOWORD(w)<=Minimize){desktopCommand(LOWORD(w));return 0;}break;
         case WM_TIMER:if(livePending&&nowSeconds()-lastLive>=1./30)flush();draw();if(options.liveCheck)tickChecks();return 0;
         case WM_SIZE:minimized=w==SIZE_MINIMIZED;if(controller)controller->visible(!minimized&&IsWindowVisible(hwnd));return 0;
-        case WM_SIZING:{RECT* r=reinterpret_cast<RECT*>(l);RECT old;GetWindowRect(hwnd,&old);RECT chrome{0,0,0,0};AdjustWindowRectExForDpi(&chrome,WS_OVERLAPPEDWINDOW,FALSE,0,UINT(scale*96));float ew=(focused?44.f:258.f)*scale+chrome.right-chrome.left,eh=(focused?123.f:185.f)*scale+chrome.bottom-chrome.top;
+        case WM_SIZING:{RECT* r=reinterpret_cast<RECT*>(l);RECT old;GetWindowRect(hwnd,&old);RECT chrome{0,0,0,0};AdjustWindowRectExForDpi(&chrome,WS_OVERLAPPEDWINDOW,GetMenu(hwnd)!=nullptr,0,UINT(scale*96));float ew=(focused?44.f:258.f)*scale+chrome.right-chrome.left,eh=(focused?123.f:185.f)*scale+chrome.bottom-chrome.top;
             float dw=std::abs(float(r->right-r->left-(old.right-old.left))),dh=std::abs(float(r->bottom-r->top-(old.bottom-old.top)));
             float s=std::max(std::min(576.f,side)*scale,dw>=dh?float(r->right-r->left)-ew:float(r->bottom-r->top)-eh);
             if(w==WMSZ_LEFT||w==WMSZ_TOPLEFT||w==WMSZ_BOTTOMLEFT)r->left=r->right-int(s+ew);else r->right=r->left+int(s+ew);
@@ -331,15 +387,18 @@ public:
         case WM_CTLCOLOREDIT:SetTextColor(reinterpret_cast<HDC>(w),RGB(230,230,230));SetBkColor(reinterpret_cast<HDC>(w),RGB(26,33,45));return reinterpret_cast<LRESULT>(editBrush);
         case WM_CLOSE:if(options.guiBenchmark||options.liveCheck){done=true;exitCode=2;}else hideToTray();return 0;
         case WM_DESTROY:done=true;return 0;
-        case WM_APP+1:if(l==WM_LBUTTONUP||l==WM_LBUTTONDBLCLK)show();else if(l==WM_RBUTTONUP){HMENU menu=CreatePopupMenu();AppendMenuW(menu,MF_STRING,1,L"Show Simulation");AppendMenuW(menu,MF_STRING,2,L"Quit 2DFastTurbo");POINT p;GetCursorPos(&p);SetForegroundWindow(hwnd);int choice=TrackPopupMenu(menu,TPM_RETURNCMD,p.x,p.y,0,hwnd,nullptr);DestroyMenu(menu);if(choice==1)show();if(choice==2)done=true;}return 0;
+        case WM_APP+1:if(l==WM_LBUTTONUP||l==WM_LBUTTONDBLCLK)show();else if(l==WM_RBUTTONUP){HMENU menu=CreatePopupMenu();AppendMenuW(menu,MF_STRING,ShowSimulation,L"Show Simulation");AppendMenuW(menu,MF_STRING,ToggleRunning,L"Pause / Resume");AppendMenuW(menu,MF_STRING,Quit,L"Quit 2DFastTurbo");POINT p;GetCursorPos(&p);SetForegroundWindow(hwnd);int choice=TrackPopupMenu(menu,TPM_RETURNCMD,p.x,p.y,0,hwnd,nullptr);DestroyMenu(menu);desktopCommand(choice);}return 0;
         }
         return DefWindowProcW(hwnd,m,w,l);
     }
     bool key(const MSG& msg) {
         if(msg.message!=WM_KEYDOWN)return false;
+        if(!IsWindowEnabled(hwnd))return false;
         bool ctrl=(GetKeyState(VK_CONTROL)&0x8000)!=0,shift=(GetKeyState(VK_SHIFT)&0x8000)!=0,repeat=(msg.lParam&(1LL<<30))!=0;
-        if(msg.wParam==VK_SPACE&&!ctrl&&!shift){if(!repeat)activate(Play);return true;}
+        if(ctrl&&!repeat){int command=msg.wParam=='Q'?Quit:msg.wParam=='W'?CloseWindow:msg.wParam=='S'?SaveSnapshot:msg.wParam=='M'?Minimize:shift&&msg.wParam=='R'?NewSeed:0;
+            if(command){desktopCommand(command);return true;}}
         if(editing){if(msg.wParam==VK_RETURN){commitSeed(true);return true;}if(msg.wParam==VK_ESCAPE){commitSeed(false);return true;}if(msg.wParam==VK_TAB){commitSeed(true);return true;}return false;}
+        if(msg.wParam==VK_SPACE&&!ctrl&&!shift){if(!repeat)activate(Play);return true;}
         if(repeat)return false;
         if(ctrl&&msg.wParam=='Q'){done=true;return true;}
         if(ctrl&&msg.wParam=='S'){activate(Save);return true;}
@@ -361,6 +420,19 @@ void App::prepareChecks() {
     once("pause_button",[this]{testRate=view.rate;activate(Play);});
     wait("pause_drained",[this]{if(!view.settled||view.running)return false;testStep=view.stats.step;testTime=nowSeconds();return true;});
     wait("pause_stable_and_throughput_retained",[this,assertThat]{if(nowSeconds()-testTime<.15)return false;assertThat(view.stats.step==testStep&&view.rate==testRate,"Pause changed state or displayed throughput");return true;});
+    once("desktop_menu_transport_and_state",[this,assertThat]{
+        updateMenus();wchar_t title[64]{};GetMenuStringW(GetMenu(hwnd),ToggleRunning,title,64,MF_BYCOMMAND);
+        assertThat(std::wstring(title)==L"&Resume\tSpace","Paused menu must offer Resume");
+        SendMessageW(hwnd,WM_COMMAND,ToggleRunning,0);assertThat(controller->view().running,"Simulation menu did not resume");
+        SendMessageW(hwnd,WM_COMMAND,ToggleRunning,0);assertThat(!controller->view().running,"Simulation menu did not pause");
+    });
+    wait("desktop_menu_pause_drained",[this]{if(!view.settled||view.running)return false;testStep=view.stats.step;testRate=view.rate;return true;});
+    once("about_equation_embedded_and_rendered",[this,assertThat]{
+        bool painted=showAbout(hwnd,[](HWND dialog){SendMessageW(dialog,WM_COMMAND,IDOK,0);});
+        assertThat(painted,"About dialog did not render the embedded equation");
+        assertThat(controller->view().stats.step==testStep,"About changed the paused simulation");
+        assertThat(!environment.subtitle.empty()&&environment.details.find(L"CUDA driver:")!=std::wstring::npos,"Runtime header is missing device details");
+    });
     once("single_step_button",[this]{activate(Step);});
     wait("single_step_exactly_one",[this,assertThat]{if(!view.settled||view.stats.step==testStep)return false;assertThat(view.stats.step==testStep+1&&view.rate==testRate,"Single step count or throughput incorrect");testGeneration=view.generation;testStep=view.stats.step;return true;});
     once("manual_reynolds_toggle",[this]{if(view.regulated)activate(Regulate);});
@@ -379,6 +451,23 @@ void App::prepareChecks() {
     once("focus_button",[this]{testSide=side;activate(Focus);});
     once("focus_preserves_square",[this,assertThat]{assertThat(focused&&std::abs(side-testSide)<=1,"Focus changed canvas size");activate(Focus);});
     once("controls_restored",[this,assertThat]{assertThat(!focused&&std::abs(side-testSide)<=1,"Restoring controls changed canvas size");});
+    once("view_menu_preserves_square",[this,assertThat]{
+        testSide=side;SendMessageW(hwnd,WM_COMMAND,FocusFlow,0);updateMenus();
+        wchar_t title[64]{};GetMenuStringW(GetMenu(hwnd),FocusFlow,title,64,MF_BYCOMMAND);
+        assertThat(focused&&std::abs(side-testSide)<=1&&std::wstring(title)==L"Show &Controls\tF","Focus menu state or canvas size changed");
+        SendMessageW(hwnd,WM_COMMAND,FocusFlow,0);
+        assertThat(!focused&&std::abs(side-testSide)<=1,"View menu did not restore controls");
+    });
+    once("seed_edit_menu_undo_redo",[this,assertThat]{
+        activate(Seed);SendMessageW(edit,EM_SETSEL,0,-1);SendMessageW(edit,EM_REPLACESEL,TRUE,reinterpret_cast<LPARAM>(L"314"));
+        updateMenus();assertThat(!(GetMenuState(GetMenu(hwnd),Undo,MF_BYCOMMAND)&MF_GRAYED),"Seed Undo menu disabled");
+        SendMessageW(hwnd,WM_COMMAND,Undo,0);wchar_t seed[32]{};GetWindowTextW(edit,seed,32);
+        assertThat(std::wstring(seed)==std::to_wstring(view.config.seed),"Seed Undo failed");
+        SendMessageW(hwnd,WM_COMMAND,Redo,0);GetWindowTextW(edit,seed,32);assertThat(std::wstring(seed)==L"314","Seed Redo failed");
+        MSG space{};space.message=WM_KEYDOWN;space.wParam=VK_SPACE;
+        assertThat(!key(space)&&!controller->view().running,"Seed editing intercepted Space as transport");
+        commitSeed(false);assertThat(!editing&&controller->view().stats.step==testStep,"Cancel seed edit changed the simulation");
+    });
     once("seed_edit",[this]{testConfig=view.config;activate(Seed);SetWindowTextW(edit,L"17");commitSeed(true);});
     wait("seed_committed_and_reset_paused",[this]{return view.ready&&view.settled&&view.config.seed==17&&view.stats.step==0;});
     once("next_seed_button",[this]{activate(Dice);});
@@ -387,6 +476,13 @@ void App::prepareChecks() {
     wait("wavenumber_applied",[this]{return view.ready&&view.settled&&view.config.k0==6;});
     once("resolution_menu",[select]{select(Resolution,1);});
     wait("resolution_retained_padding",[this,assertThat]{if(!view.ready||!view.settled||view.config.n!=256)return false;assertThat(view.config.m()==384&&view.frame->n==256,"N/M semantics");return true;});
+    once("expanded_resolution_menu",[select]{select(Resolution,5);});
+    wait("non_power_of_two_resolution",[this,assertThat]{if(!view.ready||!view.settled||view.config.n!=3072)return false;
+        assertThat(view.config.m()==4608&&view.frame->n==3072,"Expanded resolution did not retain N / padded M");
+        assertThat(std::abs(view.config.reynolds-initialReynolds(3072,view.config.k0))<1e-8,"Manual grid edit did not recalibrate Re");return true;
+    });
+    once("restore_small_resolution",[select]{select(Resolution,1);});
+    wait("small_resolution_ready",[this]{return view.ready&&view.settled&&view.config.n==256;});
     for(int method=0;method<3;++method){
         once("method_menu_"+std::to_string(method),[select,method]{select(Method,method);});
         wait("method_applied_"+std::to_string(method),[this,method]{return view.ready&&view.settled&&int(view.config.integrator)==method;});

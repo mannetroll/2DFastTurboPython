@@ -10,14 +10,14 @@ exist in this reference version; do not invent them from the porting brief.
 
 | Group | Control | Default / choices / semantics |
 |---|---|---|
-| Header | Focus, Save PNG | F hides inspector and metrics, retains canvas size; Ctrl+S exports 1800² sRGB PNG |
-| Initial condition | k₀ | 4; 2,4,6,8,10,12,16,20; resets flow |
+| Header | Runtime, Focus, Save PNG | GPU, memory, CUDA runtime and Windows version, full details on hover; F hides inspector and metrics, retains canvas size; Ctrl+S exports 1800² sRGB PNG |
+| Initial condition | k₀ | 10; 2,4,6,8,10,12,16,20; resets flow |
 | Initial condition | Seed, dice | uint64 2; Enter commits; dice increments with wrap; resets flow |
-| Spectral grid | N | 1024; 128,256,512,1024,2048,4096 retained; M=3N/2 |
+| Spectral grid | N | 2048; 128,256,512,1024,2048,3072,4096,6144,8192,9216,12288,16384 retained; M=3N/2; limited by available GPU memory |
 | Viscosity | Re | 10^(1.066240 log10(N) − .083911 log10(k₀) + 1.286396); ν=1/Re |
 | Viscosity | Re slider | log10(Re) in [3,6]; disabled during regulation; live, no reset |
-| Viscosity | Regulate with palinstrophy | on; off holds current effective Re |
-| Viscosity | P/(Zkmax2) readout | displays 10000 P/(Z kmax²), kmax²=2(N/2−1)² |
+| Viscosity | Regulate with Palinstrophy | off at startup; disabling holds current effective Re; N/k₀ changes recalibrate the initial Re |
+| Viscosity | 10⁴P/(Z kmax²) readout | displays 10000 P/(Z kmax²), kmax²=2(N/2−1)² |
 | Field | Enstrophy, Vorticity, Speed | Vorticity; display only |
 | Palette | Inferno, Ember, Aurora, Glacier | Ember; display only |
 | Contrast | Sigma / Exposure | Sigma for vorticity; ±2.5σ, range [1.5,3.5]; Exposure 1.2, range [.25,3]; independent retained values |
@@ -28,7 +28,14 @@ exist in this reference version; do not invent them from the porting brief.
 | Transport | Play/Pause, Single step, Reset | starts running; Space, Right, R; reset preserves run/pause intent |
 | Interaction | New initial condition | Ctrl+Shift+R increments seed |
 | Metrics | Simulated time, Initial turnovers | whole-run advance / active wall seconds; pause/manual steps excluded |
-| Metrics | Kinetic energy + history, Enstrophy, Timestep, Integration, Step, GPU allocation | E,Z,dt,recent steps/s,completed step,MiB |
+| Metrics | Kinetic energy + history, Enstrophy, Timestep, FPS, Step, GPU allocation | E,Z,dt,recent solver steps/s,completed step,MiB; FPS follows the shared GUI label |
+| Menus | File, Edit, Simulation, View, Window | Save, close to tray, About, quit; seed undo/redo/cut/copy/paste/select all; transport and focus; reopen and minimize |
+| About | Application description and Navier–Stokes equation | Same transparent equation asset as macOS/Python, embedded and tinted for the dark dialog |
+
+These are interactive GUI defaults. Headless and GUI benchmark defaults remain
+N=1024, k₀=4 and Re=27898.36614974335. Explicit command-line values take precedence.
+Ctrl+W closes to the tray, Ctrl+M minimizes, and Ctrl+Q quits, including while
+editing the seed. Editing does not interpret Space as a simulation shortcut.
 
 Sliders coalesce live updates to 30 Hz and flush on release/transport. Structural
 changes reset state, clock, and history. Paused recoloring reuses the frame.

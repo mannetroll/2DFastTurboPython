@@ -14,7 +14,7 @@ try {
     average.begin(true,200);average.complete(106,108,true);require(average.rate(203)==1,"Resume throughput");
     Regulator pid;auto re=pid.next(50000,.003,1024,4);require(re&&*re>50000,"Regulator sign");
     Config c;c.n=32;c.fixedDt=.002f;
-    for(auto bad:{8,31,4098}){auto x=c;x.n=bad;rejects([&]{Solver core(x);});}
+    for(auto bad:{8,31,16386}){auto x=c;x.n=bad;rejects([&]{Solver core(x);});}
     Solver core(c);auto initial=core.spectrum();auto a=core.snapshot(),b=core.snapshot(),d=core.snapshot();
     require(a&&b&&d&&!core.snapshot(),"Snapshot pool must coalesce when occupied");
     auto bytes=core.readFrame(*a);core.advance(8);require(core.readFrame(*a)==bytes,"Snapshot mutated after advance");

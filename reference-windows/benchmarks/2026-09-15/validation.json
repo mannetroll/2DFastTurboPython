@@ -1,0 +1,21 @@
+﻿{
+    "passed":  true,
+    "base_commit":  "e18a68b79c511945a933ca352d0bfc84da74c014",
+    "scope":  "Native Windows GUI update to follow macOS and Python; source changes are in the working tree.",
+    "platform":  "Windows 10 x64, NVIDIA GeForce RTX 3090",
+    "native_gui_checks":  68,
+    "native_ctest_checks":  1,
+    "python_windows_tests":  12,
+    "portable_gui_with_system_only_path":  true,
+    "portable_default_and_about_screenshots_reviewed":  true,
+    "gpu_solver_sources_changed":  false,
+    "artifact":  {
+                     "path":  "reference-windows/dist/2DFastTurbo.exe",
+                     "bytes":  97707520,
+                     "sha256":  "ac8c65363cb7e493bc8fa5133fe1c2627f63edd97c646efa9d3a406e7feec199"
+                 },
+    "screenshots":  [
+                        "windows-gui.png",
+                        "windows-about.png"
+                    ]
+}

@@ -1,2 +1,19 @@
 #include <windows.h>
+#include "desktop_resources.h"
+#pragma code_page(65001)
 1 ICON "../assets/2DFastTurbo.ico"
+IDR_EQUATION RCDATA "../assets/navier-stokes.png"
+
+IDD_ABOUT DIALOGEX 0, 0, 326, 168
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About 2DFastTurbo"
+FONT 9, "Segoe UI"
+BEGIN
+    ICON 1, IDC_ABOUT_ICON, 16, 18, 38, 38, SS_REALSIZECONTROL
+    LTEXT "2DFastTurbo", -1, 66, 16, 244, 14
+    LTEXT "Version 1.0", -1, 66, 31, 244, 12
+    LTEXT "GPU simulation of decaying, homogeneous 2D turbulence. Fourier pseudospectral methods with 3/2-rule dealiasing and VkFFT transforms. ETDRK4 time stepping by default.", -1, 66, 50, 244, 40
+    CTEXT "Navier–Stokes equation", -1, 66, 96, 244, 12
+    CONTROL "Navier–Stokes equation: ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v", IDC_EQUATION, "STATIC", SS_OWNERDRAW, 80, 112, 216, 34
+    CONTROL "OK", IDOK, "BUTTON", BS_OWNERDRAW | WS_TABSTOP, 260, 147, 50, 14
+END

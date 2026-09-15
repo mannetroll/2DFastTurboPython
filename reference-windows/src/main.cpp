@@ -81,8 +81,10 @@ static Options parse(int argc,char** argv) {
     auto number=[&](const char* key,double fallback) {if(!values.contains(key))return fallback;size_t used=0;double v=std::stod(values.at(key),&used);if(used!=values.at(key).size()||!std::isfinite(v))throw std::invalid_argument(std::string(key)+" must be finite.");return v;};
     auto integer=[&](const char* key,int fallback) {double v=number(key,fallback);if(v!=std::trunc(v)||v<0||v>std::numeric_limits<int>::max())throw std::invalid_argument(std::string(key)+" must be a nonnegative integer.");return int(v);};
     auto choice=[&](const char* key,std::initializer_list<const char*> names,int fallback) {if(!values.contains(key))return fallback;int i=0;for(auto name:names){if(values.at(key)==name)return i;++i;}throw std::invalid_argument(std::string("Invalid ")+key);};
-    o.config.n=integer("--resolution",o.config.n);o.config.k0=integer("--k0",o.config.k0);
-    o.config.reynolds=number("--reynolds",o.config.reynolds);o.regulated=!values.contains("--reynolds");
+    bool interactive=!o.benchmark&&!o.guiBenchmark;
+    o.config.n=integer("--resolution",interactive?2048:o.config.n);o.config.k0=integer("--k0",interactive?10:o.config.k0);
+    o.config.reynolds=number("--reynolds",interactive?initialReynolds(o.config.n,o.config.k0):o.config.reynolds);
+    o.regulated=!interactive&&!values.contains("--reynolds");
     o.config.cfl=float(number("--cfl",o.config.cfl));o.config.fixedDt=float(number("--fixed-dt",0));
     if(values.contains("--fixed-dt")&&!(o.config.fixedDt>0))throw std::invalid_argument("Fixed dt must be positive.");
     if(values.contains("--seed")) {auto v=values.at("--seed");if(v.empty()||v.find_first_not_of("0123456789")!=std::string::npos)throw std::invalid_argument("Seed must be uint64.");o.config.seed=std::stoull(v);}
@@ -141,7 +143,9 @@ static int run(int argc,char** argv) {
               "--paused --display vorticity|speed|enstrophy --palette aurora|ember|glacier|inferno\n"
               "--color-range sigma|exposure --sigma 1.5..3.5 --exposure .25..3 --flow-lines\n"
               "--export PNG --capture PNG --render-check DIRECTORY --canvas-size SIDE --gui-warmup-seconds S\n"
-              "Defaults: retained N1024, M1536, k0=4, seed=2, Re=27898.36614974335, CFL=3, ETD RK4, Stress.\n";return 0;
+              "GUI defaults: retained N2048, M3072, k0=10, calibrated Re, regulation off.\n"
+              "Benchmark defaults: retained N1024, M1536, k0=4, Re=27898.36614974335.\n"
+              "Common defaults: seed=2, CFL=3, ETD RK4, Stress.\n";return 0;
         }
         return o.benchmark?turbo::benchmark(o):turbo::runApp(o);
     }catch(const std::exception& e){

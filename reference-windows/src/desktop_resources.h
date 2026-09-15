@@ -1,0 +1,4 @@
+#define IDD_ABOUT 301
+#define IDR_EQUATION 302
+#define IDC_EQUATION 303
+#define IDC_ABOUT_ICON 304
