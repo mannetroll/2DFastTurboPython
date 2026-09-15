@@ -21,6 +21,7 @@ def main():
         "--specpath", str(work), "--paths", str(PROJECT / "src"),
         "--icon", str(PROJECT.parent / "reference-windows/assets/2DFastTurbo.ico"),
         "--add-data", f"{PROJECT / 'src/fastturbo/assets/fastturbo.png'}:fastturbo/assets",
+        "--add-data", f"{PROJECT / 'src/fastturbo/assets/navier-stokes.png'}:fastturbo/assets",
         "--exclude-module", "numpy", "--exclude-module", "pytest"]
     for item in NATIVE.iterdir():
         if item.suffix == ".dll":

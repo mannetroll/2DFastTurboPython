@@ -283,10 +283,38 @@ final class FastTurboAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
     @objc private func saveSnapshot() { model.saveSnapshot() }
     @objc private func reopen() { showMainWindow() }
     @objc private func showAbout() {
-        NSApp.orderFrontStandardAboutPanel(options: [
-            .applicationName: "2DFastTurbo",
-            .applicationVersion: "1.0",
-            .credits: NSAttributedString(string: "Decaying two-dimensional turbulence on Apple Metal.\n3/2-padded pseudospectral Navier–Stokes with VkFFT.\nSpace pauses; → advances once; R resets; F focuses; ⌘S saves a PNG.")
-        ])
+        let about = NSAlert()
+        about.messageText = "2DFastTurbo"
+        about.informativeText = "Version 1.0\n\n"
+            + "GPU simulation of decaying, homogeneous 2D turbulence. "
+            + "Fourier pseudospectral methods with 3/2-rule dealiasing "
+            + "and VkFFT transforms. ETDRK4 time stepping by default.\n\n"
+            + "Navier–Stokes equation"
+        about.icon = NSApp.applicationIconImage
+        let content = NSView(frame: NSRect(x: 0, y: 0, width: 360, height: 70))
+        if let source = NSImage(named: "NavierStokes") {
+            // Content bounds of the transparent asset, in AppKit's bottom-left coordinates.
+            let equation = NSImage(size: NSSize(width: 1990, height: 380), flipped: false) { rect in
+                source.draw(in: rect, from: NSRect(x: 78, y: 186, width: 1990, height: 380),
+                            operation: .sourceOver, fraction: 1)
+                return true
+            }
+            equation.isTemplate = true
+            let image = NSImageView(frame: NSRect(x: 20, y: 4, width: 320, height: 61))
+            image.image = equation
+            image.contentTintColor = .labelColor
+            image.imageScaling = .scaleProportionallyUpOrDown
+            image.setAccessibilityLabel("Navier–Stokes equation: ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v")
+            content.addSubview(image)
+        } else {
+            let equation = NSTextField(labelWithString: "ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v")
+            equation.frame = NSRect(x: 0, y: 23, width: 360, height: 24)
+            equation.alignment = .center
+            content.addSubview(equation)
+        }
+        about.accessoryView = content
+        about.addButton(withTitle: "OK")
+        about.window.title = "About 2DFastTurbo"
+        about.runModal()
     }
 }

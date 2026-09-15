@@ -4,9 +4,9 @@ import math
 from pathlib import Path
 import time
 from PySide6.QtCore import QEvent, QSettings, Qt, QTimer
-from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeySequence, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox, QFrame,
-    QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QPushButton, QScrollArea,
+from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeySequence, QPainter, QPainterPath, QPalette, QPen, QPixmap, QRegion
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFrame,
+    QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QScrollArea,
     QSizePolicy, QVBoxLayout, QWidget)
 
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
@@ -98,6 +98,35 @@ class EnvironmentLabel(QLabel):
         super().resizeEvent(event)
         self.setText(self.fontMetrics().elidedText(
             self.summary, Qt.TextElideMode.ElideRight, self.contentsRect().width()))
+
+
+class EquationLabel(QLabel):
+    """Draw the transparent equation with the dialog's current text color."""
+    def __init__(self, parent=None):
+        super().__init__("ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v", parent)
+        self.setAccessibleName("Navier–Stokes equation")
+        self.setAccessibleDescription(self.text())
+        self._equation = QPixmap(str(Path(__file__).with_name("assets") / "navier-stokes.png"))
+        if not self._equation.isNull():
+            self._equation = self._equation.copy(QRegion(self._equation.mask()).boundingRect())
+            self.setFixedSize(320, round(320 * self._equation.height() / self._equation.width()))
+
+    def paintEvent(self, event):
+        if self._equation.isNull():
+            return super().paintEvent(event)
+        ratio = self.devicePixelRatioF()
+        tinted = QPixmap(round(self.width() * ratio), round(self.height() * ratio))
+        tinted.setDevicePixelRatio(ratio)
+        tinted.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(tinted)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.drawPixmap(self.rect(), self._equation)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
+        painter.fillRect(self.rect(), self.palette().color(QPalette.ColorRole.WindowText))
+        painter.end()
+        painter = QPainter(self)
+        painter.drawPixmap(0, 0, tinted)
+        painter.end()
 
 
 class MainWindow(QMainWindow):
@@ -360,11 +389,7 @@ class MainWindow(QMainWindow):
         # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
         # unbound on Windows, so specify the requested shortcut explicitly.
         file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence("Ctrl+Q"))
-        about = file.addAction("About 2DFastTurbo", lambda: QMessageBox.about(self, "2DFastTurbo",
-            "Decaying two-dimensional turbulence on the native GPU backend.\n"
-            "3/2-padded pseudospectral Navier–Stokes with VkFFT.\n\n"
-            "Space pauses; → advances once; R resets; F focuses; Save Snapshot exports a PNG.\n"
-            "Ctrl+Q on Windows or Cmd+Q on macOS quits the application."))
+        about = file.addAction("About 2DFastTurbo", self.show_about)
         about.setMenuRole(QAction.MenuRole.AboutRole)
         edit = menu.addMenu("Edit")
         for title, method, shortcut in [("Undo", "undo", QKeySequence.StandardKey.Undo),
@@ -383,6 +408,50 @@ class MainWindow(QMainWindow):
         view.addAction("Dismiss Message", lambda: self.send("dismiss"))
         window = menu.addMenu("Window")
         window.addAction("Minimize", self.showMinimized, QKeySequence("Ctrl+M"))
+
+    def show_about(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("About 2DFastTurbo")
+        dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        app = QApplication.instance()
+        def apply_palette(palette):
+            dialog.setPalette(palette)
+            background = palette.color(QPalette.ColorRole.Window).name()
+            foreground = palette.color(QPalette.ColorRole.WindowText).name()
+            dialog.setStyleSheet(f"QDialog {{ background: {background}; }} "
+                                f"QLabel {{ color: {foreground}; font-weight: normal; }}")
+        apply_palette(app.palette())
+        app.paletteChanged.connect(apply_palette)
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(24, 24, 24, 18)
+        layout.setSpacing(18)
+        row = QHBoxLayout()
+        row.setSpacing(18)
+        icon = QLabel(dialog)
+        icon.setPixmap(app.windowIcon().pixmap(64, 64))
+        row.addWidget(icon, 0, Qt.AlignmentFlag.AlignTop)
+        content = QVBoxLayout()
+        content.setSpacing(16)
+        description = QLabel(
+            "GPU simulation of decaying, homogeneous 2D turbulence. "
+            "Fourier pseudospectral methods with 3/2-rule dealiasing "
+            "and VkFFT transforms. ETDRK4 time stepping by default.", dialog)
+        description.setWordWrap(True)
+        description.setFixedWidth(360)
+        content.addWidget(description)
+        caption = QLabel("Navier–Stokes equation", dialog)
+        caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        content.addWidget(caption)
+        content.addWidget(EquationLabel(dialog), 0, Qt.AlignmentFlag.AlignHCenter)
+        row.addLayout(content)
+        layout.addLayout(row)
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok, parent=dialog)
+        buttons.accepted.connect(dialog.accept)
+        layout.addWidget(buttons)
+        try:
+            dialog.exec()
+        finally:
+            app.paletteChanged.disconnect(apply_palette)
 
     def send(self, op, *, refresh=True, **kwargs):
         try:
