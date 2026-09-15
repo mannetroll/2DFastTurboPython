@@ -6,7 +6,7 @@ all CFD timesteps, FFTs, buffers and high-rate field rendering stay native.
 
 ![2DFastTurbo Python on macOS, showing vorticity and simulation controls after 5,000 iterations](docs/images/macos-5000-iterations.png)
 
-*Captured on Apple M1 Max after exactly 5,000 iterations: 1024² grid, 1536² padded
+*Captured on Apple M1 Max after exactly 5,000 iterations: 2048² grid, 3072² padded
 workspace, and the native Metal / VkFFT backend.*
 
 Requires Python 3.13+ and either Apple Silicon/macOS 15+ or Windows 10/11 x64

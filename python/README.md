@@ -7,10 +7,10 @@ simulating decaying, incompressible 2D flow. Explore swirling vorticity, inspect
 energy and enstrophy, and export fields for analysis. Native Metal / VkFFT on
 macOS and CUDA / VkFFT on Windows handle the simulation and rendering.
 
-<img src="https://raw.githubusercontent.com/mannetroll/fastturbo-media/2640cfadc321b14ccd0b36d6b764d271429970ac/macos-5000-iterations.png" alt="FastTurbo on macOS showing orange and purple vorticity after exactly 5,000 iterations, with live controls and diagnostics" width="960">
+<img src="https://raw.githubusercontent.com/mannetroll/fastturbo-media/6e497874eb6583d1db9dd1e61aa7af2d814a5f52/macos-5000-iterations.png" alt="FastTurbo on macOS showing orange and purple vorticity after exactly 5,000 iterations, with live controls and diagnostics" width="960">
 
-*An actual run on Apple M1 Max after 5,000 iterations: a 1024 × 1024 grid,
-1536 × 1536 padded workspace, and the Ember palette.*
+*An actual run on Apple M1 Max after 5,000 iterations: a 2048 × 2048 grid,
+3072 × 3072 padded workspace, k₀=10, seed 2, Palinstrophy regulation off, and the Ember palette.*
 
 ## Install and launch
 
