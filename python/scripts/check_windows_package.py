@@ -57,7 +57,7 @@ def main():
         output = work / f"{mode}.json"
         spectrum = work / f"{mode}.c64"
         command = [str(exe), "--benchmark" if mode == "headless" else "--gui-benchmark",
-            "--resolution", "128", "--reynolds", "50000", "--seed", "2", "--fixed-dt", "0.001",
+            "--resolution", "128", "--k0", "10", "--reynolds", "50000", "--seed", "2", "--fixed-dt", "0.001",
             "--until", "0.125", "--output", str(output), "--spectrum", str(spectrum)]
         if mode == "gui":
             command += ["--gui-warmup-seconds", "0.1", "--export", str(work / "field.png")]
@@ -84,7 +84,7 @@ def main():
     assert cases[0]["spectrum_sha256"] == cases[1]["spectrum_sha256"]
     native = project / "build/windows/reference/2DFastTurbo.exe"
     native_env = {**environment, "PATH": str(project / "src/fastturbo/_native")+os.pathsep+environment["PATH"]}
-    subprocess.run([str(native), "--benchmark", "--resolution", "128", "--reynolds", "50000", "--seed", "2",
+    subprocess.run([str(native), "--benchmark", "--resolution", "128", "--k0", "10", "--reynolds", "50000", "--seed", "2",
         "--fixed-dt", "0.001", "--until", "0.125", "--spectrum", str(work / "reference.c64")],
         env=native_env, cwd=work, check=True, capture_output=True, timeout=60)
     assert (work / "reference.c64").read_bytes() == (work / "headless.c64").read_bytes()
