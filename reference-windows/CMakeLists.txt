@@ -40,7 +40,7 @@ find_file(TURBO_CUDA_LICENSE EULA.txt HINTS "${CUDAToolkit_LIBRARY_ROOT}" "${CUD
 configure_file(src/embedded.rc.in embedded/embedded.rc @ONLY)
 set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/embedded/embedded.rc" PROPERTIES OBJECT_DEPENDS "${SHADER_OUTPUTS}")
 add_executable(2DFastTurbo WIN32 src/main.cpp src/app.cpp src/desktop_ui.cpp src/renderer.cpp src/controller.cpp src/application.rc "${CMAKE_CURRENT_BINARY_DIR}/embedded/embedded.rc")
-set_source_files_properties(src/application.rc PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/assets/2DFastTurbo.ico;${CMAKE_CURRENT_SOURCE_DIR}/assets/navier-stokes.png")
+set_source_files_properties(src/application.rc PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/assets/2DFastTurbo.ico;${CMAKE_CURRENT_SOURCE_DIR}/assets/navier-stokes.png;${CMAKE_CURRENT_SOURCE_DIR}/assets/header-hurricane.svg")
 add_dependencies(2DFastTurbo embedded_shaders)
 target_link_libraries(2DFastTurbo PRIVATE turbo_core d3d11 dxgi d2d1 dwrite windowscodecs dwmapi comdlg32 shell32 ole32 winmm)
 target_compile_options(2DFastTurbo PRIVATE /utf-8 /W4 /fp:strict)

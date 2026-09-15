@@ -140,12 +140,7 @@ public:
         float width=float(cr.right)/scale,height=float(cr.bottom)/scale;
         side=std::max(1.f,std::min(width-(focused?44:258),height-(focused?123:185)));
         hits.clear();renderer->begin(scale,true);
-        renderer->circle(45,38.5f,21,D2D1::ColorF(accent.r,accent.g,accent.b,.23f),true);
-        // Native vector approximation of the reference's SF hurricane symbol.
-        for(float sign:{-1.f,1.f}){float px=-4,py=0;for(int i=1;i<=24;++i){float t=i/24.f,s=1-t;
-            float x=-4*s*s*s-27*s*s*t-3*s*t*t+6*t*t*t,y=-21*s*s*t-36*s*t*t-12*t*t*t;
-            renderer->line(45+sign*px,38.5f+sign*py,45+sign*x,38.5f+sign*y,accent,1.2f);px=x;py=y;}}
-        renderer->circle(45,38.5f,5.2f,accent);renderer->circle(45,38.5f,1.5f,D2D1::ColorF(.035f,.047f,.073f));
+        renderer->headerIcon(24,17.5f);
         renderer->title(79,21,foreground);
         auto subtitle=box(79,45,width-310,14);
         renderer->elidedText(environment.subtitle,subtitle,9,secondary);

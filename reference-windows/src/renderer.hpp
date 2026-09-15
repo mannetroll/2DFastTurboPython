@@ -2,6 +2,7 @@
 #include "solver.hpp"
 #include <windows.h>
 #include <d2d1_1.h>
+#include <d2d1_3.h>
 #include <dwrite_1.h>
 #include <d3d11.h>
 #include <dxgi1_6.h>
@@ -23,6 +24,8 @@ class Renderer {
     ComPtr<ID2D1Device> d2dDevice;
     ComPtr<ID2D1DeviceContext> d2d;
     ComPtr<ID2D1Bitmap1> bitmap;
+    ComPtr<ID2D1DeviceContext5> iconContext;
+    ComPtr<ID2D1SvgDocument> headerSymbol;
     ComPtr<ID2D1SolidColorBrush> brush;
     ComPtr<IDWriteFactory> write;
     ComPtr<IDWriteTextLayout1> titleLayout;
@@ -63,6 +66,7 @@ public:
     void rectangle(D2D1_RECT_F rect,D2D1_COLOR_F color,float radius=0,bool outline=false);
     void line(float x1,float y1,float x2,float y2,D2D1_COLOR_F color,float thickness=1);
     void circle(float x,float y,float radius,D2D1_COLOR_F color,bool outline=false);
+    void headerIcon(float x,float y);
     void text(const std::wstring& text,D2D1_RECT_F rect,float size,D2D1_COLOR_F color,bool mono=false,bool right=false);
     void title(float x,float y,D2D1_COLOR_F color);
     void elidedText(const std::wstring& text,D2D1_RECT_F rect,float size,D2D1_COLOR_F color);

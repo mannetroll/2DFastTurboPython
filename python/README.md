@@ -78,7 +78,9 @@ to adjust the Reynolds number automatically. Changing N or k₀ recalculates the
 initial Re from the calibration formula in either mode. Press
 **Space** to pause or resume, **Right Arrow** to single-step and **R** to reset.
 Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
-Closing the window keeps the simulation running.
+On Windows, the title-bar **X** and **Alt+F4** also quit and stop the simulation.
+**File → Close Window** hides it to the notification area while computing continues.
+On macOS, closing the window keeps the simulation running for Dock reopen.
 
 ## Use from Python
 

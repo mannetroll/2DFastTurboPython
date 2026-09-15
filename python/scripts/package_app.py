@@ -23,7 +23,8 @@ command = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--windowed", "--
     "--icon", str(icon), "--distpath", str(output), "--workpath", str(work), "--specpath", str(work),
     "--paths", str(PROJECT / "src"), "--add-binary", f"{NATIVE / 'libfastturbo.dylib'}:fastturbo/_native",
     "--add-data", f"{PROJECT / 'src/fastturbo/assets/fastturbo.png'}:fastturbo/assets",
-    "--add-data", f"{PROJECT / 'src/fastturbo/assets/navier-stokes.png'}:fastturbo/assets"]
+    "--add-data", f"{PROJECT / 'src/fastturbo/assets/navier-stokes.png'}:fastturbo/assets",
+    "--add-data", f"{PROJECT / 'src/fastturbo/assets/header-hurricane.svg'}:fastturbo/assets"]
 for path in NATIVE.iterdir():
     if path.suffix != ".dylib":
         command += ["--add-data", f"{path}:fastturbo/_native"]

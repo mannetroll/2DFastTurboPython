@@ -2,9 +2,11 @@
 from __future__ import annotations
 import math
 from pathlib import Path
+import sys
 import time
 from PySide6.QtCore import QEvent, QSettings, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeySequence, QPainter, QPainterPath, QPalette, QPen, QPixmap, QRegion
+from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFrame,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QScrollArea,
     QSizePolicy, QVBoxLayout, QWidget)
@@ -241,9 +243,11 @@ class MainWindow(QMainWindow):
         header.setFixedHeight(77)
         row = QHBoxLayout(header)
         row.setContentsMargins(2, 0, 2, 0)
-        logo = label("◎", "accent")
-        logo.setStyleSheet("font-size: 38px; padding-right: 9px")
+        logo = QSvgWidget(str(Path(__file__).with_name("assets") / "header-hurricane.svg"))
+        logo.setFixedSize(42, 42)
+        logo.setAccessibleName("Hurricane")
         row.addWidget(logo)
+        row.addSpacing(7)
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("2D FAST TURBO", "title"))
@@ -417,7 +421,7 @@ class MainWindow(QMainWindow):
         menu = self.menuBar()
         file = menu.addMenu("File")
         self.save_action = file.addAction("Save Snapshot…", lambda: self.send("save"), QKeySequence.StandardKey.Save)
-        file.addAction("Close Window", self.close, QKeySequence.StandardKey.Close)
+        self.close_action = file.addAction("Close Window", self.hide_window, QKeySequence.StandardKey.Close)
         # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
         # unbound on Windows, so specify the requested shortcut explicitly.
         file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence("Ctrl+Q"))
@@ -608,17 +612,28 @@ class MainWindow(QMainWindow):
 
     def changeEvent(self, event):
         super().changeEvent(event)
-        if event.type() == QEvent.Type.WindowStateChange and self._attached:
+        if event.type() == QEvent.Type.WindowStateChange and self._attached and not self._closing:
             self.native.call("visible", value=not self.isMinimized())
 
     def closeEvent(self, event):
         if self._closing:
             event.accept()
             return
+        if sys.platform == "win32":
+            QSettings().setValue("windowGeometry", self.saveGeometry())
+            self.shutdown()
+            event.accept()
+            QApplication.instance().quit()
+            return
+        self.hide_window()
+        event.ignore()  # macOS keeps the run alive for Dock reopen.
+
+    def hide_window(self):
+        if self._closing:
+            return
         QSettings().setValue("windowGeometry", self.saveGeometry())
         self.native.call("visible", value=False)
         self.hide()
-        event.ignore()  # Reference behavior: closing the window keeps the run alive.
 
     def reopen(self):
         self.showNormal()
@@ -636,6 +651,8 @@ class MainWindow(QMainWindow):
             self.native.call("visible", value=False)
 
     def shutdown(self):
+        if self._closing:
+            return
         self._closing = True
         self.poll_timer.stop()
         if self.tray:

@@ -2,6 +2,8 @@
 #include "cuda_support.cuh"
 #include <cuda_d3d11_interop.h>
 #include "resources.hpp"
+#include "desktop_resources.h"
+#include <d2d1svg.h>
 #include <wincodec.h>
 #include <DirectXPackedVector.h>
 #include <sstream>
@@ -78,6 +80,19 @@ void Renderer::end(){hrCheck(d2d->EndDraw(),"Draw interface");}
 void Renderer::present(){hrCheck(swap->Present(1,0),"Present frame");}
 void Renderer::rectangle(D2D1_RECT_F rect,D2D1_COLOR_F color,float radius,bool outline){brush->SetColor(linearColor(color,hdr));if(radius>0){auto r=D2D1::RoundedRect(rect,radius,radius);if(outline)d2d->DrawRoundedRectangle(r,brush.Get());else d2d->FillRoundedRectangle(r,brush.Get());}else if(outline)d2d->DrawRectangle(rect,brush.Get());else d2d->FillRectangle(rect,brush.Get());}
 void Renderer::circle(float x,float y,float radius,D2D1_COLOR_F color,bool outline){brush->SetColor(linearColor(color,hdr));auto shape=D2D1::Ellipse(D2D1::Point2F(x,y),radius,radius);if(outline)d2d->DrawEllipse(shape,brush.Get());else d2d->FillEllipse(shape,brush.Get());}
+void Renderer::headerIcon(float x,float y){
+    if(!headerSymbol){
+        auto bytes=resource(IDR_HEADER_ICON);
+        ComPtr<IStream> stream;hrCheck(CreateStreamOnHGlobal(nullptr,TRUE,&stream),"Create header icon stream");
+        hrCheck(stream->Write(bytes.data(),ULONG(bytes.size()),nullptr),"Read header icon");
+        hrCheck(stream->Seek({},STREAM_SEEK_SET,nullptr),"Rewind header icon");
+        hrCheck(d2d.As(&iconContext),"Get SVG drawing context");
+        hrCheck(iconContext->CreateSvgDocument(stream.Get(),D2D1::SizeF(42,42),&headerSymbol),"Create header icon");
+    }
+    d2d->SetTransform(D2D1::Matrix3x2F::Translation(x,y));
+    iconContext->DrawSvgDocument(headerSymbol.Get());
+    d2d->SetTransform(D2D1::Matrix3x2F::Identity());
+}
 void Renderer::line(float x1,float y1,float x2,float y2,D2D1_COLOR_F color,float thickness){brush->SetColor(linearColor(color,hdr));d2d->DrawLine(D2D1::Point2F(x1,y1),D2D1::Point2F(x2,y2),brush.Get(),thickness);}
 void Renderer::text(const std::wstring& value,D2D1_RECT_F rect,float size,D2D1_COLOR_F color,bool mono,bool right){
     auto key=std::make_pair(int(size*10),mono);auto& font=fonts[key];if(!font){hrCheck(write->CreateTextFormat(mono?L"Consolas":L"Segoe UI",nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,size,L"en-us",&font),"Create font");font->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);font->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);}

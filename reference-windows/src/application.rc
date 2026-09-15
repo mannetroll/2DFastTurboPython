@@ -3,6 +3,7 @@
 #pragma code_page(65001)
 1 ICON "../assets/2DFastTurbo.ico"
 IDR_EQUATION RCDATA "../assets/navier-stokes.png"
+IDR_HEADER_ICON RCDATA "../assets/header-hurricane.svg"
 
 IDD_ABOUT DIALOGEX 0, 0, 326, 168
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU

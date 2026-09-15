@@ -41,7 +41,7 @@ dev = ["pytest>=8", "numpy>=2", "pyinstaller>=6.16"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-fastturbo = ["_native/*", "assets/*.png"]
+fastturbo = ["_native/*", "assets/*.png", "assets/*.svg"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

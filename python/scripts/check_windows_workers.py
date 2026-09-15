@@ -86,7 +86,7 @@ try:
     click_transport(2)
     wait_for(lambda s: s["ready"] and s["settled"] and s["stats"]["steps"] == 0)
     if window.tray:
-        window.close()
+        window.close_action.trigger()
         assert not window.isVisible() and window.tray.isVisible()
         window.tray.contextMenu().actions()[0].trigger()
         assert window.isVisible()
@@ -119,7 +119,20 @@ try:
     window.native.call("save")
     closer.join(timeout=1)
     assert cancelled.is_set(), "Native Save dialog was not observed"
+    # X closes the native controller too, even with Qt's last-window quit disabled.
+    window.close()
+    assert window._closing and not window.isVisible()
+    assert not window.poll_timer.isActive()
+    assert not window.tray or not window.tray.isVisible()
+    from fastturbo.engine import NativeError
+    try:
+        window.native.call()
+    except NativeError as error:
+        assert str(error) == "UI is closed"
+    else:
+        raise AssertionError("Window close left the native controller running")
     args.output.write_text(json.dumps({"passed": True,
+        "window_close_shuts_down_native_controller": True,
         "native_save_dialog_cancel": True,
         "native_transport_buttons": True,
         "unchanged_configuration_retains_generation": True,

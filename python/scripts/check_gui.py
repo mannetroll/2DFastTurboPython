@@ -171,7 +171,10 @@ try:
     window.send("running", value=False)
     s = wait(lambda s: s["ready"] and s["settled"])
     check("replacement_preserves_latest_pause", not s["running"] and s["stats"]["steps"]==0)
-    window.close()
+    if sys.platform == "win32":
+        window.close_action.trigger()
+    else:
+        window.close()
     QTest.qWait(100)
     check("close_hides_window", not window.isVisible())
     # Qt's Cocoa delegate sends this signal for Dock reopen, even if already active.
