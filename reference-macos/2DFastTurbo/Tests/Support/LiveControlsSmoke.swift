@@ -22,9 +22,15 @@ enum LiveControlsSmoke {
         let model = SimulationController()
         model.isPalinstrophyRegulated = false
         var configuration = model.configuration
+        model.configuration.resolution = 4096
+        precondition(model.effectiveReynolds == FastTurboConfiguration.reynoldsFromNAndK0(4096, 10))
+        model.configuration.initialWaveNumber = 8
+        precondition(model.effectiveReynolds == FastTurboConfiguration.reynoldsFromNAndK0(4096, 8))
+        precondition(!model.isPalinstrophyRegulated)
         configuration.resolution = 32
         configuration.reynolds = 10_000
         model.configuration = configuration
+        precondition(model.effectiveReynolds == 10_000, "An explicit manual Re must be preserved")
         model.setRunning(false)
         model.start()
         try await wait("Initial paused frame") { model.isReady && model.isSettled }

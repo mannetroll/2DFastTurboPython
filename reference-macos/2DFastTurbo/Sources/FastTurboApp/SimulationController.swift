@@ -498,7 +498,8 @@ final class SimulationController: ObservableObject {
         didSet {
             let gridChanged = configuration.resolution != oldValue.resolution
                 || configuration.initialWaveNumber != oldValue.initialWaveNumber
-            if gridChanged && isPalinstrophyRegulated {
+            // Grid edits recalibrate in either mode; keep an explicit replacement Re in manual mode.
+            if gridChanged && (isPalinstrophyRegulated || configuration.reynolds == oldValue.reynolds) {
                 let initial = FastTurboConfiguration.reynoldsFromNAndK0(
                     configuration.resolution, configuration.initialWaveNumber)
                 manualReynolds = initial
@@ -527,7 +528,7 @@ final class SimulationController: ObservableObject {
     /// value here but does not let a drag alter the running PID controller.
     private(set) var manualReynolds = SimulationController.startupConfiguration.reynolds
     private(set) var effectiveReynolds = SimulationController.startupConfiguration.reynolds
-    var isPalinstrophyRegulated = true {
+    var isPalinstrophyRegulated = false {
         didSet {
             guard isPalinstrophyRegulated != oldValue else { return }
             if !isPalinstrophyRegulated {

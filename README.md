@@ -21,8 +21,10 @@ uv run python -m fastturbo
 ```
 
 First launch builds the native library automatically. Default retained resolution
-is **1024²**, with the classical **1536² padded** nonlinear workspace. The default
-is ETD RK4, stress form, CFL 3, k₀=4, seed 2, with native palinstrophy regulation.
+is **2048²**, with the classical **3072² padded** nonlinear workspace. The default
+is ETD RK4, stress form, CFL 3, k₀=10, seed 2, with palinstrophy regulation off.
+Enable **Regulate with Palinstrophy** to adjust the Reynolds number automatically.
+Changing N or k₀ recalculates the initial Re from the calibration formula in either mode.
 
 Space pauses/resumes, Right advances one step, R resets, Cmd-Shift-R increments
 the seed, F focuses the flow, and Cmd-S exports a PNG. Closing or minimizing the

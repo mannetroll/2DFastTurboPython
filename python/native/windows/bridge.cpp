@@ -160,7 +160,8 @@ struct UIHandle {
     }
     void configureLocked(Config c) {
         auto s=viewLocked();
-        if ((c.n!=s.config.n||c.k0!=s.config.k0)&&s.regulated) c.reynolds=initialReynolds(c.n,c.k0);
+        // Grid edits recalibrate in either mode; keep an explicit replacement Re in manual mode.
+        if ((c.n!=s.config.n||c.k0!=s.config.k0)&&(s.regulated||c.reynolds==s.config.reynolds)) c.reynolds=initialReynolds(c.n,c.k0);
         if(c==s.config)return;
         options.config=c;
         if (controller) controller->configure(c);

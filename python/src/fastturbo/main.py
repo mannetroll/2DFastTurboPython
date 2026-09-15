@@ -16,7 +16,7 @@ def parser():
     modes.add_argument("--benchmark", action="store_true", help="Headless batch benchmark")
     modes.add_argument("--gui-benchmark", action="store_true", help="Visible GUI benchmark, then exit")
     p.add_argument("--resolution", type=int, default=2048, help="Retained N; nonlinear workspace M=3N/2")
-    p.add_argument("--reynolds", type=float, default=None, help="Viscosity=1/Re; disables GUI regulation when supplied")
+    p.add_argument("--reynolds", type=float, default=None, help="Viscosity=1/Re")
     p.add_argument("--k0", type=int, default=10)
     p.add_argument("--seed", type=int, default=2)
     p.add_argument("--cfl", type=float, default=3)
@@ -131,7 +131,11 @@ def gui(args):
     from PySide6.QtCore import QTimer
     from .app import MainWindow, create_application
     app = create_application()
-    window = MainWindow(config=config_from(args).payload(), regulated=args.reynolds is None,
+    config = config_from(args).payload()
+    if args.reynolds is None:
+        # Keep the GUI's calibrated initial Re without enabling regulation.
+        config.pop("reynolds")
+    window = MainWindow(config=config,
                         canvas_size=args.canvas_size, restore=not args.gui_benchmark)
     window.native.call("set", display=args.display, palette=args.palette, color_range=args.color_range,
                        sigma=args.sigma, exposure=args.exposure)

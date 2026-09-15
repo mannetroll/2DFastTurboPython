@@ -72,8 +72,10 @@ Python version, operating system and architecture.
 - **Reproducible experiments:** use a fixed seed, advance exact step counts,
   inspect diagnostics and export numerical fields or PNG images.
 
-The GUI starts with a 1024 × 1024 grid, ETD RK4 integration, stress form, CFL 3,
-seed 2 and automatic Reynolds-number regulation based on palinstrophy. Press
+The GUI starts with a 2048 × 2048 grid, ETD RK4 integration, stress form, CFL 3,
+k₀=10, seed 2 and palinstrophy regulation off. Enable **Regulate with Palinstrophy**
+to adjust the Reynolds number automatically. Changing N or k₀ recalculates the
+initial Re from the calibration formula in either mode. Press
 **Space** to pause or resume, **Right Arrow** to single-step and **R** to reset.
 Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
 Closing the window keeps the simulation running.

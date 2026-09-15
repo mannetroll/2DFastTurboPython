@@ -455,7 +455,7 @@ private struct ReynoldsControls: View {
                 .controlSize(.mini)
                 .disabled(values.isPalinstrophyRegulated)
                 .accessibilityLabel("Reynolds number")
-            Toggle("Regulate with palinstrophy",
+            Toggle("Regulate with Palinstrophy",
                    isOn: Binding(get: { controls.values.isPalinstrophyRegulated }, set: setRegulation))
                 .font(.system(size: 10))
                 .toggleStyle(.switch)

@@ -101,10 +101,10 @@ class EnvironmentLabel(QLabel):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, *, config=None, regulated=True, canvas_size=640, restore=True):
+    def __init__(self, *, config=None, regulated=False, canvas_size=640, restore=True):
         super().__init__()
         config = {"resolution": 2048, "k0": 10, **(config or {})}
-        if regulated:
+        if regulated or "reynolds" not in config:
             config["reynolds"] = Configuration.calibrated_reynolds(config["resolution"], config["k0"])
         self.native = NativeUI()
         self.state = {}
@@ -259,7 +259,7 @@ class MainWindow(QMainWindow):
         self.reynolds.changed.connect(lambda v: self.send("set", refresh=False, log_reynolds=v))
         self.reynolds.released.connect(lambda: self.send("flush"))
         layout.addWidget(self.reynolds)
-        self.regulated = QCheckBox("Regulate with palinstrophy")
+        self.regulated = QCheckBox("Regulate with Palinstrophy")
         self.regulated.setToolTip("Automatically adjusts Reynolds number from 10,000·P/(Z·kmax²).")
         self.regulated.toggled.connect(lambda v: self.send("set", regulated=v))
         layout.addWidget(self.regulated)

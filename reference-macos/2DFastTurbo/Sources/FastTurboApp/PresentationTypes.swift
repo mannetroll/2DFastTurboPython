@@ -69,7 +69,7 @@ final class LiveControlDisplay: ObservableObject {
         cfl: FastTurboConfiguration().cfl,
         reynolds: Int(FastTurboConfiguration().reynolds.rounded()),
         logarithmicReynolds: log10(FastTurboConfiguration().reynolds),
-        isPalinstrophyRegulated: true, palinstrophy: "P/(Zkmax2) ~ 0.00")
+        isPalinstrophyRegulated: false, palinstrophy: "P/(Zkmax2) ~ 0.00")
 
     func update(cfl: Float, reynolds: Double, regulated: Bool, palinstrophy: Double) {
         // Invalid programmatic configurations are reported by the solver; keep

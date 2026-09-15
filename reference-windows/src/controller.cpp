@@ -12,7 +12,8 @@ Controller::~Controller(){ {std::lock_guard lock(mutex);request.stop=true;}chang
 ViewState Controller::view()const{std::lock_guard lock(mutex);return state;}
 void Controller::configure(Config c) {
     c.validate();std::lock_guard lock(mutex);
-    if((c.n!=request.config.n||c.k0!=request.config.k0)&&request.regulated)c.reynolds=initialReynolds(c.n,c.k0);
+    // Grid edits recalibrate in either mode; keep an explicit replacement Re in manual mode.
+    if((c.n!=request.config.n||c.k0!=request.config.k0)&&(request.regulated||c.reynolds==request.config.reynolds))c.reynolds=initialReynolds(c.n,c.k0);
     request.config=c;++request.generation;request.singleSteps=0;
     bool running=request.running,regulated=request.regulated;state={};state.config=c;state.running=running;state.regulated=regulated;state.generation=request.generation;
     changed.notify_one();

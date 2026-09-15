@@ -10,7 +10,7 @@ from PySide6.QtCore import QPoint, Qt
 from PySide6.QtTest import QTest
 from fastturbo.app import MainWindow, create_application
 from fastturbo.controls import RESOLUTIONS, WAVENUMBERS, FIELDS, METHODS, PALETTES
-from fastturbo.engine import NativeUI
+from fastturbo.engine import Configuration, NativeUI
 
 p = argparse.ArgumentParser()
 p.add_argument("--output", type=Path, default=Path("results/gui-check.json"))
@@ -58,7 +58,7 @@ try:
     s = wait(lambda s: s["ready"] and s["presentations"] > 3 and s["performance"]["simtime_per_s"] > 0)
     check("native_hdr_presented", s["presentations"] > 0)
     check("square_canvas", abs(s["canvas"]["width_points"] - s["canvas"]["height_points"]) <= 1)
-    check("factory_defaults", s["regulated"] and s["display"] == "vorticity" and s["palette"] == "ember" and s["sigma"] == 2.5 and s["exposure"] == 1.2)
+    check("factory_defaults", not s["regulated"] and s["display"] == "vorticity" and s["palette"] == "ember" and s["sigma"] == 2.5 and s["exposure"] == 1.2)
     window.seed.setFocus()
     window.seed.setText("123")
     edit = next(action.menu() for action in window.menuBar().actions() if action.text() == "Edit")
@@ -81,6 +81,8 @@ try:
     window.send("reset")
     s = wait(lambda s: s["ready"] and s["settled"])
     check("reset_zeroes_run", s["stats"]["steps"] == 0 and s["stats"]["simulation_time"] == 0 and s["performance"]["simtime_per_s"] == 0)
+    QTest.mouseClick(window.regulated, Qt.MouseButton.LeftButton)
+    s = wait(lambda s: s["regulated"])
     # Regulation off holds current effective Re, then manual edits preserve state.
     held_re = s["effective_reynolds"]
     QTest.mouseClick(window.regulated, Qt.MouseButton.LeftButton)
@@ -114,9 +116,12 @@ try:
     s = wait(lambda s: s["ready"] and s["settled"])
     check("new_seed_wraps", s["config"]["seed"] == "0")
     for n in RESOLUTIONS if args.all_resolutions else [256, 128]:
+        previous_n = window.resolution.currentData()
         window.resolution.setCurrentIndex(window.resolution.findData(n))
         s = wait(lambda s: s["ready"] and s["settled"])
         check(f"resolution_{n}_rebuild", s["config"]["resolution"] == n and s["frame"]["grid_size"] == n and s["config"]["padded_resolution"] == 3*n//2)
+        if n != previous_n:
+            check(f"resolution_{n}_recalibrates_manual_re", not s["regulated"] and abs(s["effective_reynolds"] - Configuration.calibrated_reynolds(n, s["config"]["k0"])) < 1e-8)
         window.send("step")
         s = wait(lambda s: s["ready"] and s["settled"] and s["stats"]["steps"] == 1)
         check(f"resolution_{n}_finite_step", s["stats"]["is_finite"])
@@ -125,6 +130,7 @@ try:
     window.k0.setCurrentIndex(window.k0.findData(8))
     s = wait(lambda s: s["ready"] and s["settled"])
     check("k0_reinitializes", s["config"]["k0"] == 8 and s["stats"]["steps"] == 0)
+    check("k0_recalibrates_manual_re", not s["regulated"] and abs(s["effective_reynolds"] - Configuration.calibrated_reynolds(128, 8)) < 1e-8)
     frame_file = args.output.with_suffix(".f32")
     window.native.call("export", fields=str(frame_file))
     # Include velocity in every rendering test so the exported physical planes match.
