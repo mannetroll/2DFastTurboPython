@@ -90,5 +90,11 @@ Desktop.ini
 
 # Workspace-only validation dependencies and raw numerical artifacts
 /.python/
-/artifacts/
+/artifacts/*
+# Keep the recording scripts and final video; ignore intermediate output and tools.
+!/artifacts/gui-video/
+/artifacts/gui-video/*
+!/artifacts/gui-video/prepare.py
+!/artifacts/gui-video/record.py
+!/artifacts/gui-video/2DFastTurbo-Windows-GUI-Test-30s.mp4
 __pycache__/
