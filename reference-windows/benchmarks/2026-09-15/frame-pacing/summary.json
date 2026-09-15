@@ -1,0 +1,24 @@
+{
+  "executable_sha256": "aeb3508d2ff07e27591db295f24c4458eb000fcfebbca5c9d906743b06a70030",
+  "seconds_per_run": 8,
+  "minimum_field_fps": 45.0,
+  "runs": [
+    {
+      "resolution": 1024,
+      "steps_per_s": 693.4908545893338,
+      "presented_fps": 60.0334363728066,
+      "distinct_field_fps": 60.0334363728066,
+      "distinct_field_frames": 481,
+      "passed": true
+    },
+    {
+      "resolution": 2048,
+      "steps_per_s": 171.58813428934445,
+      "presented_fps": 60.07259322346359,
+      "distinct_field_fps": 54.065333901117235,
+      "distinct_field_frames": 433,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

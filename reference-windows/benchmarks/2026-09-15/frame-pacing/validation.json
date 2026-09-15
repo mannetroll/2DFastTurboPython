@@ -1,0 +1,20 @@
+﻿{
+    "passed":  true,
+    "date":  "2026-09-15",
+    "base_commit":  "109da76f1cea2aa0f1cff46b0188b6532775fccb",
+    "platform":  "Windows 10 x64, NVIDIA GeForce RTX 3090",
+    "change":  "Pinned recurring CPU readbacks prevent solver calls from starving CUDA/D3D11 uploads",
+    "baseline_sha256":  "ac8c65363cb7e493bc8fa5133fe1c2627f63edd97c646efa9d3a406e7feec199",
+    "artifact":  {
+                     "path":  "reference-windows/dist/2DFastTurbo.exe",
+                     "bytes":  97707520,
+                     "sha256":  "aeb3508d2ff07e27591db295f24c4458eb000fcfebbca5c9d906743b06a70030"
+                 },
+    "native_ctest_checks":  1,
+    "native_gui_checks":  68,
+    "python_windows_tests":  12,
+    "bitwise_parity_reference":  "Previously shipped executable, before the readback fix; six integrator/operator combinations at N=128 and N=1024/2048 adaptive runs",
+    "frame_pacing_report":  "summary.json",
+    "frame_pacing_minimum_distinct_images_per_s":  45,
+    "temporary_timing_instrumentation_removed":  true
+}

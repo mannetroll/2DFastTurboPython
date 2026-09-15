@@ -1,0 +1,7 @@
+{
+"schema_version":1,"solver":"2DFastTurbo Windows CUDA/VkFFT","mode":"gui-benchmark",
+"config":{"resolution":1024,"padded_resolution":1536,"reynolds":50000,"viscosity":1.9999999494757503e-05,"k0":10,"seed":2,"cfl":3,"integrator":"etdrk4","operator":"stress","batch":8,"fixed_dt":null},
+"initial_stats":{"steps":0,"simulation_time":0,"dt":0.0015152845298871398,"energy":0.49840843518200018,"enstrophy":49.999999159015715,"palinstrophy":9999.9997127950191,"palinstrophy_metric":0.00038296421509537246,"reynolds":50000,"initial_turnover_time":0.62831853600201881,"is_finite":true},
+"stats":{"steps":5548,"simulation_time":8.5043941378826275,"dt":0.001650301506742835,"energy":0.48970092253966868,"enstrophy":11.387205876410007,"palinstrophy":27034.144897460938,"palinstrophy_metric":0.0045459396787094434,"reynolds":50000,"initial_turnover_time":0.62831853600201881,"is_finite":true},
+"seconds":8.0001055000002452,"simtime_per_s":1.0630352484579568,"steps_per_s":693.49085458933382,"turnovers_per_s":1.6918731305016621,"gpu_seconds":7.7461975344419374,"batches":1709,"snapshots":481,"presented_fps":60.033436372806598,"warmup_steps":8,"spectrum_normalization":"fourier-series","vorticity_convention":"omega = dx(v) - dy(u)","initial_source":"seeded-pao","hardware":{"gpu":"NVIDIA GeForce RTX 3090","owned_solver_buffer_bytes":107253288,"vkfft_internal_bytes":12736}
+,"rendering":{"cuda_d3d11_interop":true,"hdr":false,"canvas_pixels":640,"presentations":481,"distinct_field_frames":481},"passed":true}

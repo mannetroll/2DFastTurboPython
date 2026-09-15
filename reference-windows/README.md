@@ -147,6 +147,30 @@ k₀=4, fixed Re=50000, CFL=3, ETDRK4 and stress formulation. Each run restarts
 from the same state after warmup. Results and screenshots go into
 `reference-windows/artifacts/benchmark`. Leave the GUI visible during measurement.
 
+The GUI's `FPS` metric counts solver steps/s. To measure presentation and distinct
+simulation images separately, run:
+
+```powershell
+python reference-windows/scripts/check_frame_pacing.py --output reference-windows/artifacts/frame-pacing
+```
+
+The [2026-09-15 frame pacing results](benchmarks/2026-09-15/frame-pacing/validation.json)
+record a CUDA readback fix on an RTX 3090. At N=2048 the shipped build presented
+6.1 images/s despite computing 191 steps/s. Pinned CPU buffers for the recurring
+clock, diagnostic and snapshot readbacks restored 60.1 presentations/s and
+54.1 distinct images/s, with 172 solver steps/s. At N=1024 the fixed build gave
+60.0 distinct images/s and 693 steps/s. Both measurements used eight seconds
+after warmup, k₀=10, Re=50000 and the default adaptive batching.
+
+Pageable CPU destinations can make `cudaMemcpyAsync` block, as described in
+[NVIDIA's synchronization documentation](https://docs.nvidia.com/cuda/cuda-runtime-api/api-sync-behavior.html).
+In this workload the blocked readbacks starved the GUI's CUDA interop calls.
+The pinned buffers retain stream synchronization before CPU access; the solver
+equations, GPU kernels and frame ownership are unchanged. Validation includes
+bitwise spectral comparisons against the previously shipped executable.
+For this machine, `--min-field-fps 45` makes the pacing check fail if the stall
+returns; choose a threshold appropriate to other GPUs and displays.
+
 [The port report](docs/PORT_REPORT.md) records the measured machine, validation,
 performance and remaining differences. Small evidence files are preserved in
 `reference-windows/benchmarks/2026-09-13`; large raw fields and local dependencies are ignored.

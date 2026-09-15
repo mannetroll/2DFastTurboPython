@@ -29,6 +29,21 @@ struct Events {
     Events(){CUDA_CHECK(cudaEventCreate(&begin));CUDA_CHECK(cudaEventCreate(&end));}
     ~Events(){cudaEventDestroy(begin);cudaEventDestroy(end);}
 };
+// Pageable readbacks can hold CUDA's internal locks while waiting for the
+// solver stream, starving the GUI's interop calls. Keep recurring readbacks
+// pinned so copies enqueue promptly; synchronize before accessing the results.
+struct Readback {
+    struct Data {
+        ClockState clock;
+        std::array<float4,64> statistics;
+        std::array<float4,128> snapshot;
+    };
+    Data* data=nullptr;
+    Readback(){CUDA_CHECK(cudaMallocHost(reinterpret_cast<void**>(&data),sizeof(Data)));}
+    ~Readback(){if(data)cudaFreeHost(data);}
+    Readback(const Readback&)=delete;
+    Readback& operator=(const Readback&)=delete;
+};
 std::vector<V2> nativeSpectrum(const Config& c) {
     int n=c.n,half=n/2,width=half+1;
     std::vector<V2> state(size_t(n)*width);
@@ -62,7 +77,7 @@ struct Solver::Impl {
     std::unique_ptr<FFT> paddedFFT,snapshotFFT,inputFFT;
     Buffer omega,correction,padded,base,first,second,aux,coefficients,clock,cflPartials,statPartials,snapshotSpectra,snapshotPartials;
     std::array<std::shared_ptr<void>,3> slots;
-    ClockState hostClock{};
+    Readback readback;
     Statistics stats;
     double re;
     float cfl;
@@ -114,6 +129,7 @@ struct Solver::Impl {
     }
     void readClock() {
         CUDA_CHECK(cudaGetLastError());
+        auto& hostClock=readback.data->clock;
         CUDA_CHECK(cudaMemcpyAsync(&hostClock,clock.ptr,sizeof(hostClock),cudaMemcpyDeviceToHost,queue.value));
         CUDA_CHECK(cudaStreamSynchronize(queue.value));
         if(!hostClock.valid)throw std::runtime_error("The solver encountered a non-finite field or timestep.");
@@ -180,7 +196,7 @@ Statistics Solver::inspect() {
     auto& s=*impl;s.healthy();
     try {
         spectralStatistics<<<64,256,0,stream()>>>(s.omega.as<V2>(),s.statPartials.as<float4>(),s.params());
-        std::array<float4,64> partials;
+        auto& partials=s.readback.data->statistics;
         CUDA_CHECK(cudaMemcpyAsync(partials.data(),s.statPartials.ptr,sizeof(partials),cudaMemcpyDeviceToHost,stream()));
         s.readClock();s.stats.energy=s.stats.enstrophy=s.stats.palinstrophy=0;
         for(auto p:partials) {
@@ -202,7 +218,7 @@ std::shared_ptr<Frame> Solver::snapshot(bool velocity) {
             prepareSnapshot<<<s.grid(s.width,s.n),dim3(16,16),0,stream()>>>(s.omega.as<V2>(),s.snapshotSpectra.as<V2>(),p);
             s.snapshotFFT->transform(s.snapshotSpectra.ptr,fields,true);
             extractSnapshot<<<64,256,0,stream()>>>(s.snapshotSpectra.as<float>(),static_cast<float*>(slot.get()),s.snapshotPartials.as<float4>(),p);
-            std::array<float4,128> partials;
+            auto& partials=s.readback.data->snapshot;
             CUDA_CHECK(cudaMemcpyAsync(partials.data(),s.snapshotPartials.ptr,sizeof(partials),cudaMemcpyDeviceToHost,stream()));
             CUDA_CHECK(cudaStreamSynchronize(stream()));
             double sum=0,squares=0;
