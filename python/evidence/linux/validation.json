@@ -1,0 +1,47 @@
+{
+  "complete": false,
+  "headless_milestone_passed": true,
+  "gui_passed": false,
+  "python_tests": {
+    "passed": 43,
+    "failed": 2,
+    "skipped": 12,
+    "total": 57
+  },
+  "native_ctest_passed": true,
+  "sm86_native_code": true,
+  "sm90_compile_passed": true,
+  "h100_runtime_tested": false,
+  "macos_runtime_retested": false,
+  "windows_runtime_retested": false,
+  "abi_symbols_verified": [
+    "ft_initialize",
+    "ft_string_free",
+    "ft_engine_create",
+    "ft_engine_destroy",
+    "ft_engine_call",
+    "ft_ui_create",
+    "ft_ui_destroy",
+    "ft_ui_attach",
+    "ft_ui_call"
+  ],
+  "headless_shared_library_has_no_gui_dependencies": true,
+  "reference_sources_modified": false,
+  "shared_cuda_source_hashes": {
+    "solver.cu": "ac975c95da644133225499c763a032ada8f337234352814a02e69b655d7f159c",
+    "kernels.cuh": "bf7225b2bb377ab2ec987c3e71721b80776fd1c39e054354f27feb160f2aeafe",
+    "fft.cpp": "29f81f15323a33edaa8a0fcde4300bc2131a196a1b223d9d794470f455764e9c",
+    "solver.hpp": "22907b0ebe6dc37fc385afa2600acadc57695eb2fd6c06593a58750fc5093d89",
+    "fft.hpp": "1853b001683b09ed6c3108f0167abddd9e5a062b68fbfdc6c147c60a54435cf9",
+    "types.hpp": "a0860e420c975f0a1d74512ca3a3cc88624511322f8d9ba0bfa5043908eef550",
+    "cuda_support.cuh": "c1b6a59a44be123d5599f1d8c61349c5aabb09dcd6c8824db72b6fd57ad473f5"
+  },
+  "native_sha256": "b157febbafcd48ad4fc387c7f717f8feb072fb12f5206c2da882289897b3ce8e",
+  "remaining": [
+    "Linux native UI/renderer",
+    "GUI controls/render semantics and PNG tests",
+    "interactive R_turbo and GUI overhead",
+    "H100 runtime validation"
+  ],
+  "blocker": "CUDA/OpenGL 304, CUDA/EGL image 999, external-memory import driver crash for both dedicated flags, only software Vulkan device."
+}

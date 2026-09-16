@@ -31,6 +31,9 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
             raise RuntimeError("CUDA Toolkit not found; set CUDA_HOME to the existing toolkit.")
         nvcc = Path(found).resolve()
         cuda = nvcc.parents[1]
+    cxx = shutil.which(os.environ.get("CXX", "c++"))
+    if not cxx:
+        raise RuntimeError("C++ compiler not found; set CXX to the existing compiler executable.")
     architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86"))
     if not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
         raise RuntimeError("FASTTURBO_CUDA_ARCH must be a CUDA architecture, e.g. 86 or 90.")
@@ -47,7 +50,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
         "files": {str(p.relative_to(project.parent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
         "cuda": str(cuda.resolve()), "architectures": architectures,
         "nvcc": version([str(nvcc), "--version"]),
-        "cxx": version([os.environ.get("CXX", "c++"), "--version"]),
+        "cxx_path": cxx, "cxx": version([cxx, "--version"]),
         "cmake": version(["cmake", "--version"]), "build_type": "Release",
     }
     with (directory / "build.lock").open("w") as lock:
@@ -58,6 +61,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
         print("Building native FastTurbo (shared CUDA + VkFFT, Linux)…", file=sys.stderr, flush=True)
         subprocess.run(["cmake", "-S", str(source), "-B", str(directory), "-G", "Ninja",
             "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_CUDA_COMPILER={nvcc}",
+            f"-DCMAKE_CXX_COMPILER={cxx}",
             f"-DCUDAToolkit_ROOT={cuda}", f"-DCMAKE_CUDA_ARCHITECTURES={architectures}",
             f"-DFASTTURBO_WINDOWS={reference}", f"-DFASTTURBO_VKFFT={vkfft}"], check=True)
         subprocess.run(["cmake", "--build", str(directory), "--parallel", "2"], check=True)

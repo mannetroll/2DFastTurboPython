@@ -1,5 +1,14 @@
 # Developing FastTurbo
 
+Linux source builds now select the shared CUDA/VkFFT engine. From this directory,
+`uv sync` builds it; `uv run 2dfastturbo --headless --resolution 1024 --k0 4`
+runs without Qt/display initialization. Use `bash scripts/test-linux.sh` for the
+passing headless gate and `bash scripts/benchmark-linux.sh` for measured timing.
+`FASTTURBO_CUDA_ARCH=86` is the default; `90` builds for H100 (compile verified,
+H100 execution untested). The WSLg renderer remains blocked by measured CUDA
+graphics interoperability failures; ordinary GUI launch and PNG export are not
+yet supported on Linux. See [LINUX_PORT.md](../LINUX_PORT.md) for full status.
+
 These instructions are for source checkouts. For installation from PyPI, see
 [README.md](README.md). For building and publishing wheels, see
 [PUBLISHING.md](PUBLISHING.md).

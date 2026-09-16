@@ -1,6 +1,7 @@
 include native/*.swift native/*.h
 include scripts/*.py
 include scripts/*.ps1
+include scripts/*.sh
 recursive-include native/windows *
 recursive-include native/cuda *
 recursive-include native/linux *

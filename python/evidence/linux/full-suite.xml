@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="12" tests="57" time="65.668" timestamp="2026-09-16T17:37:16.402200+02:00" hostname="EXCAVATOR"><testcase classname="tests.test_gui" name="test_actual_gui_controls" time="11.316"><failure message="subprocess.CalledProcessError: Command '['/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3', '/home/tobbe/github/2DFastTurboPython/python/scripts/check_gui.py', '--output', '/tmp/pytest-of-tobbe/pytest-0/test_actual_gui_controls0/gui.json']' returned non-zero exit status 1.">tmp_path = PosixPath('/tmp/pytest-of-tobbe/pytest-0/test_actual_gui_controls0')
+
+    @pytest.mark.gui
+    def test_actual_gui_controls(tmp_path):
+        script = Path(__file__).resolve().parents[1] / "scripts/check_gui.py"
+&gt;       subprocess.run([sys.executable, str(script), "--output", str(tmp_path / "gui.json")], check=True, timeout=180)
+
+tests/test_gui.py:10: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = 180, check = True
+popenargs = (['/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3', '/home/tobbe/github/2DFastTurboPython/python/scripts/check_gui.py', '--output', '/tmp/pytest-of-tobbe/pytest-0/test_actual_gui_controls0/gui.json'],)
+kwargs = {}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3', '/home/tobbe/github/2DFastTurboPython/python/scripts/check_gui.py', '--output', '/tmp/pytest-of-tobbe/pytest-0/test_actual_gui_controls0/gui.json']' returned non-zero exit status 1.
+
+../../../.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu/lib/python3.14/subprocess.py:578: CalledProcessError</failure></testcase><testcase classname="tests.test_linux" name="test_without_display_qt_or_library_path" time="1.064" /><testcase classname="tests.test_linux" name="test_recorded_native_windows_trajectory" time="6.411" /><testcase classname="tests.test_linux" name="test_large_grid_reference_and_snapshot_residency[1024]" time="1.744" /><testcase classname="tests.test_linux" name="test_large_grid_reference_and_snapshot_residency[2048]" time="2.659" /><testcase classname="tests.test_linux" name="test_native_batch_worker_gil_and_close" time="0.260" /><testcase classname="tests.test_numerics" name="test_defaults_match_native" time="0.000" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-stress-imexRK3]" time="0.674" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-stress-ifHeunRK3]" time="0.668" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-stress-etdrk4]" time="0.663" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-advective-imexRK3]" time="0.845" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-advective-ifHeunRK3]" time="0.836" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[32-0.002-17-advective-etdrk4]" time="0.841" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-stress-imexRK3]" time="1.237" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-stress-ifHeunRK3]" time="1.204" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-stress-etdrk4]" time="1.197" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-advective-imexRK3]" time="1.575" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-advective-ifHeunRK3]" time="1.542" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[34-0.001-29-advective-etdrk4]" time="1.540" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-stress-imexRK3]" time="0.762" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-stress-ifHeunRK3]" time="0.747" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-stress-etdrk4]" time="0.758" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-advective-imexRK3]" time="0.945" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-advective-ifHeunRK3]" time="0.948" /><testcase classname="tests.test_numerics" name="test_python_swift_trajectory_parity[128-None-41-advective-etdrk4]" time="0.956" /><testcase classname="tests.test_numerics" name="test_fft_normalization_zero_nyquist_derivatives_poisson[32]" time="0.316" /><testcase classname="tests.test_numerics" name="test_fft_normalization_zero_nyquist_derivatives_poisson[34]" time="0.660" /><testcase classname="tests.test_numerics" name="test_fft_normalization_zero_nyquist_derivatives_poisson[256]" time="0.439" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[stress-imexRK3]" time="2.426" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[stress-ifHeunRK3]" time="2.309" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[stress-etdrk4]" time="2.244" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[advective-imexRK3]" time="2.331" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[advective-ifHeunRK3]" time="2.305" /><testcase classname="tests.test_numerics" name="test_integrator_stages_and_energy_evolution[advective-etdrk4]" time="2.322" /><testcase classname="tests.test_numerics" name="test_classical_padding_truncation_no_aliasing[stress-32]" time="0.544" /><testcase classname="tests.test_numerics" name="test_classical_padding_truncation_no_aliasing[stress-34]" time="0.968" /><testcase classname="tests.test_numerics" name="test_classical_padding_truncation_no_aliasing[advective-32]" time="0.644" /><testcase classname="tests.test_numerics" name="test_classical_padding_truncation_no_aliasing[advective-34]" time="1.155" /><testcase classname="tests.test_numerics" name="test_diffusion_live_parameters_and_batch_invariance[imexRK3]" time="0.304" /><testcase classname="tests.test_numerics" name="test_diffusion_live_parameters_and_batch_invariance[ifHeunRK3]" time="0.297" /><testcase classname="tests.test_numerics" name="test_diffusion_live_parameters_and_batch_invariance[etdrk4]" time="0.299" /><testcase classname="tests.test_numerics" name="test_initialization_reset_and_uint64_seed" time="2.012" /><testcase classname="tests.test_numerics" name="test_rendering_all_choices_preserves_solver" time="0.229"><failure message="fastturbo.engine.NativeError: PNG rendering is not available in the headless build.">tmp_path = PosixPath('/tmp/pytest-of-tobbe/pytest-0/test_rendering_all_choices_pre0')
+
+    def test_rendering_all_choices_preserves_solver(tmp_path):
+        with Engine(Configuration(resolution=32, fixed_dt=0.002)) as engine:
+            engine.advance(10)
+            before = spectrum(engine, tmp_path / "before.c64")
+            stats = engine.inspect()
+            for field in ["vorticity", "enstrophy", "speed"]:
+                for palette in ["inferno", "ember", "aurora", "glacier"]:
+                    for mode in ["sigma", "exposure"]:
+                        path = tmp_path / f"{field}-{palette}-{mode}.png"
+&gt;                       engine.export(png=path, display=field, palette=palette, color_range=mode, flow=True, pixel_size=64)
+
+tests/test_numerics.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/fastturbo/engine.py:159: in export
+    return self._call("export", **options, snapshot=snapshot, **render_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/fastturbo/engine.py:141: in _call
+    return self._native.result(self._native.lib.ft_engine_call(self._handle, encode({"op": op, **kwargs})))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;fastturbo.engine._Library object at 0x7743f7b1b380&gt;, pointer = 397064416
+
+    def result(self, pointer):
+        result = json.loads(self.string(pointer))
+        if "error" in result:
+&gt;           raise NativeError(result["error"])
+E           fastturbo.engine.NativeError: PNG rendering is not available in the headless build.
+
+src/fastturbo/engine.py:90: NativeError</failure></testcase><testcase classname="tests.test_numerics" name="test_long_run_finite_decay_and_exact_endpoint" time="1.953" /><testcase classname="tests.test_numerics" name="test_bad_input_and_closed_handle" time="0.227" /><testcase classname="tests.test_windows" name="test_windows_backend_and_shared_abi" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:14: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[stress-imexRK3]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[stress-ifHeunRK3]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[stress-etdrk4]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[advective-imexRK3]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[advective-ifHeunRK3]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_bitwise_native_parity_and_unicode_exports[advective-etdrk4]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:25: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_rendered_pixels_against_independent_shader_equations" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:42: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_large_grid_native_parity[1024]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:60: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_large_grid_native_parity[2048]" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:60: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_native_workers_continue_without_python_events" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:72: Windows backend</skipped></testcase><testcase classname="tests.test_windows" name="test_invalid_native_commands_and_worker_close" time="0.000"><skipped type="pytest.skip" message="Windows backend">/home/tobbe/github/2DFastTurboPython/python/tests/test_windows.py:80: Windows backend</skipped></testcase></testsuite></testsuites>

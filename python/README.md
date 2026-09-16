@@ -1,5 +1,11 @@
 # FastTurbo
 
+Linux source-checkout status: the shared CUDA/VkFFT **headless** backend is built,
+tested and benchmarked on Ubuntu/WSL with RTX 3090. Use `uv sync`, then
+`uv run 2dfastturbo --headless --resolution 1024 --k0 4`. Linux GPU rendering/GUI
+is unfinished because the tested WSLg graphics paths fail CUDA interop; no Linux
+GUI or prebuilt-wheel support is claimed. See [Linux port status](../LINUX_PORT.md).
+
 **Watch two-dimensional turbulence evolve on your GPU.**
 
 FastTurbo combines an interactive desktop application with a Python API for

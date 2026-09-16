@@ -1,5 +1,38 @@
 # Measured performance and parity
 
+## Linux/WSL CUDA/VkFFT, 2026-09-16 — headless milestone
+
+Ubuntu 24.04.5/WSL2 on Windows 10 Pro, RTX 3090, CUDA 13.3.73, GCC 13.3,
+CPython 3.14.6. Three sequential five-second runs at each resolution, seed 2,
+k0=4, Re=50000, CFL=3, ETDRK4/stress, batch 8, eight warmup steps followed by
+reset. The same configuration is used by the Windows results below.
+
+| Retained / padded | Median ms/step | Median steps/s | Median R_turbo |
+|---|---:|---:|---:|
+| 1024 / 1536 | 1.334983 | 749.0734 | 1.239378 |
+| 2048 / 3072 | 5.044150 | 198.2495 | 0.178010 |
+
+R_turbo is 0.876% lower and 0.622% higher respectively than the stored Windows
+Python medians. Different OS/toolchain/date, matched physical configuration;
+these are not interleaved measurements. No major compute regression was found.
+Native GPU-event intervals occupy 94.18%/96.14% of representative wall times.
+
+An independent later API profile measured median batch8 11.58094 ms, inspection
+0.08709 ms, vorticity snapshot 0.14112 ms, velocity snapshot 0.22489 ms and no-op
+ABI upper bound 0.01747 ms. Nsight recorded 67 stream synchronizations taking
+657.506 ms in a 512-step capture. Its installed tracing libraries warn about the
+newer 13.4 driver and omit GPU kernel/memcpy activity tables, so per-kernel times
+and transfer sizes are not claimed. The dominant measured work is native GPU
+execution/waiting; no speculative solver optimization was applied.
+
+The headless tests pass, and the 3,832-step stored native Windows trajectory
+matches to a maximum diagnostic relative error of 1.87215e-6. The full suite
+retains two failing GUI/render tests. **No interactive R_turbo or GUI-overhead
+measurement exists:** the tested GPU-backed WSLg contexts reject CUDA sharing.
+No H100 measurement is claimed. Exact commands, raw timing/diagnostic JSON,
+profile summaries and interop evidence are in
+[`python/evidence/linux`](python/evidence/linux) and [LINUX_PORT.md](LINUX_PORT.md).
+
 ## Windows CUDA/VkFFT, 2026-09-14
 
 Built and tested on Windows 10 Pro build 19045, RTX 3090, NVIDIA driver 616.56,

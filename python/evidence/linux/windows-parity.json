@@ -33,7 +33,7 @@
     "dt": 0.0015149107202887535,
     "energy": 0.48823591667678556,
     "enstrophy": 5.634088709950447,
-    "gpu_milliseconds": 4826.66943359375,
+    "gpu_milliseconds": 5152.82470703125,
     "initial_turnover_time": 1.5707963384450374,
     "is_finite": true,
     "palinstrophy": 13211.827880859375,
@@ -83,7 +83,8 @@
     },
     "gpu": "NVIDIA GeForce RTX 3090",
     "gpu_memory_bytes": 25769279488,
+    "native_rendering_error": "This Linux build supports headless CUDA execution. GPU rendering is unavailable in the validated WSLg environment. Use --headless; see LINUX_PORT.md for the measured interoperability failures.",
     "os": "Linux",
-    "physical_memory_bytes": 232203595776
+    "physical_memory_bytes": 232203608064
   }
 }

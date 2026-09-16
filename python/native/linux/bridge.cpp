@@ -39,6 +39,7 @@ char* ft_initialize(const char*) {
         CUDA_CHECK(cudaDriverGetVersion(&driver));
         return Json{{"abi_version",1},{"defaults",configReport(Config{})},
             {"backend","CUDA / VkFFT"},{"gpu",prop.name},{"os","Linux"},
+            {"native_rendering_error","This Linux build supports headless CUDA execution. GPU rendering is unavailable in the validated WSLg environment. Use --headless; see LINUX_PORT.md for the measured interoperability failures."},
             {"gpu_memory_bytes",prop.totalGlobalMem},
             {"physical_memory_bytes",uint64_t(sysconf(_SC_PHYS_PAGES))*sysconf(_SC_PAGESIZE)},
             {"compute_capability",std::to_string(prop.major)+"."+std::to_string(prop.minor)},

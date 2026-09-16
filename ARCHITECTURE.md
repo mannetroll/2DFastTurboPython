@@ -1,11 +1,22 @@
 # Python/native architecture
 
-The application now selects a native backend locally in `fastturbo.build`:
-macOS loads the existing `libfastturbo.dylib` (Metal/VkFFT), and Windows loads
-`fastturbo.dll` (CUDA/VkFFT). Both implement version 1 of `python/native/fastturbo.h`.
+The application selects a native backend locally in `fastturbo.build`:
+macOS loads the existing `libfastturbo.dylib` (Metal/VkFFT), Windows loads
+`fastturbo.dll` (CUDA/VkFFT), and Linux loads `libfastturbo.so` (CUDA/VkFFT).
+All implement version 1 of `python/native/fastturbo.h`; Linux currently supports
+the headless engine API and explicitly reports native rendering unavailable.
 The common Python `Configuration`, `Engine` / `create_engine`, `NativeUI`, CLI,
 controls, palettes and PySide6 dashboard are shared. ctypes releases the GIL for
 all native calls. `GUI_PARITY.md` records the control mapping.
+
+Windows and Linux compile the same unchanged CUDA solver/kernel/VkFFT files in
+`reference-windows/src`; `python/native/cuda` shares the bridge conversion and
+export helpers. The Linux numerical library links no Qt, X11, Wayland, GL, EGL,
+Win32 or D3D libraries. Its headless milestone, stored Windows numerical parity,
+N1024/N2048 timing and sm_90 compilation pass. WSLg CUDA graphics interoperability
+fails outside the sandbox; the Linux GUI/renderer is unfinished. No CPU rendering
+fallback exists. `LINUX_PORT.md` records the exact failed GPU probes, current
+limitations, the process-local WSL JIT loader fix and reproduction commands.
 
 The Windows CMake project links the reference solver directly, including its
 unchanged CUDA kernels and VkFFT implementation. The original C++ controller owns
