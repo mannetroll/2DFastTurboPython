@@ -908,3 +908,790 @@ BUILD SYSTEM
 ======================================================================
 
 The existing Python
+
+project under:
+
+    python/
+
+already uses:
+
+    pyproject.toml
+    setup.py
+    uv
+    native/
+    src/
+    tests/
+    scripts/
+    verification/
+
+Preserve the existing Python packaging/build workflow wherever practical.
+
+Do not create an unrelated Linux build system beside it.
+
+Linux should ideally build and run using commands consistent with:
+
+    cd python
+    uv sync
+    uv run ...
+
+The current pre-port:
+
+    uv sync
+
+fails because:
+
+    python/src/fastturbo/build.py
+
+contains the macOS-only restriction:
+
+    RuntimeError:
+    "FastTurbo requires Apple Silicon and macOS 15 or later."
+
+This is expected pre-port behavior.
+
+Fix the build architecture properly.
+
+Do NOT simply remove the platform check and attempt to compile the Metal
+backend on Linux.
+
+The build system must select the correct native backend:
+
+    macOS:
+        Metal/VkFFT
+
+    Windows:
+        CUDA/VkFFT
+
+    Linux:
+        CUDA/VkFFT
+
+Keep platform selection centralized and explicit.
+
+Automate native compilation.
+
+Use the verified Linux toolchain:
+
+    GCC/G++ 13.3
+    nvcc 13.3.73
+    CMake 3.28.3
+    Ninja 1.11.1
+    uv 0.11.33
+
+Do not require manual IDE steps.
+
+Where useful add:
+
+    python/scripts/build-linux.sh
+    python/scripts/test-linux.sh
+    python/scripts/run-linux.sh
+    python/scripts/benchmark-linux.sh
+
+Do not remove or break existing macOS or Windows build scripts.
+
+The Linux native extension should be built reproducibly by the Python
+project.
+
+Use appropriate rpath/library handling so ordinary execution does not
+depend on manually editing LD_LIBRARY_PATH beyond the verified CUDA
+development environment.
+
+Do not hard-code user-specific absolute repository paths.
+
+======================================================================
+PYTHON VERSION
+======================================================================
+
+uv currently selects:
+
+    CPython 3.14.6
+
+for this project.
+
+Preserve the existing project's Python-version policy.
+
+Do not downgrade Python merely because Linux support is being added unless
+a demonstrated native-extension incompatibility requires it.
+
+If Python 3.14 exposes an actual compatibility issue, diagnose the specific
+dependency or extension problem before changing versions.
+
+======================================================================
+LINUX CUDA ARCHITECTURES
+======================================================================
+
+For local development:
+
+    RTX 3090 = sm_86
+
+Compile efficiently for sm_86.
+
+The Linux build must also make future H100 compilation straightforward:
+
+    H100 = sm_90
+
+Do not compile an unnecessarily large collection of CUDA architectures for
+every local development build.
+
+Provide an explicit configuration mechanism, for example:
+
+    FASTTURBO_CUDA_ARCH=86
+
+and later:
+
+    FASTTURBO_CUDA_ARCH=90
+
+or use an equivalent clean CMake/native-build mechanism.
+
+Document it.
+
+Do not silently generate only PTX for the local RTX 3090 if native sm_86
+code can be built.
+
+======================================================================
+TESTS AND CORRECTNESS GATE
+======================================================================
+
+Preserve all existing tests.
+
+Add Linux backend tests rather than replacing the macOS/Windows tests.
+
+At minimum verify:
+
+1. Native extension builds on Ubuntu 24.04.5.
+2. Python native module imports.
+3. RTX 3090 is detected.
+4. CUDA initializes.
+5. VkFFT initializes.
+6. Correct retained N.
+7. Correct N_pad = 3N/2.
+8. FFT forward/inverse normalization.
+9. k=0 handling.
+10. Nyquist handling.
+11. classical 3/2 padding.
+12. classical 3/2 truncation.
+13. pad/truncate round-trip behavior.
+14. deterministic initialization.
+15. spectral derivative correctness where existing tests support it.
+16. finite fields after stepping.
+17. kinetic-energy diagnostics.
+18. enstrophy diagnostics.
+19. Pause/Resume.
+20. Reset.
+21. resolution changes.
+22. GUI controls modify the correct native state.
+23. vortex injection works.
+24. no full-field Python readback occurs in normal production execution.
+25. headless solver works with no GUI/display initialization.
+26. Linux results agree numerically with the Windows CUDA reference.
+27. CUDA Graph/non-Graph results agree if both modes exist.
+28. rendering does not alter numerical state.
+29. macOS backend API remains compatible.
+30. Windows backend API remains compatible.
+
+Where possible use identical deterministic configurations against:
+
+    reference-windows/
+
+or existing stored verification outputs.
+
+Do not require bitwise identity where CUDA compiler/runtime differences make
+that unreasonable.
+
+Require numerically tight agreement appropriate for FP32 GPU computation.
+
+The correctness gate is authoritative.
+
+Do not weaken tests to accept a port or optimization.
+
+======================================================================
+WINDOWS / LINUX NUMERICAL COMPARISON
+======================================================================
+
+Because both platforms use CUDA/VkFFT, establish a deterministic comparison
+between:
+
+    native Windows CUDA reference
+
+and:
+
+    Linux/WSL CUDA backend
+
+using identical:
+
+    retained N
+    padded N
+    seed
+    k0
+    viscosity
+    drag
+    forcing
+    integrator
+    CFL
+    timestep mode
+    initial conditions
+    number of steps
+
+Compare quantities such as:
+
+    simulated time
+    kinetic energy
+    enstrophy
+    max |omega|
+    max velocity
+    selected diagnostics
+    field norms/checksums where available
+
+If differences occur, determine whether they result from:
+
+    actual numerical bugs
+    compiler differences
+    FFT normalization
+    padding/truncation
+    asynchronous reduction order
+    expected FP32 roundoff
+
+Do not dismiss unexplained large differences as platform variation.
+
+======================================================================
+PERFORMANCE REGRESSION PROCEDURE
+======================================================================
+
+Do not accept a major performance regression merely because Linux works.
+
+Once correctness is established, use a measurement-driven loop:
+
+    establish baseline
+        ->
+    profile
+        ->
+    identify dominant cost
+        ->
+    formulate ONE hypothesis
+        ->
+    make isolated change
+        ->
+    build Release
+        ->
+    correctness gate
+        ->
+    benchmark
+        ->
+    KEEP or REVERT
+
+Record meaningful experiments.
+
+Do not accumulate speculative changes.
+
+Investigate only when measurement supports it.
+
+Potential areas include:
+
+    VkFFT plan configuration
+    FFT batching
+    CUDA Graph capture
+    graph replay
+    kernel launch count
+    synchronization
+    Python/native call frequency
+    GIL behavior
+    diagnostic readback
+    memory allocation
+    compiler flags
+    sm_86 code generation
+    padding/truncation
+    rendering synchronization
+    WSL-specific behavior
+
+Do not optimize standalone FFT throughput while making R_turbo worse.
+
+The primary performance metric remains:
+
+    R_turbo = T_simulated / T_wall
+
+Also report where available:
+
+    steps/s
+    ms/step
+    R_turnover
+
+======================================================================
+HEADLESS VS INTERACTIVE BENCHMARKS
+======================================================================
+
+Maintain separate performance measurements for:
+
+    HEADLESS
+
+and:
+
+    INTERACTIVE
+
+Headless measures the numerical engine with minimal presentation overhead.
+
+Interactive measures the normal PySide6 + GPU-rendered application.
+
+Use equivalent numerical configurations.
+
+Report:
+
+    R_turbo_headless
+    R_turbo_interactive
+
+and:
+
+    GUI overhead % =
+        100 * (R_headless - R_interactive) / R_headless
+
+Do not include network/display latency in the definition of R_turbo.
+
+WSLg frame rate is a separate UI metric.
+
+The simulation should not be artificially limited to:
+
+    60 FPS
+    monitor refresh
+    Qt paint frequency
+
+The numerical engine may perform many timesteps between rendered frames.
+
+======================================================================
+GUI PARITY
+======================================================================
+
+The existing Python application is authoritative for the GUI.
+
+Do not redesign it.
+
+Update:
+
+    GUI_PARITY.md
+
+to explicitly cover:
+
+    macOS
+    Windows
+    Linux
+
+For every relevant control record whether it is supported and verified on
+each platform.
+
+At minimum verify Linux behavior for existing controls such as:
+
+    Play/Pause
+    Reset
+    single-step if present
+    retained N
+    seed
+    k0
+    Re / viscosity
+    drag
+    forcing
+    CFL
+    maximum dt
+    integrator
+    stress/form selection
+    display field
+    palette
+    sigma normalization
+    exposure
+    contrast
+    contour/display options
+    vortex interaction
+    diagnostics
+
+Use the actual current GUI controls from the source as authoritative.
+
+Do not invent controls merely because they appear in this list.
+
+Do not silently omit existing controls.
+
+======================================================================
+LINUX GPU RENDERING
+======================================================================
+
+Only after the headless hard milestone passes:
+
+Implement the Linux visualization path.
+
+The production path must preserve GPU residency.
+
+Prefer a design conceptually like:
+
+    CUDA simulation state
+        ->
+    GPU visualization conversion
+        ->
+    CUDA/OpenGL or CUDA/EGL/Vulkan interoperability
+        ->
+    GPU render surface
+        ->
+    PySide6-hosted view
+
+Do not perform:
+
+    full CUDA field
+        ->
+    CPU RAM
+        ->
+    NumPy
+        ->
+    QImage
+
+every frame.
+
+A temporary CPU-rendering diagnostic path may be used only if absolutely
+necessary to debug initial integration.
+
+It must not become the production implementation.
+
+Document the final synchronization path.
+
+Measure whether rendering causes CUDA synchronization.
+
+Use double/triple buffering if appropriate and measured useful.
+
+======================================================================
+AWS / H100 HEADLESS TARGET
+======================================================================
+
+The Linux implementation is not WSL-specific.
+
+It must be designed so that the same source can later build on:
+
+    Ubuntu on AWS
+    NVIDIA H100
+    sm_90
+
+Headless execution must not require:
+
+    WSL
+    WSLg
+    Windows
+    Xwayland
+    Direct3D
+    a desktop session
+
+The AWS path should conceptually be:
+
+    Ubuntu
+        ->
+    Python
+        ->
+    native Linux binding
+        ->
+    shared CUDA/VkFFT engine
+        ->
+    H100
+
+Only GPU architecture/build configuration should normally need to change.
+
+Do not create an AWS-specific numerical solver.
+
+Do not claim H100 performance until it is actually run there.
+
+======================================================================
+DOCUMENTATION
+======================================================================
+
+Update:
+
+    ARCHITECTURE.md
+    PERFORMANCE.md
+    GUI_PARITY.md
+
+Create or update:
+
+    LINUX_PORT.md
+
+LINUX_PORT.md must document at least:
+
+    Ubuntu 24.04.5
+    WSL2
+    kernel
+    RTX 3090
+    sm_86
+    CUDA 13.3
+    nvcc 13.3.73
+    GCC/G++
+    CMake
+    Ninja
+    uv
+    WSLg status
+    Linux backend architecture
+    common Windows/Linux CUDA engine
+    native Python binding
+    headless mode
+    Linux rendering path
+    build commands
+    test commands
+    run commands
+    benchmark commands
+    known limitations
+    future H100/sm_90 build procedure
+
+PERFORMANCE.md should contain only actually measured performance.
+
+Do not put hypothetical H100 results into measured-result tables.
+
+======================================================================
+REFERENCE DIRECTORIES
+======================================================================
+
+Treat:
+
+    reference-macos/
+    reference-windows/
+
+as reference implementations.
+
+Do not casually mutate them.
+
+Implement the cross-platform/Linux work primarily under:
+
+    python/
+
+If source from reference-windows should become shared CUDA source, migrate
+or adapt it deliberately.
+
+Document its origin where useful.
+
+Do not leave multiple diverging copies of important numerical kernels if
+they can cleanly be shared.
+
+======================================================================
+PACKAGING
+======================================================================
+
+Packaging is secondary.
+
+Do not spend significant time packaging until:
+
+    headless Linux works
+    correctness gate passes
+    numerical parity passes
+    benchmark exists
+    GUI works
+    GPU rendering works
+    controls are verified
+
+Afterward, make Linux installation reasonably straightforward.
+
+The future AWS/headless installation should not require:
+
+    Windows
+    Direct3D
+    macOS frameworks
+
+Do not bundle or install NVIDIA kernel drivers.
+
+Do not require a desktop environment for headless mode.
+
+======================================================================
+WORKFLOW
+======================================================================
+
+Execute the work in this order:
+
+PHASE 1 — INSPECTION
+
+1. Inspect repository.
+2. Understand Python API.
+3. Understand macOS backend.
+4. Understand Windows CUDA backend.
+5. Identify common CUDA compute.
+6. Identify Windows-only code.
+7. Understand current build.py macOS guard.
+
+PHASE 2 — HEADLESS LINUX
+
+8. Make build system platform-aware.
+9. Build shared CUDA/VkFFT engine on Linux.
+10. Build Linux Python native extension.
+11. Import it from Python.
+12. Initialize RTX 3090.
+13. Run headless solver.
+14. Run deterministic correctness gate.
+15. Compare against Windows reference.
+16. Fix discrepancies.
+17. Benchmark 1024² -> 1536².
+18. Measure R_turbo.
+19. Benchmark 2048² -> 3072² where practical.
+20. Checkpoint working headless implementation.
+
+PHASE 3 — GUI
+
+21. Launch existing PySide6 GUI under WSLg.
+22. Connect every existing control.
+23. Verify GUI parity.
+24. Implement GPU-resident Linux rendering.
+25. Verify interaction.
+26. Verify visualization semantics.
+27. Verify no production full-field CPU readback.
+
+PHASE 4 — PERFORMANCE
+
+28. Benchmark interactive mode.
+29. Measure GUI overhead.
+30. Profile meaningful regressions.
+31. Optimize using KEEP/REVERT.
+32. Re-run correctness gate after each accepted optimization.
+
+PHASE 5 — H100 READINESS
+
+33. Verify clean sm_86 configuration.
+34. Verify build configuration supports sm_90.
+35. Verify headless mode has no GUI dependency.
+36. Document AWS/H100 build procedure.
+
+PHASE 6 — FINAL VERIFICATION
+
+37. Run complete Linux test suite.
+38. Verify macOS API compatibility.
+39. Verify Windows API compatibility.
+40. Update documentation.
+41. Report actual results.
+
+Do not skip directly to GUI work before the headless gate passes.
+
+Do not stop after the first successful build.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+The task is complete only when:
+
+1. Existing macOS Python architecture remains valid.
+2. Existing Windows Python architecture remains valid.
+3. Linux uses the same Python application/API.
+4. Linux uses native CUDA/VkFFT.
+5. Windows and Linux share the CUDA numerical engine wherever practical.
+6. Linux headless mode works.
+7. RTX 3090 executes the Linux solver.
+8. 1024² retained -> 1536² padded is verified.
+9. Classical 3/2 padding remains correct.
+10. Numerical verification passes.
+11. Linux agrees with the Windows CUDA reference within justified tolerance.
+12. No full-field Python readback exists in the production timestep.
+13. Headless R_turbo is measured.
+14. Existing PySide6 GUI works through WSLg.
+15. Existing controls work correctly.
+16. Linux rendering remains GPU-resident.
+17. Interactive R_turbo is measured.
+18. GUI overhead is measured.
+19. sm_90/H100 build configuration is supported.
+20. Documentation is complete.
+
+Do not claim completion simply because:
+
+    uv sync
+
+works.
+
+Do not claim completion simply because:
+
+    the GUI opens.
+
+Do not claim completion simply because:
+
+    CUDA initializes.
+
+Completion means the full correctness, parity, performance, GUI and headless
+requirements above have been demonstrated.
+
+======================================================================
+FINAL SELF-REVIEW
+======================================================================
+
+Before finishing, inspect the implementation critically.
+
+Answer internally:
+
+1. Is there one shared CUDA numerical engine or did Linux accidentally fork it?
+2. Does the timestep remain entirely native/GPU-resident?
+3. Is Python involved in every timestep?
+4. Are any complete fields copied to Python?
+5. Are VkFFT plans reused?
+6. Are CUDA buffers reused?
+7. Is classical 3/2 padding still mathematically identical?
+8. Are FFT normalization conventions identical?
+9. Does Linux reproduce Windows numerical behavior?
+10. Does headless mode really work without Qt/display initialization?
+11. Does WSLg rendering serialize CUDA?
+12. Is the GIL held during long native operations unnecessarily?
+13. Does every GUI control actually reach the native backend?
+14. Is R_turbo measured consistently?
+15. Are WSLg FPS and solver performance correctly separated?
+16. Is sm_90 genuinely configurable?
+17. Did any Windows or macOS functionality regress?
+18. What is the dominant remaining performance bottleneck?
+
+Fix important findings before declaring completion.
+
+======================================================================
+FINAL RESPONSE
+======================================================================
+
+When finished, give a concise engineering report containing:
+
+1. final cross-platform architecture
+2. files/directories changed
+3. common Python API
+4. shared CUDA engine architecture
+5. Linux native binding
+6. VkFFT integration
+7. headless Linux status
+8. GUI/WSLg status
+9. Linux GPU rendering architecture
+10. GUI parity status
+11. numerical parity results
+12. correctness test results
+13. 1024² -> 1536² benchmark
+14. 2048² -> 3072² benchmark if completed
+15. R_turbo_headless
+16. R_turbo_interactive
+17. GUI overhead
+18. Windows/Linux performance comparison where genuinely equivalent
+19. sm_90/H100 readiness
+20. exact commands to build
+21. exact commands to test
+22. exact commands to run headless
+23. exact commands to run GUI
+24. known limitations
+25. dominant remaining performance bottleneck
+
+Do not invent measurements.
+
+Clearly distinguish:
+
+    measured
+    verified
+    inferred
+    not yet tested
+
+Most importantly, the final architecture must remain:
+
+                         Python / PySide6
+                               |
+                        common application
+                               |
+                     common native engine API
+                        /                \
+                       /                  \
+              Metal / VkFFT           CUDA / VkFFT
+                   |                    /        \
+                 macOS              Windows     Linux
+                                                |
+                                      +---------+---------+
+                                      |                   |
+                                  WSL / RTX            AWS / H100
+
+The existing Python application is authoritative for the GUI, controls,
+parameter semantics, presets, diagnostics, and user experience.
+
+The existing Windows native CUDA/VkFFT implementation is authoritative
+for the Linux CUDA numerical backend.
+
+Port and reuse what already works.
+
+Do not reinvent it.
