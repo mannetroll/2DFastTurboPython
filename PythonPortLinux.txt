@@ -1,0 +1,895 @@
+You are GPT-6 Astra running at xhigh reasoning effort inside Codex CLI on:
+
+    Ubuntu 24.04.4 LTS
+    WSL2
+    NVIDIA RTX 3090 host GPU
+
+Work directly on the files in the current repository.
+
+Do not ask clarifying questions.
+Do not stop after producing a plan.
+Do not create an independent Linux application.
+Do not rewrite working code unnecessarily.
+
+Inspect the existing repository first, then implement, build, test, run,
+benchmark, profile, fix failures, and iterate until the existing Python
+application runs correctly on Linux.
+
+PRIMARY TASK
+============
+
+This repository already contains a working cross-platform Python application
+with two mature native implementations/reference implementations:
+
+    macOS:
+        Python + PySide6
+            ->
+        native Metal + VkFFT
+
+    Windows:
+        Python + PySide6
+            ->
+        native CUDA + VkFFT
+
+The task is to add:
+
+    Linux:
+        Python + PySide6
+            ->
+        native CUDA + VkFFT
+
+The intended final architecture is:
+
+                         Python / PySide6
+                               |
+                        common Python API
+                               |
+                     common native engine API
+                        /                \
+                       /                  \
+              Metal/VkFFT             CUDA/VkFFT
+                   |                    /       \
+                 macOS              Windows    Linux
+                                               |
+                                         WSL / AWS
+                                               |
+                                         NVIDIA GPU
+
+The Linux backend should share as much CUDA numerical code as practical with
+the Windows CUDA backend.
+
+DO NOT PORT THE NUMERICAL SOLVER TO PYTHON.
+
+Python is the application/control layer.
+
+CUDA/VkFFT remains the numerical execution layer.
+
+AUTHORITATIVE SOURCES
+=====================
+
+Use the existing repository rather than guessing.
+
+For common Python GUI/API behavior:
+
+    python/
+
+For macOS behavior and original numerical reference:
+
+    reference-macos/2DFastTurbo/
+
+For CUDA/VkFFT implementation:
+
+    reference-windows/
+
+Also inspect:
+
+    ARCHITECTURE.md
+    PERFORMANCE.md
+    PORT_REFERENCE.md
+    GUI_PARITY.md
+    WINDOWS_PORT.md
+    PythonPortMacOS.txt
+    PythonPortWindows.txt
+    python/DEVELOPMENT.md
+    python/README.md
+
+The existing Windows CUDA implementation is the primary reference for Linux
+CUDA numerical behavior.
+
+The existing Python application is authoritative for GUI/control semantics.
+
+Do not invent behavior already defined by source code.
+
+FIRST: INSPECT THE ENVIRONMENT
+==============================
+
+Before changing code, inspect the Ubuntu/WSL environment.
+
+At minimum check:
+
+    cat /etc/os-release
+    uname -a
+    python3 --version
+    uv --version
+    gcc --version
+    g++ --version
+    cmake --version
+    ninja --version
+    git --version
+    nvidia-smi
+    nvcc --version
+
+Also inspect:
+
+    echo $PATH
+    echo $CUDA_HOME
+    ldconfig -p | grep -E 'cuda|nvrtc'
+
+Determine:
+
+1. Whether the RTX 3090 is visible through WSL CUDA.
+2. Installed CUDA toolkit version.
+3. NVIDIA driver interface exposed to WSL.
+4. CUDA include/library locations.
+5. Available C++ compiler.
+6. Available Python version.
+7. Whether PySide6 can create a GUI through WSLg.
+8. DISPLAY and WAYLAND_DISPLAY configuration.
+9. Whether OpenGL/EGL/Vulkan acceleration is available.
+10. Existing project build dependencies.
+
+Do NOT install or replace the NVIDIA Linux kernel/display driver inside WSL.
+
+WSL uses the Windows NVIDIA driver.
+
+Do not modify the working Windows NVIDIA driver configuration.
+
+If development packages are missing, install only what is actually required.
+
+Document the detected environment in:
+
+    LINUX_PORT.md
+
+Do not spend time upgrading a working toolchain without demonstrated need.
+
+FIRST: INSPECT THE REPOSITORY
+=============================
+
+Before implementing anything, understand:
+
+1. Existing Python package architecture.
+2. Python/native binding API.
+3. macOS native backend.
+4. Windows native backend.
+5. Which CUDA source can be shared.
+6. Which Windows source is genuinely Windows-specific.
+7. VkFFT integration.
+8. FFT plan lifecycle.
+9. CUDA Graph implementation if present.
+10. GPU buffer ownership.
+11. classical 3/2 padding/truncation.
+12. integrator implementation.
+13. diagnostics.
+14. visualization.
+15. PySide6/native-view integration.
+16. build/packaging system.
+17. tests and verification infrastructure.
+
+Do not start by copying the entire Windows project.
+
+Identify:
+
+    common CUDA compute code
+
+versus:
+
+    Windows/D3D host/render code.
+
+TARGET ARCHITECTURE
+===================
+
+Evolve the native implementation toward something conceptually like:
+
+    python/native/
+        common/
+            common API
+            config
+            diagnostics
+
+        cuda/
+            shared CUDA solver
+            VkFFT CUDA backend
+            CUDA kernels
+            padding/truncation
+            integrators
+            diagnostics
+            GPU resources
+
+        macos/
+            Metal backend
+            Metal rendering
+
+        windows/
+            Windows host integration
+            Direct3D interop
+
+        linux/
+            Linux host integration
+            Linux GPU rendering
+
+Do not force this exact directory structure if the existing project has a
+cleaner architecture.
+
+The important requirement is:
+
+    Windows and Linux should share the CUDA numerical engine.
+
+Do not maintain two independent copies of the CUDA CFD solver unless there
+is a compelling technical reason.
+
+COMMON CUDA ENGINE
+==================
+
+Refactor/reuse the working Windows CUDA/VkFFT solver so its compute layer is
+platform-neutral.
+
+The common CUDA engine should own:
+
+    CUDA device resources
+    simulation buffers
+    VkFFT plans
+    FFT workspace
+    spectral state
+    3/2 padded workspace
+    CUDA kernels
+    integrator state
+    CUDA Graphs
+    reductions
+    diagnostics
+    interaction kernels
+
+Windows-specific code should NOT be required to compile this compute layer.
+
+In particular, avoid dependencies on:
+
+    windows.h
+    Direct3D headers
+    DXGI
+    Win32 synchronization primitives
+
+inside the common numerical engine.
+
+Those belong in the Windows platform/render layer.
+
+NUMERICAL PARITY
+================
+
+Do not redesign the numerical solver.
+
+Preserve the existing CUDA solver's mathematical behavior.
+
+Preserve:
+
+    2D incompressible Navier-Stokes
+    vorticity-streamfunction formulation
+    Fourier pseudo-spectral method
+    retained spectral N semantics
+    classical 3/2 zero padding
+    FFT normalization
+    positive/negative Fourier mode mapping
+    Nyquist handling
+    k=0 handling
+    existing integrators
+    existing stress/form options
+    initialization
+    seed semantics
+    forcing
+    viscosity
+    drag
+    CFL behavior
+    diagnostics
+
+For example:
+
+    N = 1024 retained
+    nonlinear workspace = 1536 x 1536
+
+The Linux application must display:
+
+    1024² -> 1536² padded
+
+with exactly the same meaning as macOS and Windows.
+
+VKFFT
+=====
+
+Use the VkFFT CUDA backend.
+
+Do not replace VkFFT with:
+
+    NumPy FFT
+    SciPy FFT
+    CuPy FFT
+    PyTorch FFT
+    JAX FFT
+
+Do not move FFTs to CPU.
+
+Reuse the existing working CUDA/VkFFT configuration as closely as possible.
+
+Reuse FFT plans.
+
+Never create plans inside the normal timestep.
+
+Preserve batching and transform strategy where already optimized.
+
+CUDA GRAPHS
+===========
+
+If the Windows implementation uses CUDA Graphs, preserve them on Linux where
+supported.
+
+The Linux implementation should use the same compute graph whenever possible.
+
+Do not create separate Windows and Linux numerical scheduling strategies
+without evidence that this is necessary.
+
+GPU RESIDENCY
+=============
+
+The normal timestep must remain entirely GPU-resident.
+
+Do NOT:
+
+    copy full fields into Python
+    create NumPy solver arrays
+    copy vorticity to CPU every frame
+    execute FFTs through Python
+    execute RK stages through Python
+
+Python should issue coarse control operations.
+
+The native CUDA engine should perform substantial simulation work independently.
+
+Only tiny diagnostics should normally cross to Python.
+
+PYTHON API
+==========
+
+The existing Python API is authoritative.
+
+Linux should work conceptually like:
+
+    import fastturbo
+
+    engine = fastturbo.create_engine(...)
+
+and automatically select:
+
+    Linux CUDA/VkFFT
+
+when running on Linux with a supported NVIDIA GPU.
+
+Do not scatter:
+
+    if sys.platform == "linux"
+
+throughout the Python application.
+
+Centralize backend/platform selection.
+
+The same Python GUI should run on:
+
+    macOS
+    Windows
+    Linux
+
+Do not create:
+
+    app_linux.py
+    controls_linux.py
+    gui_linux.py
+
+unless a tiny platform adapter genuinely requires it.
+
+GUI
+===
+
+Use the existing PySide6 GUI.
+
+Do NOT redesign it.
+
+Do NOT invent Linux-specific controls.
+
+All existing controls must retain the same:
+
+    labels
+    ranges
+    defaults
+    semantics
+    grouping
+    enabled/disabled behavior
+
+Use GUI_PARITY.md as a reference.
+
+Update GUI_PARITY.md to include Linux.
+
+Every control must actually reach the Linux CUDA backend.
+
+Do not declare GUI parity while controls silently do nothing.
+
+WSLG DEVELOPMENT TARGET
+=======================
+
+The first Linux GUI target is:
+
+    Ubuntu 24.04 WSL2
+    WSLg
+    RTX 3090
+
+The application should launch normally from the Ubuntu shell, ideally with:
+
+    cd python
+    uv run 2dfastturbo
+
+or the existing project equivalent.
+
+PySide6 should display through WSLg on the Windows desktop.
+
+Do not require the user to start a separate X server if WSLg already provides
+the required GUI environment.
+
+LINUX RENDERING
+===============
+
+Do NOT bring the Windows Direct3D rendering implementation directly into Linux.
+
+Keep the numerical CUDA backend common.
+
+Implement an appropriate Linux visualization path.
+
+First inspect how the current Python/macOS and Python/Windows ports host their
+native GPU views.
+
+Choose the simplest robust Linux solution that preserves GPU residency.
+
+Candidates include:
+
+    CUDA + OpenGL interoperability
+    CUDA + EGL/OpenGL
+    CUDA + Vulkan interoperability
+
+Prefer the simplest solution that works reliably with:
+
+    PySide6
+    WSLg
+    native Ubuntu
+    AWS Ubuntu
+
+Do NOT choose Vulkan merely because it is lower level.
+
+Start with OpenGL interoperability if it provides a clean zero-copy or
+low-copy GPU path and integrates well with Qt.
+
+Do not route full simulation fields through:
+
+    CUDA -> CPU -> NumPy -> QImage
+
+in the production path.
+
+That is explicitly unacceptable.
+
+RENDERING ABSTRACTION
+=====================
+
+Do not over-abstract the rendering backend.
+
+It is acceptable for:
+
+    macOS  -> Metal rendering
+    Windows -> Direct3D rendering
+    Linux -> OpenGL/EGL or Vulkan
+
+to remain platform-specific.
+
+Share display semantics, not necessarily low-level rendering code.
+
+Preserve:
+
+    field selection
+    palette
+    sigma normalization
+    exposure
+    contrast
+    overlays
+    retained/padded text
+    interaction semantics
+
+AWS / HEADLESS DESIGN
+=====================
+
+Linux must also be suitable for later deployment to:
+
+    Ubuntu on AWS
+    NVIDIA H100
+
+Therefore separate:
+
+    simulation engine
+
+from:
+
+    interactive GUI/rendering.
+
+The Linux solver must support a HEADLESS mode.
+
+Headless mode must:
+
+    initialize CUDA
+    initialize VkFFT
+    run simulation
+    collect diagnostics
+    benchmark
+    write results
+
+without requiring:
+
+    X11
+    Wayland
+    WSLg
+    OpenGL window
+    PySide6 GUI
+
+This is critical.
+
+A future AWS H100 instance may run benchmark jobs without a desktop session.
+
+Do not make CUDA solver initialization depend on Qt.
+
+H100 PORTABILITY
+================
+
+The local development GPU is:
+
+    RTX 3090
+    compute capability 8.6
+
+The future AWS target is:
+
+    NVIDIA H100
+    compute capability 9.0
+
+Do not hard-code the Linux build exclusively to sm_86.
+
+Provide a clean build configuration that can target:
+
+    sm_86
+    sm_90
+
+or detect/select an appropriate architecture.
+
+For local WSL development, compile efficiently for sm_86.
+
+For H100, make rebuilding for sm_90 straightforward.
+
+Do not claim H100 performance until actually benchmarked on H100.
+
+PERFORMANCE
+===========
+
+Linux Python must preserve native CUDA performance as closely as practical.
+
+Measure at minimum on the WSL RTX 3090:
+
+    N = 1024 retained
+    N_pad = 1536
+
+with the same numerical configuration used by the Windows benchmark.
+
+Where practical also benchmark:
+
+    N = 2048
+    N_pad = 3072
+
+Report:
+
+    steps/s
+    ms/step
+    R_turbo
+    R_turnover if available
+
+Measure:
+
+    Linux headless
+    Linux interactive
+
+Also compare against existing Windows results where configuration is genuinely
+identical.
+
+Do not assume WSL and native Windows should have identical performance.
+
+Measure.
+
+Define:
+
+    GUI overhead % =
+        100 * (R_headless - R_interactive) / R_headless
+
+Keep remote/WSLg display performance separate from CFD solver performance.
+
+R_turbo must measure simulation advancement, not network/display latency.
+
+THREADING / PYTHON GIL
+======================
+
+The native simulation engine must not depend on Python driving every timestep.
+
+Release the GIL around long-running native operations where appropriate.
+
+Do not let the PySide6 event loop serialize the solver.
+
+The GUI must remain responsive while CUDA runs.
+
+Do not make one Python call per FFT or CUDA kernel.
+
+BUILD SYSTEM
+============
+
+The existing project under:
+
+    python/
+
+uses:
+
+    pyproject.toml
+    setup.py
+    uv
+
+Preserve that workflow where sensible.
+
+Linux should ideally build/run with something similar to:
+
+    cd python
+    uv sync
+    uv run ...
+
+Automate native compilation.
+
+Use:
+
+    gcc/g++
+    nvcc
+    CMake/Ninja
+
+where appropriate.
+
+Do not require manual IDE steps.
+
+Add Linux scripts if useful:
+
+    python/scripts/build-linux.sh
+    python/scripts/test-linux.sh
+    python/scripts/run-linux.sh
+    python/scripts/benchmark-linux.sh
+
+Do not remove working Windows/macOS scripts.
+
+TESTS
+=====
+
+Preserve all existing tests.
+
+Add Linux backend tests.
+
+At minimum verify:
+
+1. Native extension builds on Ubuntu 24.04.
+2. Python native module imports.
+3. RTX 3090 is detected.
+4. CUDA initializes.
+5. VkFFT initializes.
+6. Correct retained N.
+7. Correct N_pad = 3N/2.
+8. FFT normalization.
+9. k=0 handling.
+10. Nyquist handling.
+11. 3/2 padding.
+12. 3/2 truncation.
+13. deterministic initialization.
+14. finite fields after stepping.
+15. energy/enstrophy diagnostics.
+16. Pause/Resume.
+17. Reset.
+18. resolution changes.
+19. GUI controls modify correct native state.
+20. vortex injection works.
+21. no full-field Python readback occurs in production.
+22. headless solver works without GUI.
+23. Linux results agree numerically with the Windows CUDA reference.
+24. CUDA Graph/non-Graph results agree if both modes exist.
+
+Where possible run identical deterministic configurations against:
+
+    reference-windows
+
+or stored verification outputs.
+
+Do not require bitwise identity where GPU/compiler differences make that
+unreasonable.
+
+Require numerically tight FP32 agreement.
+
+PERFORMANCE REGRESSION
+======================
+
+Do not accept large performance regressions merely because Linux works.
+
+If Linux CUDA is significantly slower than the native Windows CUDA reference
+under equivalent conditions, investigate:
+
+    synchronization
+    binding overhead
+    GIL
+    VkFFT configuration
+    FFT batching
+    CUDA Graphs
+    compiler flags
+    CUDA architecture
+    diagnostic readback
+    WSL-specific overhead
+    rendering synchronization
+
+Distinguish:
+
+    compute regression
+
+from:
+
+    WSLg rendering overhead.
+
+Do not optimize blindly.
+
+Use:
+
+    baseline
+      -> profile
+      -> hypothesis
+      -> isolated change
+      -> correctness gate
+      -> benchmark
+      -> KEEP or REVERT
+
+DOCUMENTATION
+=============
+
+Update:
+
+    ARCHITECTURE.md
+    PERFORMANCE.md
+    GUI_PARITY.md
+
+Create/update:
+
+    LINUX_PORT.md
+
+Document:
+
+    Ubuntu version
+    WSL environment
+    CUDA version
+    compiler
+    GPU
+    Linux backend architecture
+    shared Windows/Linux CUDA core
+    Linux renderer
+    headless mode
+    build commands
+    run commands
+    benchmark commands
+    AWS/H100 rebuild instructions
+    known WSL limitations
+
+Do not report hypothetical performance as measured performance.
+
+REFERENCE DIRECTORIES
+=====================
+
+Treat:
+
+    reference-macos/
+    reference-windows/
+
+as reference implementations.
+
+Do not casually modify them.
+
+Implement the Linux/cross-platform work primarily under:
+
+    python/
+
+If CUDA source from reference-windows should become shared source, migrate or
+adapt it deliberately and document the origin.
+
+Do not leave multiple diverging copies of important numerical kernels if they
+can cleanly be shared.
+
+PACKAGING
+=========
+
+Packaging is secondary.
+
+First achieve:
+
+    numerical correctness
+    headless Linux execution
+    PySide6 GUI
+    GUI parity
+    native GPU rendering
+    performance validation
+
+After that, make Linux installation reasonably simple.
+
+The future AWS use case should support installation/build from a clean Ubuntu
+machine without Windows-specific dependencies.
+
+Do not attempt to bundle NVIDIA kernel drivers.
+
+FINAL ARCHITECTURE TARGET
+=========================
+
+The desired final system is:
+
+                         2D FAST TURBO
+                              |
+                       Python / PySide6
+                              |
+                       common engine API
+                              |
+             +----------------+----------------+
+             |                                 |
+        Metal/VkFFT                       CUDA/VkFFT
+             |                                 |
+           macOS                     +---------+---------+
+                                     |                   |
+                                  Windows              Linux
+                                     |                   |
+                                    D3D            OpenGL/EGL
+                                                       or Vulkan
+                                                         |
+                                            +------------+------------+
+                                            |                         |
+                                         WSL/3090                 AWS/H100
+
+The CUDA numerical engine should be shared between Windows and Linux wherever
+practical.
+
+The Python GUI should be shared across all three desktop platforms.
+
+The Linux solver must also work headless.
+
+WORKFLOW
+========
+
+Execute this sequence:
+
+1. Inspect Ubuntu/WSL environment.
+2. Inspect repository.
+3. Understand existing Python native API.
+4. Separate common CUDA compute from Windows-specific code.
+5. Build common CUDA/VkFFT engine on Linux.
+6. Expose it through existing Python API.
+7. Run headless correctness tests.
+8. Establish headless benchmark.
+9. Make existing PySide6 GUI launch under WSLg.
+10. Implement native Linux GPU rendering.
+11. Verify every GUI control.
+12. Verify interaction.
+13. Benchmark interactive mode.
+14. Compare Linux vs equivalent Windows configuration.
+15. Profile meaningful regressions.
+16. Optimize using KEEP/REVERT.
+17. Verify sm_90/H100 build configurability.
+18. Update documentation.
+19. Run complete test suite.
+
+Do not stop after the first successful
