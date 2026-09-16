@@ -31,7 +31,7 @@ def build(project: Path, native: Path, force=False) -> Path:
     directory.mkdir(parents=True, exist_ok=True)
     native.mkdir(parents=True, exist_ok=True)
     files = [Path(__file__), project / "native/fastturbo.h"]
-    for folder in [source, reference / "src", reference / "tools", mac / "ThirdParty/VkFFTSource/vkFFT"]:
+    for folder in [source, project / "native/cuda", reference / "src", reference / "tools", mac / "ThirdParty/VkFFTSource/vkFFT"]:
         files.extend(sorted(p for p in folder.rglob("*") if p.is_file() and p.suffix != ".md"))
     files.append(reference / "CMakeLists.txt")
     distribution = os.environ.get("FASTTURBO_DISTRIBUTION", "OFF")

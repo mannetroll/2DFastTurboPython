@@ -24,6 +24,13 @@ def run(args: list[str | Path], **kwargs):
 
 
 def build(force: bool = False) -> Path:
+    if platform.system() == "Linux":
+        if __package__:
+            from .build_linux import build as linux_build
+        else:
+            import runpy
+            linux_build = runpy.run_path(str(PACKAGE / "build_linux.py"))["build"]
+        return linux_build(PROJECT, NATIVE, force)
     if platform.system() == "Windows":
         if __package__:
             # An explicit import also makes the loader available inside a frozen
@@ -33,6 +40,8 @@ def build(force: bool = False) -> Path:
             import runpy
             windows_build = runpy.run_path(str(PACKAGE / "build_windows.py"))["build"]
         return windows_build(PROJECT, NATIVE, force)
+    if platform.system() != "Darwin":
+        raise RuntimeError(f"Unsupported platform: {platform.system()}; expected macOS, Windows or Linux.")
     import fcntl
     library = NATIVE / "libfastturbo.dylib"
     if not REFERENCE.exists() and library.exists():

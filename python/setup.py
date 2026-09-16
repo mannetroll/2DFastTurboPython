@@ -33,6 +33,8 @@ class BinaryDistribution(Distribution):
 class Wheel(bdist_wheel):
     def get_tag(self):
         # The C ABI has no CPython version dependency.
+        if sys.platform == "linux":
+            return "py3", "none", super().get_tag()[2]
         return "py3", "none", "win_amd64" if sys.platform == "win32" else "macosx_15_0_arm64"
 
 
