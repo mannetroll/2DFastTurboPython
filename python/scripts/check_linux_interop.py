@@ -36,6 +36,11 @@ def main():
     gl.glGetString.restype = C.c_char_p
     report.update({name: gl.glGetString(value).decode() for name, value in
                    (("vendor", 0x1F00), ("renderer", 0x1F01), ("version", 0x1F02))})
+    gl.glGetStringi.restype = C.c_char_p
+    extension_count = C.c_int()
+    gl.glGetIntegerv(0x821D, C.byref(extension_count))
+    extensions = {gl.glGetStringi(0x1F03, i).decode() for i in range(extension_count.value)}
+    report["external_memory_extensions"] = sorted(s for s in extensions if "memory_object" in s or "semaphore" in s)
     gl.glClearColor.argtypes = [C.c_float] * 4
     gl.glClearColor(.1, .2, .4, 1)
     gl.glClear(0x4000)
