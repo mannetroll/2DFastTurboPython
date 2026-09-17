@@ -234,6 +234,240 @@ Defaults should correspond to an existing known/reference configuration where po
 
 ---
 
+# 5A. Legacy Reference Case Compatibility
+
+The Ubuntu/H100 headless executable must also provide a compatibility mode that can run the existing historical/reference DNS case using the **same positional argument convention and substantially the same textual output formatting** as the established macOS reference runner.
+
+This is important because the native Linux/H100 executable is not only a benchmark harness. It must also be usable as a direct cross-platform numerical comparison runner against the existing reference implementations.
+
+The established reference invocation is:
+
+```bash
+SCIPYTURBO_SEED=1 ./tools/sim 512 10000 10 1001 0.25 metal 100 PAO CNAB2
+```
+
+On Linux/CUDA, provide an equivalent invocation using the Linux executable and CUDA backend, for example:
+
+```bash
+SCIPYTURBO_SEED=1 ./tools/sim 512 10000 10 1001 0.25 cuda 100 PAO CNAB2
+```
+
+or, if the repository layout makes a different executable path more appropriate:
+
+```bash
+SCIPYTURBO_SEED=1 ./fastturbo_reference 512 10000 10 1001 0.25 cuda 100 PAO CNAB2
+```
+
+The exact executable path may follow the repository architecture, but preserve the positional argument semantics:
+
+```text
+N
+Re
+K0
+Steps
+CFL
+backend
+Update
+Start spectrum
+Method
+```
+
+For this reference case:
+
+```text
+N              = 512
+Re             = 10000
+K0             = 10
+Steps          = 1001
+CFL            = 0.25
+backend        = cuda
+Update         = 100
+Start spectrum = PAO
+Method         = CNAB2
+SCIPYTURBO_SEED=1
+```
+
+## Output compatibility
+
+The Linux/H100 runner should print the old reference case in the same general formatting and ordering as the existing macOS runner so that outputs can be compared visually, archived, diffed, and parsed by existing tooling with minimal special handling.
+
+The established format is:
+
+./reference-macos/2DFastTurbo/tools/sim_512_1001_metal_macOS.txt
+
+
+```text
+--- RUN DNS ---
+ N   = 512
+ Re  = 10000.0
+ K0  = 10.0
+ Steps = 1001
+ CFL  = 0.25
+ Update = 100
+ Start spectrum = PAO
+ Method = CNAB2
+ requested = cuda
+FFT: VkFFT CUDA R2C on NVIDIA H100
+--- INITIALIZING CUDA --- <timestamp>
+ N=512, K0=10.0, Re=10000.0
+ Start spec. = PAO k*exp(-(k/K0)^2)
+ PAO initializer = shared Python spectrum (no Python timesteps)
+ N           = 512
+ Reynolds n. = 10000
+ K0          = 10
+ Energy      = ...
+ WiWi        = ...
+ Time scale  = ...
+ Kolmogorov  = ...
+ Viscosity   = ...
+ dx/Kol.     = ...
+ PAO seed in = 1
+ PAO seed out= ...
+ PAO INITIALIZATION OK. VISC=...
+ effective = cuda (native CUDA CNAB2 comparison runner)
+ DNS INITIALIZATION took ... seconds
+ CUDA allocated memory ≈ ... MiB
+ [NEXTDT INIT] CFLM=... DT=... CN=...
+ Initial DT=... CN=...
+ ITERATION      1 T=... DT=... CN=... CFLM=... TAU_L=...
+ ITERATION    100 T=... DT=... CN=... CFLM=... TAU_L=...
+ ITERATION    200 T=... DT=... CN=... CFLM=... TAU_L=...
+ ...
+ ITERATION   1000 T=... DT=... CN=... CFLM=... TAU_L=...
+ ITERATION   1001 T=... DT=... CN=... CFLM=... TAU_L=...
+ Elapsed CPU time for 1001 steps (s) = ...
+ Final T=...  CN=...  DT=...
+ FPS = ...
+```
+
+Platform-identification lines should naturally describe Linux and the actual NVIDIA device rather than pretending to be macOS. For example:
+
+```text
+CUDA/VkFFT: NVIDIA H100 PCIe
+OS: Ubuntu 24.04.x LTS
+```
+
+or the actual detected Linux distribution/kernel information.
+
+The numerical field names, ordering, iteration reporting cadence, decimal precision, and general spacing should match the established reference output as closely as practical.
+
+Do not deliberately change numerical formatting merely because the Linux implementation is new.
+
+## Canonical legacy parity case
+
+Treat the following existing macOS run as a canonical cross-platform reference case:
+
+```text
+SCIPYTURBO_SEED=1
+N=512
+Re=10000
+K0=10
+Steps=1001
+CFL=0.25
+Update=100
+Start spectrum=PAO
+Method=CNAB2
+```
+
+The established macOS run currently ends approximately as:
+
+```text
+ITERATION   1000 T=0.2297712653 DT=0.00024181 CN=1.00643373 CFLM=320.879303 TAU_L=1.085964
+ITERATION   1001 T=0.2300115343 DT=0.00024305 CN=1.00512793 CFLM=320.857635 TAU_L=1.086023
+Final T=0.23025335  CN=1.0051279  DT=0.00024305485
+```
+
+These values are reference evidence, not values to hardcode.
+
+The Linux/CUDA implementation must calculate its own trajectory using the real shared numerical implementation.
+
+Never special-case this input or inject expected results.
+
+## Purpose of this mode
+
+This compatibility mode gives us a simple three-way comparison:
+
+```text
+reference-macos
+Apple M1 Max
+Metal + VkFFT
+        |
+        | same DNS case
+        v
+reference-windows
+RTX 3090
+CUDA + VkFFT
+        |
+        | same DNS case
+        v
+reference-linux
+RTX 3090 / H100
+CUDA + VkFFT
+```
+
+The goal is to be able to execute the same old reference case on a completely headless H100 and immediately compare the trajectory:
+
+```text
+T
+DT
+CN
+CFLM
+TAU_L
+initial energy
+viscosity
+PAO seed progression
+final state/parity metrics
+```
+
+against the established implementations.
+
+This legacy reference mode and the newer `--benchmark` mode serve different purposes:
+
+```text
+legacy positional mode
+    = cross-platform numerical trajectory/reference compatibility
+
+--benchmark mode
+    = clean native GPU performance measurement
+```
+
+Support both.
+
+Do not replace one with the other.
+
+## Validation requirement
+
+As part of final verification, if CUDA hardware is available, run exactly the equivalent of:
+
+```bash
+SCIPYTURBO_SEED=1 ./tools/sim 512 10000 10 1001 0.25 cuda 100 PAO CNAB2
+```
+
+and include the complete final numerical summary in the final report.
+
+Compare the Linux result against available established reference output using the project's existing tolerances.
+
+At minimum report differences for:
+
+```text
+initial Energy
+initial DT
+T at iteration 1000
+DT at iteration 1000
+CN at iteration 1000
+CFLM at iteration 1000
+TAU_L at iteration 1000
+final T
+final DT
+final CN
+```
+
+If full field/state parity fixtures exist, use them as the stronger validation.
+
+Do not judge correctness solely from the printed scalar diagnostics if stronger state parity is available.
+
+---
+
 # 6. Determinism and Numerical Parity
 
 Performance is secondary until numerical parity has been demonstrated.
@@ -483,11 +717,11 @@ At minimum verify:
 2. CUDA device detection
 3. solver initialization
 4. deterministic initialization
-5. finite numerical state after stepping
-6. known parity case
-7. benchmark completes
-8. nonzero number of actual CUDA solver steps executed
-9. clean failure when no CUDA device is available
+6. finite numerical state after stepping
+7. known parity case
+8. benchmark completes
+9. nonzero number of actual CUDA solver steps executed
+10. clean failure when no CUDA device is available
 
 Reuse existing parity fixtures/reference data where possible.
 
@@ -666,13 +900,14 @@ Before finishing:
 1. Build Release for the available Linux CUDA target.
 2. Run existing relevant tests.
 3. Run native Linux parity validation.
-4. Run the native benchmark.
+4. Run the canonical legacy reference case with `SCIPYTURBO_SEED=1`, `512 10000 10 1001 0.25 cuda 100 PAO CNAB2`, preserving the established output format.
+5. Run the native benchmark.
 5. Verify no Python/Qt/display libraries are linked into the executable.
 6. Inspect dynamic dependencies, e.g. with `ldd`.
 7. Verify CUDA/VkFFT is actually being used.
 8. Verify existing Python Linux CUDA functionality was not broken.
 9. Verify `sm_90` compilation if the installed CUDA toolchain supports it.
-10. Record exact commands and results.
+11. Record exact commands and results.
 
 If RTX 3090 hardware is available, obtain a real baseline that can later be compared directly with H100.
 
