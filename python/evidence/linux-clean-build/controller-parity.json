@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "freshly_generated": true,
+  "sha256": {
+    "controller.cpp": "98830a96af862b465378bcc9e9d86d892dd2b0b6c685630b5bd178beffbded0b",
+    "controller.hpp": "c572fc70af2a10ed42ff49f11270a9ad600c37a26724e914c3620b13932000a9"
+  }
+}

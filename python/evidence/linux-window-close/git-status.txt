@@ -1,0 +1,12 @@
+ M LINUX_PORT.md
+ M PERFORMANCE.md
+ M python/native/cuda/controller.cmake
+ M python/scripts/check_gui.py
+ M python/scripts/test-linux.sh
+ M python/src/fastturbo/app.py
+ M python/src/fastturbo/build_linux.py
+ M python/tests/test_linux.py
+?? python/evidence/linux-clean-build/
+?? python/evidence/linux-cuda-upgrade/
+?? python/evidence/linux-window-close/
+?? python/tests/test_build_linux.py

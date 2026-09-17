@@ -12,6 +12,14 @@ import subprocess
 import sys
 
 
+def _configure(source: Path, directory: Path, **definitions: str | Path) -> None:
+    # A compiler change makes CMake discard its cache and restart without the
+    # other -D arguments. Start fresh ourselves so source roots, Release flags,
+    # GPU architectures and rendering settings survive toolchain changes.
+    subprocess.run(["cmake", "--fresh", "-S", str(source), "-B", str(directory), "-G", "Ninja",
+        *(f"-D{key}={value}" for key, value in definitions.items())], check=True)
+
+
 def build(project: Path, native: Path, force: bool = False) -> Path:
     library = native / "libfastturbo.so"
     reference = project.parent / "reference-windows"
@@ -31,9 +39,13 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
             raise RuntimeError("CUDA Toolkit not found; set CUDA_HOME to the existing toolkit.")
         nvcc = Path(found).resolve()
         cuda = nvcc.parents[1]
+    # /usr/local/cuda and /usr/bin/c++ commonly alias versioned installations.
+    # Use the same identities in the manifest and the CMake command line.
+    cuda, nvcc = cuda.resolve(), nvcc.resolve()
     cxx = shutil.which(os.environ.get("CXX", "c++"))
     if not cxx:
         raise RuntimeError("C++ compiler not found; set CXX to the existing compiler executable.")
+    cxx = str(Path(cxx).resolve())
     architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86"))
     if not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
         raise RuntimeError("FASTTURBO_CUDA_ARCH must be a CUDA architecture, e.g. 86 or 90.")
@@ -60,15 +72,13 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     with (directory / "build.lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         stamp = native / "build-manifest.json"
-        if not force and library.is_file() and stamp.is_file() and json.loads(stamp.read_text()) == manifest:
+        if (not force and (directory / "build.ninja").is_file() and library.is_file()
+                and stamp.is_file() and json.loads(stamp.read_text()) == manifest):
             return library
         print("Building native FastTurbo (shared CUDA + VkFFT, Linux)…", file=sys.stderr, flush=True)
-        subprocess.run(["cmake", "-S", str(source), "-B", str(directory), "-G", "Ninja",
-            "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_CUDA_COMPILER={nvcc}",
-            f"-DCMAKE_CXX_COMPILER={cxx}",
-            f"-DCUDAToolkit_ROOT={cuda}", f"-DCMAKE_CUDA_ARCHITECTURES={architectures}",
-            f"-DFASTTURBO_RENDERER={renderer}",
-            f"-DFASTTURBO_WINDOWS={reference}", f"-DFASTTURBO_VKFFT={vkfft}"], check=True)
+        _configure(source, directory, CMAKE_BUILD_TYPE="Release", CMAKE_CUDA_COMPILER=nvcc,
+            CMAKE_CXX_COMPILER=cxx, CUDAToolkit_ROOT=cuda, CMAKE_CUDA_ARCHITECTURES=architectures,
+            FASTTURBO_RENDERER=renderer, FASTTURBO_WINDOWS=reference, FASTTURBO_VKFFT=vkfft)
         subprocess.run(["cmake", "--build", str(directory), "--parallel", "2"], check=True)
         staging = library.with_suffix(".so.tmp")
         shutil.copy2(directory / library.name, staging)

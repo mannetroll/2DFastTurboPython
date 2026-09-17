@@ -1,0 +1,18 @@
+# ninja log v7
+1	462	1789675784205336867	CMakeFiles/cuda_platform.dir/cuda_loader.cpp.o	c05d7059a67a98b6
+1	2307	1789675784206083959	CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/solver.cu.o	6aaaa962a58de67d
+2307	2314	1789675786511350793	libcuda_platform.a	4dad96176e2b1bbf
+2314	6112	1789675786518350835	CMakeFiles/fastturbo.dir/bridge.cpp.o	59ae616d23d5a6e1
+6112	10209	1789675790316373770	CMakeFiles/fastturbo.dir/ui.cpp.o	831aaf4b68198e1a
+463	10956	1789675784667461925	CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/fft.cpp.o	8cda1617c7027433
+10956	10969	1789675795160403023	libturbo_core.a	6486fbaf8b8dc554
+10209	11089	1789675794413398512	CMakeFiles/fastturbo.dir/adapted/controller.cpp.o	70328f32ab0ccc3c
+11089	11709	1789675795293403826	CMakeFiles/core_tests.dir/core_tests.cpp.o	4a470e49229ed291
+10969	12023	1789675795173403101	CMakeFiles/fastturbo_gl.dir/renderer.cpp.o	fa6bd47b0e6f3c48
+12023	12554	1789675796227409466	CMakeFiles/device_test.dir/device_test.cu.o	1056df734c8b31f2
+12554	12603	1789675796758412673	libfastturbo.so	a969a141f2617e83
+12603	12645	1789675796807412969	libfastturbo_gl.so	a5e3b5fb47b8b437
+12645	12689	1789675796849413222	core_tests	a32b58b5386e3edb
+12689	12726	1789675796893413488	device_test	6fc84487e03bc17
+11709	12927	1789675795913407570	CMakeFiles/cuda_reference.dir/reference_cli.cpp.o	3b4e79cef8f0ebf
+12927	12971	1789675797131414925	cuda_reference	480f0a498c2583d7

@@ -1,0 +1,26 @@
+Thu Sep 17 22:28:55 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3090        Off |   00000000:01:00.0 Off |                  N/A |
+| 74%   82C    P2            369W /  370W |    1849MiB /  24576MiB |    100%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            2528      G   /usr/bin/gnome-shell                     92MiB |
+|    0   N/A  N/A            5944    C+G   ...c/gnome-remote-desktop-daemon        260MiB |
+|    0   N/A  N/A            5985      G   /usr/bin/gnome-shell                    208MiB |
+|    0   N/A  N/A            6297    C+G   ...c/gnome-remote-desktop-daemon        362MiB |
+|    0   N/A  N/A           12567    C+G   /usr/bin/ptyxis                          57MiB |
+|    0   N/A  N/A           12591      G   /usr/bin/Xwayland                         6MiB |
+|    0   N/A  N/A           55615    C+G   ...ython/python/.venv/bin/python        740MiB |
++-----------------------------------------------------------------------------------------+

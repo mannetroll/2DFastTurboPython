@@ -9,13 +9,26 @@ from the one originally described in `PythonPortLinux.txt`.
 
 Ubuntu 26.04.1 LTS, kernel `7.0.0-31-generic`, x86_64, GNOME Wayland with Xwayland,
 RTX 3090 / 24 GiB / sm_86, NVIDIA driver 595.91.07, driver CUDA capability 13.2.
-This fresh checkout had no toolkit, uv, CMake, Ninja or Qt xcb development/runtime
-dependencies. Missing development components were installed **under the user's
-home directory**, using NVIDIA's checksum-verified CUDA redistributables and
-Ubuntu development packages extracted locally. No system driver, compiler or
-system package was replaced. The actual tools are CUDA/nvcc 13.2.51, GCC/G++ 15.2,
+The workstation now uses NVIDIA's Ubuntu 26.04 APT repository and
+`cuda-toolkit-13-3` 13.3.1, installed at `/usr/local/cuda-13.3`. The working
+595.91.07 driver is unchanged. Shell startup selects this toolkit consistently;
+Ubuntu's older CUDA 12.4 remains installed but is not selected. OpenGL/X11/PNG
+development files and Qt xcb runtime libraries are system packages. This replaces
+the earlier user-local CUDA 13.2 development setup. The actual tools are
+CUDA 13.3.1 / nvcc 13.3.73, GCC/G++ 15.2,
 CMake 4.4.3, Ninja 1.13.2 (Kitware build), uv 0.12.15, CPython 3.14.4 and PySide6
-6.11.2. Python's `>=3.13` policy is unchanged.
+6.11.2. Python's `>=3.13` policy is unchanged. The
+[toolkit upgrade report](python/evidence/linux-cuda-upgrade/REPORT.md) records
+package changes, exact build configuration, fresh tests, benchmarks and GUI/GPU
+verification. Measurements below remain the earlier CUDA 13.2 baseline.
+
+A subsequent manual launch exposed a build-cache defect: changing a compiler
+path made CMake restart configuration after dropping the reference source path
+and other settings. The Linux builder now canonicalizes compiler paths and uses
+`cmake --fresh` when configuring. Removing `build/linux` also forces a rebuild
+even if staged native libraries remain. The [clean-build follow-up](python/evidence/linux-clean-build/REPORT.md)
+records the reproducer, clean launches, unchanged controller hashes, regression
+tests and measurements after the fix.
 
 CUDA/OpenGL registration succeeds on the actual NVIDIA context. Direct Qt Wayland
 context creation failed on this host; the application uses Qt's `xcb` platform
@@ -74,12 +87,14 @@ bash python/scripts/run-linux.sh --headless --resolution 1024 --reynolds 50000 \
   --k0 4 --steps 3832 --output results/headless.json
 bash python/scripts/run-linux.sh              # Existing shared GUI
 bash python/scripts/benchmark-linux.sh --mode both --runs 3 --seconds 5 \
-  --output evidence/linux-native/final
+  --output results/linux-benchmark
 ```
 
-The generated `python/build/local-env.sh` selects the local tools and locally
-extracted Qt xcb dependencies. It is machine setup, not a required application
-source file. On a normally provisioned Linux host, put uv/CMake/Ninja on PATH and
+The generated `python/build/local-env.sh` sources
+`~/.config/fastturbo/cuda-env.sh`, also loaded by `~/.bashrc` and `~/.profile`.
+It selects the system CUDA 13.3 toolkit and the existing uv/CMake/Ninja tools.
+It is machine setup, not a required application source file. On a normally
+provisioned Linux host, put uv/CMake/Ninja on PATH and
 set `CUDA_HOME` to the existing CUDA 13.x toolkit. Desktop builds also need the
 OpenGL, X11 and libpng development packages, and the Qt xcb runtime dependencies
 listed by [Qt](https://doc.qt.io/qt-6/linux-requirements.html). From `python/`:
@@ -87,13 +102,18 @@ listed by [Qt](https://doc.qt.io/qt-6/linux-requirements.html). From `python/`:
 ```sh
 uv sync
 FASTTURBO_LINUX_RENDERER=ON uv run fastturbo-build --force
-uv run 2dfastturbo
+QT_QPA_PLATFORM=xcb uv run 2dfastturbo
 uv run 2dfastturbo --headless --resolution 1024 --reynolds 50000 --k0 4
 uv run pytest -q
 uv run python scripts/check_linux_rendering.py
 uv run python scripts/check_linux_workers.py
 uv run python scripts/profile_overhead.py
 ```
+
+On Linux, the window's X button and File → Close Window (Ctrl+W) quit the
+application and stop its native GPU workers. Minimizing keeps the simulation
+running. The Linux lifecycle tests close an actively rendering simulation and
+verify that its event loop exits and its native controller is released.
 
 `FASTTURBO_LINUX_RENDERER=AUTO` is the default: build graphics when dependencies
 are found. `ON` fails clearly if graphics development dependencies are missing;

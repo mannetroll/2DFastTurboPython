@@ -1,4 +1,12 @@
 # Shared, guarded host adaptation of the reference controller. No solver edits.
+if(NOT FASTTURBO_WINDOWS)
+  message(FATAL_ERROR "FASTTURBO_WINDOWS must name the reference-windows source directory.")
+endif()
+foreach(name controller.cpp controller.hpp)
+  if(NOT EXISTS "${FASTTURBO_WINDOWS}/src/${name}")
+    message(FATAL_ERROR "Missing reference source: ${FASTTURBO_WINDOWS}/src/${name}")
+  endif()
+endforeach()
 set(adapted "${CMAKE_CURRENT_BINARY_DIR}/adapted")
 file(MAKE_DIRECTORY "${adapted}")
 function(adapt name before after)

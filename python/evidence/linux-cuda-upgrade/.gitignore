@@ -1,0 +1,2 @@
+# Preserve this validation run's logs alongside its reports.
+!*.log

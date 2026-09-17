@@ -1,0 +1,17 @@
+{
+  "absent_before_launch": [
+    "python/.venv",
+    "python/build/linux",
+    "python/src/fastturbo/_native"
+  ],
+  "backup": "/home/tobbe/.cache/fastturbo-clean-build/1789675782195431986",
+  "timestamp_ns": 1789675782197021420,
+  "cuda_environment": {
+    "CUDA_HOME": null,
+    "CUDAToolkit_ROOT": null,
+    "CUDACXX": null,
+    "CMAKE_PREFIX_PATH": null,
+    "LD_LIBRARY_PATH": null,
+    "FASTTURBO_LINUX_RENDERER": null
+  }
+}

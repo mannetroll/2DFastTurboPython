@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "command": "QT_QPA_PLATFORM=xcb uv run 2dfastturbo",
+  "pid": 55615,
+  "window_id": "0xc00007",
+  "close_request": "WM_DELETE_WINDOW",
+  "exit_code": 0,
+  "close_seconds": 0.16354521399989608,
+  "process_gone": true,
+  "gpu_process_gone": true
+}

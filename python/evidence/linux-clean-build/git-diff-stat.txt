@@ -1,0 +1,5 @@
+ LINUX_PORT.md                       | 37 ++++++++++++++++++++++++++-----------
+ PERFORMANCE.md                      | 11 +++++++++++
+ python/native/cuda/controller.cmake |  8 ++++++++
+ python/src/fastturbo/build_linux.py | 24 +++++++++++++++++-------
+ 4 files changed, 62 insertions(+), 18 deletions(-)

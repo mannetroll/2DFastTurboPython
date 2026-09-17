@@ -10,5 +10,5 @@ if [[ "${1:-}" == "--gui" ]]; then
     shift
     uv run pytest -q "$@"
 else
-    uv run pytest -q tests/test_numerics.py tests/test_linux.py -k 'not rendering' "$@"
+    uv run pytest -q tests/test_numerics.py tests/test_linux.py -m 'not gui' "$@"
 fi

@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "command": "QT_QPA_PLATFORM=xcb uv run 2dfastturbo",
+  "pid": 47141,
+  "window": "0xc00007",
+  "outputs_built_after_cleanup": [
+    "build/linux/libfastturbo.so",
+    "build/linux/libfastturbo_gl.so",
+    "build/linux/cuda_reference",
+    "build/linux/adapted/controller.cpp",
+    "build/linux/adapted/controller.hpp",
+    "src/fastturbo/_native/libfastturbo.so"
+  ],
+  "ninja_steps": 17,
+  "xcb": true,
+  "cuda": true,
+  "controller_parity": true
+}

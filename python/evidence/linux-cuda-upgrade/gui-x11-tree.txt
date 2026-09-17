@@ -1,0 +1,53 @@
+
+xwininfo: Window id: 0x36f (the root window) (has no name)
+
+  Root window id: 0x36f (the root window) (has no name)
+  Parent window id: 0x0 (none)
+     25 children:
+     0xa001c2 "2DFastTurbo": ("mutter-x11-frames" "mutter-x11-frames")  950x941+229+37  +229+37
+        2 children:
+        0xc00007 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  900x854+25+62  +254+99
+           2 children:
+           0xc0001a "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  900x19+0+0  +254+99
+           0xc0000a "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  900x835+0+19  +254+118
+              5 children:
+              0xc00018 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  640x480+0+0  +254+118
+              0xc00016 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  856x54+22+769  +276+887
+              0xc00014 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  196x676+682+85  +936+203
+              0xc0000e "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  642x676+22+85  +276+203
+                 2 children:
+                 0xc00012 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  640x640+1+35  +277+238
+                    1 child:
+                    0x1000002 (has no name): ()  640x640+0+0  +277+238
+                 0xc00010 "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  640x34+1+1  +277+204
+              0xc0000c "2DFastTurbo": ("2DFastTurbo" "2DFastTurbo Python")  856x77+22+0  +276+118
+        0xa001c3 (has no name): ()  1x1+-1+-1  +228+36
+     0xc00009 "2DFastTurbo": ()  1x1+0+0  +0+0
+     0xe00001 "python": ("python" "Python")  10x10+10+10  +10+10
+     0xc00005 "Qt Selection Owner for 2DFastTurbo": ()  3x3+0+0  +0+0
+     0x40003f (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400036 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400033 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400028 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x40001d (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400018 (has no name): ()  1x1+-1+-1  +-1+-1
+     0xa00009 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x800003 "ibus-xim": ()  1x1+0+0  +0+0
+        1 child:
+        0x800004 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x800001 "ibus-x11": ("ibus-x11" "")  10x10+10+10  +10+10
+     0xa00002 "mutter-x11-frames": ("mutter-x11-frames" "mutter-x11-frames")  1x1+0+0  +0+0
+        1 child:
+        0xa00003 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400009 (has no name): ()  1x1+0+0  +0+0
+     0x400008 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400007 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400006 (has no name): ()  1x1+-100+-100  +-100+-100
+     0x400005 (has no name): ()  1x1+-100+-100  +-100+-100
+     0x400004 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x400003 (has no name): ()  1x1+-100+-100  +-100+-100
+     0x400002 (has no name): ()  1x1+-100+-100  +-100+-100
+     0x400001 "GNOME Shell": ()  1x1+-100+-100  +-100+-100
+     0x200001 (has no name): ()  10x10+0+0  +0+0
+     0x40000a "mutter guard window": ()  1342x964+0+0  +0+0
+

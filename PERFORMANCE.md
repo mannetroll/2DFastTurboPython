@@ -1,5 +1,16 @@
 # Measured performance and parity
 
+After fixing CMake compiler-cache invalidation, two clean GUI launches rebuilt
+all native targets. The [clean-build report](python/evidence/linux-clean-build/REPORT.md)
+records 51 passing tests and fresh headless/GUI medians of 719.831/664.224 steps/s
+at N1024 and 184.014/166.163 steps/s at N2048, with unchanged parity checks.
+
+The later system CUDA 13.3.1 installation was rebuilt and revalidated on the
+same native Ubuntu RTX 3090 host. Its [upgrade report and fresh benchmarks](python/evidence/linux-cuda-upgrade/REPORT.md)
+record headless/GUI medians of 720.219/669.005 steps/s at N1024 and
+183.411/165.086 steps/s at N2048. The CUDA 13.2 measurements below remain the
+earlier baseline.
+
 ## Native Ubuntu CUDA/VkFFT + OpenGL, 2026-09-17
 
 Ubuntu 26.04.1, RTX 3090, driver 595.91.07, CUDA 13.2.51, GCC 15.2,
