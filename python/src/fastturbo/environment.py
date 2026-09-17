@@ -40,6 +40,16 @@ def environment_summary(info: dict) -> tuple[str, str]:
         parts.append(f"macOS {platform.mac_ver()[0]}")
     elif system == "Windows":
         parts.append(f"Win {platform.release()}")
+    elif system == "Linux":
+        try:
+            distribution = platform.freedesktop_os_release()
+        except OSError:
+            distribution = {}
+        name = distribution.get("NAME") or "Linux"
+        version = distribution.get("VERSION_ID", "")
+        parts.append(f"{name} {version}".strip())
+        if distribution:
+            details.append(f"Distribution: {distribution.get('PRETTY_NAME') or parts[-1]}")
     else:
         parts.append(f"{system} {platform.release()}")
     details += [f"Python: {python} ({platform.python_implementation()})",
