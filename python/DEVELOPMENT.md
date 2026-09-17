@@ -1,5 +1,24 @@
 # Developing FastTurbo
 
+Linux source builds select the shared CUDA/VkFFT engine. Both headless execution
+and the shared PySide6 GUI with native CUDA/OpenGL rendering pass on native
+Ubuntu 26.04.1 / RTX 3090. The earlier WSLg sharing limitation remains.
+See [LINUX_PORT.md](../LINUX_PORT.md) for separate native Ubuntu and WSL evidence.
+
+From this directory, `uv sync` builds the backend. Use
+`uv run 2dfastturbo --headless --resolution 1024 --reynolds 50000 --k0 4` without
+Qt/display initialization, or `uv run 2dfastturbo` for the shared GUI through
+X11/Xwayland. Desktop source builds need OpenGL, X11 and libpng development files
+and Qt's xcb runtime dependencies. `FASTTURBO_LINUX_RENDERER=ON` requires them;
+`AUTO` detects them and `OFF` builds only the headless backend. Reconfigure after
+installing dependencies with `uv run fastturbo-build --force`.
+
+Use `bash scripts/test-linux.sh` for the headless gate or add `--gui` for the full
+suite. `bash scripts/benchmark-linux.sh --mode both` alternates equivalent
+headless/GUI measurements. `FASTTURBO_CUDA_ARCH=86` defaults to the RTX target;
+`90` compiles for H100 (build verified, H100 execution untested). This prepared
+checkout's local tools are selected with `source build/local-env.sh`.
+
 These instructions are for source checkouts. For installation from PyPI, see
 [README.md](README.md). For building and publishing wheels, see
 [PUBLISHING.md](PUBLISHING.md).
@@ -41,7 +60,7 @@ preload bundled NVRTC builtins by absolute path so no CUDA Toolkit PATH is neede
 
 Python controls the original native engine. There are no NumPy/CPU FFTs, Python
 CFD kernels, field readbacks for interactive rendering, or callbacks per timestep.
-The shared PySide6 window embeds a native Metal or Direct3D canvas and transport
+The shared PySide6 window embeds a native Metal, Direct3D or Linux OpenGL canvas and transport
 controls; the native controller handles batching, diagnostics and regulation.
 
 ```python

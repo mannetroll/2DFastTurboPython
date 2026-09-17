@@ -1,0 +1,48 @@
+{
+  "hardware": {
+    "abi_version": 1,
+    "backend": "CUDA / VkFFT",
+    "capabilities": {
+      "drag": false,
+      "forcing": false,
+      "headless": true,
+      "native_rendering": false,
+      "vortex_injection": false
+    },
+    "compute_capability": "8.6",
+    "cuda_driver_version": 13040,
+    "cuda_runtime_version": 13030,
+    "defaults": {
+      "cfl": 3.0,
+      "fixed_dt": null,
+      "integrator": "etdrk4",
+      "k0": 4,
+      "operator": "stress",
+      "padded_resolution": 1536,
+      "resolution": 1024,
+      "reynolds": 27898.36614974335,
+      "seed": "2",
+      "viscosity": 3.5844394005835056e-05
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_memory_bytes": 25769279488,
+    "os": "Linux",
+    "physical_memory_bytes": 232203595776
+  },
+  "context_created": true,
+  "context_current": true,
+  "vendor": "Mesa",
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "version": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "gl_error": 0,
+  "cudaGLGetDevices": {
+    "code": 304,
+    "error": "OS call failed or operation not supported on this OS",
+    "count": 0
+  },
+  "cudaGraphicsGLRegisterBuffer": {
+    "code": 304,
+    "error": "OS call failed or operation not supported on this OS"
+  },
+  "supported": false
+}

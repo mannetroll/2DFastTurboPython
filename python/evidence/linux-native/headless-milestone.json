@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "tests": "43 passed, 1 rendering test deferred",
+  "native_ctest": "1 passed",
+  "benchmarks": [
+    {
+      "n": 1024,
+      "R_turbo": 1.2012145484949517,
+      "ms_per_step": 1.3824714856512288,
+      "steps_per_s": 723.3422246889518
+    },
+    {
+      "n": 2048,
+      "R_turbo": 0.16512557236482006,
+      "ms_per_step": 5.414671696120547,
+      "steps_per_s": 184.68340392945163
+    }
+  ],
+  "checkpoint": "python/build/checkpoints/native-headless",
+  "stage": "before GUI implementation"
+}

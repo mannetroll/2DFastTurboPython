@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "command": "QT_QPA_PLATFORM=xcb uv run 2dfastturbo",
+  "pid": 49726,
+  "window": "0xc00007",
+  "retained_manifest_matches": true,
+  "all_outputs_built_after_cleanup": true,
+  "ninja_steps": 17,
+  "cuda_environment_overrides": false,
+  "gpu_process_type": "C+G",
+  "controller_parity": true
+}

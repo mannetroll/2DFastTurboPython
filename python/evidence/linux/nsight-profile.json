@@ -1,0 +1,63 @@
+{
+  "tool": "Nsight Systems 2026.1.3",
+  "workload": "512 warmed N1024 steps, batch 8, then inspection and two GPU snapshots",
+  "cuda_api_calls": [
+    {
+      "name": "cudaStreamSynchronize_v3020",
+      "calls": 67,
+      "total_ms": 657.505839
+    },
+    {
+      "name": "cuLaunchKernel",
+      "calls": 8196,
+      "total_ms": 30.435845
+    },
+    {
+      "name": "cudaLaunchKernel_v7000",
+      "calls": 7173,
+      "total_ms": 29.664231
+    },
+    {
+      "name": "cuKernelGetName",
+      "calls": 7173,
+      "total_ms": 1.889614
+    },
+    {
+      "name": "cudaMemcpyAsync_v3020",
+      "calls": 68,
+      "total_ms": 0.854381
+    },
+    {
+      "name": "cudaEventRecord_v3020",
+      "calls": 128,
+      "total_ms": 0.59508
+    },
+    {
+      "name": "cuProfilerStart",
+      "calls": 1,
+      "total_ms": 0.009754
+    }
+  ],
+  "warnings": [
+    {
+      "text": "Installed CUDA driver version (13.4) is not supported by this build of Nsight Systems. CUDA trace will be collected using libraries for driver version 13.3"
+    },
+    {
+      "text": "CUDA device 0: Unified Memory cannot be traced on devices that don't support peer-to-peer transfers.Please verify that SLI/NVLink is functioning properly."
+    },
+    {
+      "text": "Not all NVTX events might have been collected."
+    },
+    {
+      "text": "No NVTX events collected. Does the process use NVTX?"
+    },
+    {
+      "text": "Not all CUDA events might have been collected."
+    }
+  ],
+  "gpu_kernel_timing_available": false,
+  "notes": [
+    "This installed Nsight build warns that driver 13.4 exceeds its supported 13.3 tracing libraries.",
+    "The exported trace contains runtime API timings but no kernel or memcpy activity tables. Do not infer per-kernel timings or transfer sizes from it."
+  ]
+}

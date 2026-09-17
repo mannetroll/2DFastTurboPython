@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "reference": "reference-windows/benchmarks/2026-09-13/headless-1.json",
+  "config": {
+    "resolution": 1024,
+    "padded_resolution": 1536,
+    "reynolds": 50000,
+    "viscosity": 1.9999999494757503e-05,
+    "k0": 4,
+    "seed": 2,
+    "cfl": 3,
+    "integrator": "etdrk4",
+    "operator": "stress",
+    "batch": 8,
+    "fixed_dt": null
+  },
+  "initial_stats": {
+    "allocated_bytes": 107253288,
+    "dt": 0.0017286307411268353,
+    "energy": 0.49005281696042163,
+    "enstrophy": 7.999999881332641,
+    "gpu_milliseconds": 0.0,
+    "initial_turnover_time": 1.5707963384450374,
+    "is_finite": true,
+    "palinstrophy": 255.9999939257744,
+    "palinstrophy_ratio": 6.127427459949837e-05,
+    "reynolds": 50000.0,
+    "simulation_time": 0.0,
+    "steps": 0
+  },
+  "stats": {
+    "allocated_bytes": 107253288,
+    "dt": 0.0015149107202887535,
+    "energy": 0.48823591667678556,
+    "enstrophy": 5.634088709950447,
+    "gpu_milliseconds": 5152.82470703125,
+    "initial_turnover_time": 1.5707963384450374,
+    "is_finite": true,
+    "palinstrophy": 13211.827880859375,
+    "palinstrophy_ratio": 0.004490218041514475,
+    "reynolds": 50000.0,
+    "simulation_time": 6.329160938039422,
+    "steps": 3832
+  },
+  "relative_errors": {
+    "initial_stats.simulation_time": 0.0,
+    "initial_stats.dt": 0.0,
+    "initial_stats.energy": 4.751133663252728e-10,
+    "initial_stats.enstrophy": 0.0,
+    "initial_stats.palinstrophy": 0.0,
+    "initial_stats.initial_turnover_time": 0.0,
+    "stats.simulation_time": 1.4740540425130657e-07,
+    "stats.dt": 7.684633108334961e-08,
+    "stats.energy": 6.775907232139649e-08,
+    "stats.enstrophy": 1.5538328407742184e-08,
+    "stats.palinstrophy": 1.8721444895292742e-06,
+    "stats.initial_turnover_time": 0.0
+  },
+  "hardware": {
+    "abi_version": 1,
+    "backend": "CUDA / VkFFT",
+    "capabilities": {
+      "drag": false,
+      "forcing": false,
+      "headless": true,
+      "native_rendering": false,
+      "vortex_injection": false
+    },
+    "compute_capability": "8.6",
+    "cuda_driver_version": 13040,
+    "cuda_runtime_version": 13030,
+    "defaults": {
+      "cfl": 3.0,
+      "fixed_dt": null,
+      "integrator": "etdrk4",
+      "k0": 4,
+      "operator": "stress",
+      "padded_resolution": 1536,
+      "resolution": 1024,
+      "reynolds": 27898.36614974335,
+      "seed": "2",
+      "viscosity": 3.5844394005835056e-05
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_memory_bytes": 25769279488,
+    "native_rendering_error": "This Linux build supports headless CUDA execution. GPU rendering is unavailable in the validated WSLg environment. Use --headless; see LINUX_PORT.md for the measured interoperability failures.",
+    "os": "Linux",
+    "physical_memory_bytes": 232203608064
+  }
+}

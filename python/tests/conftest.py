@@ -9,6 +9,11 @@ sys.path.insert(0, str(ROOT / "reference-macos/2DFastTurbo/Scripts"))
 
 @pytest.fixture(scope="session")
 def swift_binary():
+    if sys.platform == "linux":
+        path = ROOT / "python/build/linux/cuda_reference"
+        if not path.is_file():
+            pytest.fail("Build the shared CUDA reference harness first: uv run fastturbo-build")
+        return path
     if sys.platform == "win32":
         path = Path(os.environ.get("FASTTURBO_WINDOWS_BINARY", ROOT / "python/build/windows/reference/2DFastTurbo.exe"))
         if not path.is_file():

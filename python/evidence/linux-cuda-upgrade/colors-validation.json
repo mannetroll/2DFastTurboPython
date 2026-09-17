@@ -1,0 +1,127 @@
+{
+  "passed": true,
+  "reference": "Independent NumPy evaluation of TurboRendering.metal; SDR pixels including orientation/wrap",
+  "tolerance_bytes": 2,
+  "checks": [
+    {
+      "file": "vorticity-aurora-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.032633463541666664
+    },
+    {
+      "file": "vorticity-aurora-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.032145182291666664
+    },
+    {
+      "file": "vorticity-ember-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.024820963541666668
+    },
+    {
+      "file": "vorticity-ember-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.02783203125
+    },
+    {
+      "file": "vorticity-glacier-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.028564453125
+    },
+    {
+      "file": "vorticity-glacier-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.032389322916666664
+    },
+    {
+      "file": "vorticity-inferno-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.029541015625
+    },
+    {
+      "file": "vorticity-inferno-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030517578125
+    },
+    {
+      "file": "speed-aurora-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.034342447916666664
+    },
+    {
+      "file": "speed-aurora-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.034342447916666664
+    },
+    {
+      "file": "speed-ember-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.029296875
+    },
+    {
+      "file": "speed-ember-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.029296875
+    },
+    {
+      "file": "speed-glacier-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.031005859375
+    },
+    {
+      "file": "speed-glacier-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.031005859375
+    },
+    {
+      "file": "speed-inferno-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030517578125
+    },
+    {
+      "file": "speed-inferno-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.030517578125
+    },
+    {
+      "file": "enstrophy-aurora-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.03125
+    },
+    {
+      "file": "enstrophy-aurora-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.03125
+    },
+    {
+      "file": "enstrophy-ember-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.032145182291666664
+    },
+    {
+      "file": "enstrophy-ember-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.032145182291666664
+    },
+    {
+      "file": "enstrophy-glacier-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.024332682291666668
+    },
+    {
+      "file": "enstrophy-glacier-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.024332682291666668
+    },
+    {
+      "file": "enstrophy-inferno-sigma.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.033772786458333336
+    },
+    {
+      "file": "enstrophy-inferno-exposure.png",
+      "maximum_byte_error": 1,
+      "mean_byte_error": 0.033772786458333336
+    }
+  ]
+}

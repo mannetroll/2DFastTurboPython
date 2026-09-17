@@ -1,0 +1,44 @@
+-- Configuring done (0.3s)
+You have changed variables that require your cache to be deleted.
+Configure will be re-run and you may have to reset some variables.
+The following variables have changed:
+CMAKE_CUDA_COMPILER= /usr/local/cuda-13.3/bin/nvcc
+
+-- The CXX compiler identification is GNU 15.2.0
+-- The CUDA compiler identification is NVIDIA 13.3.73 with host compiler GNU 15.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda-13.3/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /usr/local/cuda-13.3/targets/x86_64-linux/include;/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl (found suitable version "13.3.73", minimum required is "13.0")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+CMake Error: File /src/controller.cpp does not exist.
+CMake Error at /home/tobbe/github/2DFastTurboPython/python/native/cuda/controller.cmake:14 (configure_file):
+  configure_file Problem configuring file
+Call Stack (most recent call first):
+  CMakeLists.txt:23 (include)
+
+
+CMake Error: File /src/controller.hpp does not exist.
+CMake Error at /home/tobbe/github/2DFastTurboPython/python/native/cuda/controller.cmake:14 (configure_file):
+  configure_file Problem configuring file
+Call Stack (most recent call first):
+  CMakeLists.txt:23 (include)
+
+
+CMake Error at /home/tobbe/github/2DFastTurboPython/python/native/cuda/controller.cmake:8 (message):
+  Reference controller.hpp changed; review the documented adaptation.
+Call Stack (most recent call first):
+  /home/tobbe/github/2DFastTurboPython/python/native/cuda/controller.cmake:18 (adapt)
+  CMakeLists.txt:23 (include)
+
+
+-- Configuring incomplete, errors occurred!

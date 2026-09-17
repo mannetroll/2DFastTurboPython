@@ -1,0 +1,36 @@
+
+Dynamic section at offset 0x136b40 contains 33 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libcudart.so.13]
+ 0x0000000000000001 (NEEDED)             Shared library: [libcuda.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libnvrtc.so.13]
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]
+ 0x000000000000000e (SONAME)             Library soname: [libfastturbo.so]
+ 0x000000000000001d (RUNPATH)            Library runpath: [/usr/local/cuda-13.3/lib64]
+ 0x000000000000000c (INIT)               0x11000
+ 0x000000000000000d (FINI)               0x108904
+ 0x0000000000000019 (INIT_ARRAY)         0x136580
+ 0x000000000000001b (INIT_ARRAYSZ)       24 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x136598
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x2d0
+ 0x0000000000000005 (STRTAB)             0x3dc8
+ 0x0000000000000006 (SYMTAB)             0xcd8
+ 0x000000000000000a (STRSZ)              36270 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x136fe8
+ 0x0000000000000002 (PLTRELSZ)           7488 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xe8b0
+ 0x0000000000000007 (RELA)               0xd200
+ 0x0000000000000008 (RELASZ)             5808 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0xcf90
+ 0x000000006fffffff (VERNEEDNUM)         7
+ 0x000000006ffffff0 (VERSYM)             0xcb76
+ 0x000000006ffffff9 (RELACOUNT)          40
+ 0x0000000000000000 (NULL)               0x0

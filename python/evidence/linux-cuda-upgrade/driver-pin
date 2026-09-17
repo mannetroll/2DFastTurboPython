@@ -1,0 +1,4 @@
+# Keep the Ubuntu-managed 595 display driver; this repository supplies the toolkit.
+Package: nvidia-* libnvidia-* xserver-xorg-video-nvidia* cuda-drivers* cuda-runtime* cuda-compat* libcuda1* libnvcuvid* libglx-nvidia* libegl-nvidia*
+Pin: origin developer.download.nvidia.com
+Pin-Priority: -1

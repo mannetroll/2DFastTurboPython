@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
 from .engine import Configuration, NativeUI
 from .environment import environment_summary
-from .platform_ui import fonts, install_lifecycle, prepare_application_name
+from .platform_ui import fonts, install_lifecycle, prepare_application_name, save_snapshot, sync_canvas_scale
 
 STYLE = """
 QMainWindow, QWidget#root { background: #090c13; color: #e6e8ec; }
@@ -22,6 +22,7 @@ QWidget { color: #e6e8ec; font-family: '.AppleSystemUIFont'; font-size: 11px; }
 QFrame#panel, QFrame#metrics { background: #10141c; border: 1px solid #242832; border-radius: 12px; }
 QLabel { background: transparent; border: none; }
 QLabel#secondary { color: #7a8ca6; font-family: 'Menlo'; font-size: 9px; }
+QLabel#environment { color: #ffffff; font-family: 'Menlo'; font-size: 11px; }
 QLabel#accent { color: #70e8d1; font-family: 'Menlo'; }
 QLabel#title { font-size: 16px; font-weight: 600; letter-spacing: 2px; }
 QLabel#metricValue { font-family: 'Menlo'; font-size: 16px; font-weight: 300; }
@@ -90,7 +91,7 @@ class EnvironmentLabel(QLabel):
         summary, details = environment_summary(info)
         super().__init__(summary)
         self.summary = summary
-        self.setObjectName("secondary")
+        self.setObjectName("environment")
         self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         self.setToolTip(details)
         self.setAccessibleName("Runtime environment")
@@ -423,7 +424,8 @@ class MainWindow(QMainWindow):
         menu = self.menuBar()
         file = menu.addMenu("File")
         self.save_action = file.addAction("Save Snapshot…", lambda: self.send("save"), QKeySequence.StandardKey.Save)
-        self.close_action = file.addAction("Close Window", self.hide_window, QKeySequence.StandardKey.Close)
+        close_window = self.close if sys.platform == "linux" else self.hide_window
+        self.close_action = file.addAction("Close Window", close_window, QKeySequence.StandardKey.Close)
         # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
         # unbound on Windows, so specify the requested shortcut explicitly.
         file.addAction("Quit 2DFastTurbo", QApplication.instance().quit, QKeySequence("Ctrl+Q"))
@@ -493,7 +495,8 @@ class MainWindow(QMainWindow):
 
     def send(self, op, *, refresh=True, **kwargs):
         try:
-            self.native.call(op, **kwargs)
+            if op != "save" or not save_snapshot(self):
+                self.native.call(op, **kwargs)
             if refresh:
                 self.poll()
         except Exception as error:
@@ -596,6 +599,7 @@ class MainWindow(QMainWindow):
         if not self._attached:
             self._attached = True
             self.native.attach(int(self.canvas.winId()))
+            sync_canvas_scale(self)
             QTimer.singleShot(0, lambda: self.send("start"))
         else:
             self.native.call("visible", value=True)
@@ -618,6 +622,8 @@ class MainWindow(QMainWindow):
 
     def changeEvent(self, event):
         super().changeEvent(event)
+        if event.type() == QEvent.Type.DevicePixelRatioChange and self._attached and not self._closing:
+            sync_canvas_scale(self)
         if event.type() == QEvent.Type.WindowStateChange and self._attached and not self._closing:
             self.native.call("visible", value=not self.isMinimized())
 
@@ -625,7 +631,7 @@ class MainWindow(QMainWindow):
         if self._closing:
             event.accept()
             return
-        if sys.platform == "win32":
+        if sys.platform in {"win32", "linux"}:
             QSettings().setValue("windowGeometry", self.saveGeometry())
             self.shutdown()
             event.accept()

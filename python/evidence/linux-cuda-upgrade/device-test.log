@@ -1,0 +1,9 @@
+cudaGetDeviceCount: 0 (no error)
+device_count: 1
+cudaGetDeviceProperties: 0 (no error)
+device: NVIDIA GeForce RTX 3090; compute capability: 8.6
+cudaMalloc: 0 (no error)
+kernel + cudaDeviceSynchronize: 0 (no error)
+cudaMemcpy: 0 (no error)
+cudaFree: 0 (no error)
+result: 42 (expected 42)

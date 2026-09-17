@@ -1,0 +1,27 @@
+{
+  "milestone": "headless Linux CUDA/VkFFT",
+  "passed": true,
+  "python_tests": 43,
+  "native_ctest_tests": 1,
+  "retained_resolution": 1024,
+  "padded_resolution": 1536,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "windows_parity_max_relative_error": 1.8721444895292742e-06,
+  "source_hashes": {
+    "python/native/linux/CMakeLists.txt": "f020bdbb5f91e31072a15d9a33047404bbee89f5b43b3b0e297c31f4f99f4534",
+    "python/native/linux/bridge.cpp": "2d12d5c41ea207996a574b5ce5f76fb143d03ce3d5d48383b5235183c90e11e7",
+    "python/native/linux/cuda_loader.hpp": "ff8547bdcc0f2c3c0a7968047b622170d02e86023a8b7cf904fbfc4c53caac5e",
+    "python/native/linux/cuda_loader.cpp": "73b806041c6c7a590aebe74fe8fe4efb40c818cc60e0ce12e096167ba7f9076f",
+    "python/native/linux/device_test.cu": "ee207552a1f0b84f2188b90718f6dbf984c9c168c25680d474ecaebcf1ac7c4e",
+    "python/native/cuda/bridge_common.hpp": "6c2b8536cf8f37843f82875604fdab47b1052b94baf771857ca7fc45cc383d48",
+    "python/src/fastturbo/build.py": "246cdc1b8f9584c3002ec88049c486ddc7f53e2b9f8c0a02f5695948e8d73c3a",
+    "python/src/fastturbo/build_linux.py": "0a1f0f3ebc1f8ef8d436a8a1ff45ea1676357c3e242d9bd18443d1fc12a992f3",
+    "python/src/fastturbo/main.py": "a13a6892b603630cdd54709d24460a152c86bb1931b5f35b3c2bff7d7bbe29f4",
+    "python/tests/test_linux.py": "a01c5c42feed89be2931669ffec4cb430ea72e229a61cfe33bd4a59dbd1c118a",
+    "python/tests/conftest.py": "a6d7a0b731e4db344cde64da9125f20f0566c9befe73a35b3e9924b8cd048166",
+    "python/scripts/benchmark_linux.py": "e79fb324a9fa5eb30d51295f805bc50b4d19f8117ef46c0d920a926741a0100a"
+  },
+  "native_sha256": "881868ca0387c1bf53fa13412b604ab4208d693a42a98523dff444916a2efaec",
+  "checkpoint": "python/build/checkpoints/headless-linux",
+  "gui_work_started": false
+}

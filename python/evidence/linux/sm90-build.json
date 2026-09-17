@@ -1,0 +1,9 @@
+{
+  "architecture": "90",
+  "compile_passed": true,
+  "runtime_tested": false,
+  "nvcc": "13.3.73",
+  "cuda_images": "ELF file    1: libfastturbo.1.sm_90.cubin",
+  "library_sha256": "7cf8001d9b714c72d01636be1dac57d75a2e750b9377066b7a926b575a37e187",
+  "note": "Built separately; production library remains sm_86. H100 execution/performance not measured."
+}

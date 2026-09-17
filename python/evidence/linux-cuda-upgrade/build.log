@@ -1,0 +1,38 @@
+Building native FastTurbo (shared CUDA + VkFFT, Linux)…
+-- The CXX compiler identification is GNU 15.2.0
+-- The CUDA compiler identification is NVIDIA 13.3.73 with host compiler GNU 15.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda-13.3/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /usr/local/cuda-13.3/targets/x86_64-linux/include;/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl (found suitable version "13.3.73", minimum required is "13.0")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Configuring done (1.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/tobbe/github/2DFastTurboPython/python/build/linux
+[1/17] Building CXX object CMakeFiles/cuda_platform.dir/cuda_loader.cpp.o
+[2/17] Building CUDA object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/solver.cu.o
+[3/17] Linking CXX static library libcuda_platform.a
+[4/17] Building CXX object CMakeFiles/fastturbo.dir/bridge.cpp.o
+[5/17] Building CXX object CMakeFiles/fastturbo.dir/ui.cpp.o
+[6/17] Building CXX object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/fft.cpp.o
+[7/17] Linking CXX static library libturbo_core.a
+[8/17] Building CXX object CMakeFiles/fastturbo.dir/adapted/controller.cpp.o
+[9/17] Building CXX object CMakeFiles/core_tests.dir/core_tests.cpp.o
+[10/17] Building CXX object CMakeFiles/fastturbo_gl.dir/renderer.cpp.o
+[11/17] Building CUDA object CMakeFiles/device_test.dir/device_test.cu.o
+[12/17] Linking CXX shared library libfastturbo.so
+[13/17] Linking CXX shared library libfastturbo_gl.so
+[14/17] Linking CXX executable core_tests
+[15/17] Linking CUDA executable device_test
+[16/17] Building CXX object CMakeFiles/cuda_reference.dir/reference_cli.cpp.o
+[17/17] Linking CXX executable cuda_reference
+/home/tobbe/github/2DFastTurboPython/python/src/fastturbo/_native/libfastturbo.so

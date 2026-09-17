@@ -1,0 +1,8 @@
+{
+  "compiled": true,
+  "executed_on_h100": false,
+  "architecture": "sm_90",
+  "renderer": "OFF",
+  "library_sha256": "1aa162c04731adfc70ab6fd9fd652e9e5ed6e3a5d54f3e8bbc2bbcf163e6e34d",
+  "cuobjdump": "ELF file    1: libfastturbo.1.sm_90.cubin"
+}

@@ -1,0 +1,32 @@
+libEGL warning: failed to get driver name for fd -1
+
+libEGL warning: MESA-LOADER: failed to retrieve device information
+
+libEGL warning: failed to get driver name for fd -1
+
+cuMemGetAllocationGranularity {'code': 0, 'error': 'no error'}
+cuMemCreate {'code': 0, 'error': 'no error'}
+cuMemAddressReserve {'code': 0, 'error': 'no error'}
+cuMemMap {'code': 0, 'error': 'no error'}
+cuMemSetAccess {'code': 0, 'error': 'no error'}
+cuMemsetD32_v2 {'code': 0, 'error': 'no error'}
+cuMemExportToShareableHandle {'code': 0, 'error': 'no error'}
+CUDA allocation exported: anon_inode:dxgresource
+Importing GPU memory into OpenGL
+Fatal Python error: Segmentation fault
+
+Current thread 0x00007617ddb55740 [python3] (most recent call first):
+  File "/home/tobbe/github/2DFastTurboPython/python/scripts/probe_cuda_gl_memory.py", line 63 in probe
+  File "/home/tobbe/github/2DFastTurboPython/python/scripts/check_linux_interop.py", line 86 in main
+  File "/home/tobbe/github/2DFastTurboPython/python/scripts/check_linux_interop.py", line 97 in <module>
+
+Current thread's C stack trace (most recent call first):
+  Binary file "/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3", at _Py_DumpStack+0x30 [0x4b3ea0]
+  Binary file "/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3" [0x538e3b]
+  Binary file "/home/tobbe/github/2DFastTurboPython/python/.venv/bin/python3" [0x538d07]
+  Binary file "/lib/x86_64-linux-gnu/libc.so.6", at +0x45330 [0x7617dd845330]
+  Binary file "/usr/lib/wsl/drivers/nv_dispsi.inf_amd64_8117bef9bb5edac9/libnvwgf2umx.so", at +0x2754c5e [0x761791b3ac5e]
+
+Extension modules: shiboken6.Shiboken, PySide6.QtCore, PySide6.QtGui (total: 3)
+
+exit_code=-11

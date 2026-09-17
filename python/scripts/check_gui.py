@@ -173,10 +173,13 @@ try:
     check("replacement_preserves_latest_pause", not s["running"] and s["stats"]["steps"]==0)
     if sys.platform == "win32":
         window.close_action.trigger()
+    elif sys.platform == "linux":
+        # Closing quits on Linux; exercise temporary hiding separately here.
+        window.hide_window()
     else:
         window.close()
     QTest.qWait(100)
-    check("close_hides_window", not window.isVisible())
+    check("hide_window" if sys.platform == "linux" else "close_hides_window", not window.isVisible())
     # Qt's Cocoa delegate sends this signal for Dock reopen, even if already active.
     app.applicationStateChanged.emit(Qt.ApplicationState.ApplicationActive)
     s = wait(lambda s: s["ready"] and s["settled"] and s["canvas"]["visible"])
@@ -206,6 +209,9 @@ try:
         QTest.qWait(100)
         origin = window.mapToGlobal(QPoint(0, 0))
         screen = window.screen().grabWindow(0, origin.x(), origin.y(), window.width(), window.height())
+    elif sys.platform == "linux":
+        from capture_linux_window import capture
+        screen = capture(window.winId())
     else:
         screen = app.primaryScreen().grabWindow(int(window.winId()))
     screen.save(str(args.output.with_name("gui-window.png")))

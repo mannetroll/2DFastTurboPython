@@ -1,0 +1,42 @@
+{
+  "configure": [
+    "cmake",
+    "-S",
+    "/home/tobbe/github/2DFastTurboPython/python/native/linux",
+    "-B",
+    "/home/tobbe/github/2DFastTurboPython/python/build/linux",
+    "-G",
+    "Ninja",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/c++",
+    "-DCUDAToolkit_ROOT=/usr/local/cuda-13.3",
+    "-DCMAKE_CUDA_ARCHITECTURES=86",
+    "-DFASTTURBO_RENDERER=ON",
+    "-DFASTTURBO_WINDOWS=/home/tobbe/github/2DFastTurboPython/reference-windows",
+    "-DFASTTURBO_VKFFT=/home/tobbe/github/2DFastTurboPython/reference-macos/2DFastTurbo/ThirdParty/VkFFTSource/vkFFT"
+  ],
+  "build": [
+    "cmake",
+    "--build",
+    "/home/tobbe/github/2DFastTurboPython/python/build/linux",
+    "--parallel",
+    "2"
+  ],
+  "cuda_host_compiler": "/usr/bin/g++",
+  "cxx_standard": 20,
+  "cuda_standard": 20,
+  "cuda_flags": [
+    "-O3",
+    "-DNDEBUG",
+    "--fmad=false",
+    "--generate-code=arch=compute_86,code=[compute_86,sm_86]"
+  ],
+  "cxx_numerical_flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-ffp-contract=off"
+  ],
+  "renderer": "ON",
+  "cmake_prefix_path": ""
+}

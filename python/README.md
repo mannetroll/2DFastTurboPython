@@ -1,11 +1,18 @@
 # FastTurbo
 
+Linux source-checkout status: the shared CUDA/VkFFT backend and PySide6 GUI with
+GPU-resident OpenGL rendering are tested on native Ubuntu 26.04.1 / RTX 3090.
+Use `uv run 2dfastturbo --headless` for execution without Qt/display initialization.
+Desktop builds need OpenGL/X11/libpng development files and Qt's xcb runtime
+libraries. The earlier WSLg CUDA sharing limitation remains; prebuilt Linux wheels
+are not supplied. See [Linux build and validation status](../LINUX_PORT.md).
+
 **Watch two-dimensional turbulence evolve on your GPU.**
 
 FastTurbo combines an interactive desktop application with a Python API for
 simulating decaying, incompressible 2D flow. Explore swirling vorticity, inspect
 energy and enstrophy, and export fields for analysis. Native Metal / VkFFT on
-macOS and CUDA / VkFFT on Windows handle the simulation and rendering.
+macOS and CUDA / VkFFT on Windows and Linux handle the simulation and rendering.
 
 <img src="https://raw.githubusercontent.com/mannetroll/fastturbo-media/6e497874eb6583d1db9dd1e61aa7af2d814a5f52/macos-5000-iterations.png" alt="FastTurbo on macOS showing orange and purple vorticity after exactly 5,000 iterations, with live controls and diagnostics" width="960">
 

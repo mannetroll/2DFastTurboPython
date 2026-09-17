@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "command": "QT_QPA_PLATFORM=xcb uv run 2dfastturbo",
+  "cwd": "/home/tobbe/github/2DFastTurboPython/python",
+  "pid": 45609,
+  "window": "0xc00007",
+  "window_size": [
+    900,
+    854
+  ],
+  "xcb_platform_loaded": true,
+  "cuda_13_3_runtime_loaded": true,
+  "system_driver_595_91_07_loaded": true,
+  "native_renderer_loaded": true,
+  "successive_frames_differ": true,
+  "nvidia_smi_compute_process": "45609, GPU-4278efe6-c03c-f6c9-69fc-9945957934ee, /home/tobbe/github/2DFastTurboPython/python/.venv/bin/python, 740 MiB",
+  "nvidia_smi_process_type": "C+G",
+  "left_running": true
+}

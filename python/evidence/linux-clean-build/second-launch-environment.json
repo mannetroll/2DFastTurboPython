@@ -1,0 +1,11 @@
+{
+  "CUDA_HOME": null,
+  "CUDA_PATH": null,
+  "CUDAToolkit_ROOT": null,
+  "CUDACXX": null,
+  "CUDAHOSTCXX": null,
+  "NVCC_CCBIN": null,
+  "CMAKE_PREFIX_PATH": null,
+  "LD_LIBRARY_PATH": null,
+  "FASTTURBO_LINUX_RENDERER": null
+}

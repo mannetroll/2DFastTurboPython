@@ -1,5 +1,82 @@
 # Measured performance and parity
 
+After fixing CMake compiler-cache invalidation, two clean GUI launches rebuilt
+all native targets. The [clean-build report](python/evidence/linux-clean-build/REPORT.md)
+records 51 passing tests and fresh headless/GUI medians of 719.831/664.224 steps/s
+at N1024 and 184.014/166.163 steps/s at N2048, with unchanged parity checks.
+
+The later system CUDA 13.3.1 installation was rebuilt and revalidated on the
+same native Ubuntu RTX 3090 host. Its [upgrade report and fresh benchmarks](python/evidence/linux-cuda-upgrade/REPORT.md)
+record headless/GUI medians of 720.219/669.005 steps/s at N1024 and
+183.411/165.086 steps/s at N2048. The CUDA 13.2 measurements below remain the
+earlier baseline.
+
+## Native Ubuntu CUDA/VkFFT + OpenGL, 2026-09-17
+
+Ubuntu 26.04.1, RTX 3090, driver 595.91.07, CUDA 13.2.51, GCC 15.2,
+Python 3.14.4. Three alternating headless/GUI five-second samples per grid;
+seed 2, k0=4, Re=50000, CFL=3, ETDRK4/stress. Headless: batch8 and eight warmup
+steps/reset. GUI: native adaptive batches, two-second warmup/reset, 640-pixel
+Vorticity/Ember/Sigma canvas through Xwayland/GLX. Medians:
+
+| Retained → padded | Headless ms/step | Headless steps/s | Headless R_turbo | GUI ms/step | GUI steps/s | GUI R_turbo | GUI overhead |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1024² → 1536² | 1.386244 | 721.374 | 1.198584 | 1.482454 | 674.557 | 1.129336 | 5.78% |
+| 2048² → 3072² | 5.422594 | 184.414 | 0.164884 | 6.030713 | 165.818 | 0.147771 | 10.38% |
+
+The GUI overhead formula uses R_turbo. Presentation remains approximately 60 Hz
+and does not bound solver throughput. Native GPU event intervals occupy
+99.66%/99.90% of headless wall time. A separate N1024 profile gives batch8
+11.10328 ms, inspection 0.03277 ms, vorticity snapshot 0.08068 ms, velocity snapshot
+0.15855 ms and no-op ABI upper bound 0.00866 ms. CUDA/OpenGL map/copy/unmap/wait
+intervals totaled 0.41949/0.51091 seconds for 301 uploads in representative GUI
+runs; these overlap native simulation and must not be added to GUI overhead.
+No per-kernel bottleneck or optimization is claimed.
+
+Historical Windows headless R_turbo is higher by the equivalent of a 4.14%/6.80%
+Linux shortfall. These are matched physical configurations across different
+OS/driver/toolchain/date, not an isolated OS experiment. Correctness: 48 Python
+tests passed, 12 Windows-only skips; native CTest passed; 52 GUI assertions and
+24 independent pixel comparisons passed. WSLg and H100 execution remain separate
+limitations; native Ubuntu GUI results do not establish WSLg support.
+
+Final raw timing records and comparison: [`python/evidence/linux-native/final`](python/evidence/linux-native/final).
+The parent directory retains the first round and validation/profiling evidence.
+Build/run details: [LINUX_PORT.md](LINUX_PORT.md).
+
+## Linux/WSL CUDA/VkFFT, 2026-09-16 — headless milestone
+
+Ubuntu 24.04.5/WSL2 on Windows 10 Pro, RTX 3090, CUDA 13.3.73, GCC 13.3,
+CPython 3.14.6. Three sequential five-second runs at each resolution, seed 2,
+k0=4, Re=50000, CFL=3, ETDRK4/stress, batch 8, eight warmup steps followed by
+reset. The same configuration is used by the Windows results below.
+
+| Retained / padded | Median ms/step | Median steps/s | Median R_turbo |
+|---|---:|---:|---:|
+| 1024 / 1536 | 1.334983 | 749.0734 | 1.239378 |
+| 2048 / 3072 | 5.044150 | 198.2495 | 0.178010 |
+
+R_turbo is 0.876% lower and 0.622% higher respectively than the stored Windows
+Python medians. Different OS/toolchain/date, matched physical configuration;
+these are not interleaved measurements. No major compute regression was found.
+Native GPU-event intervals occupy 94.18%/96.14% of representative wall times.
+
+An independent later API profile measured median batch8 11.58094 ms, inspection
+0.08709 ms, vorticity snapshot 0.14112 ms, velocity snapshot 0.22489 ms and no-op
+ABI upper bound 0.01747 ms. Nsight recorded 67 stream synchronizations taking
+657.506 ms in a 512-step capture. Its installed tracing libraries warn about the
+newer 13.4 driver and omit GPU kernel/memcpy activity tables, so per-kernel times
+and transfer sizes are not claimed. The dominant measured work is native GPU
+execution/waiting; no speculative solver optimization was applied.
+
+The headless tests pass, and the 3,832-step stored native Windows trajectory
+matches to a maximum diagnostic relative error of 1.87215e-6. The full suite
+retains two failing GUI/render tests. **No interactive R_turbo or GUI-overhead
+measurement exists:** the tested GPU-backed WSLg contexts reject CUDA sharing.
+No H100 measurement is claimed. Exact commands, raw timing/diagnostic JSON,
+profile summaries and interop evidence are in
+[`python/evidence/linux`](python/evidence/linux) and [LINUX_PORT.md](LINUX_PORT.md).
+
 ## Windows CUDA/VkFFT, 2026-09-14
 
 Built and tested on Windows 10 Pro build 19045, RTX 3090, NVIDIA driver 616.56,

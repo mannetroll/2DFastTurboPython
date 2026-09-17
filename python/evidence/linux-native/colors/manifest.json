@@ -1,0 +1,194 @@
+[
+  {
+    "file": "vorticity-aurora-sigma.png",
+    "field": 0,
+    "palette": 0,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-aurora-exposure.png",
+    "field": 0,
+    "palette": 0,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-ember-sigma.png",
+    "field": 0,
+    "palette": 1,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-ember-exposure.png",
+    "field": 0,
+    "palette": 1,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-glacier-sigma.png",
+    "field": 0,
+    "palette": 2,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-glacier-exposure.png",
+    "field": 0,
+    "palette": 2,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-inferno-sigma.png",
+    "field": 0,
+    "palette": 3,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "vorticity-inferno-exposure.png",
+    "field": 0,
+    "palette": 3,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-aurora-sigma.png",
+    "field": 1,
+    "palette": 0,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-aurora-exposure.png",
+    "field": 1,
+    "palette": 0,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-ember-sigma.png",
+    "field": 1,
+    "palette": 1,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-ember-exposure.png",
+    "field": 1,
+    "palette": 1,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-glacier-sigma.png",
+    "field": 1,
+    "palette": 2,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-glacier-exposure.png",
+    "field": 1,
+    "palette": 2,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-inferno-sigma.png",
+    "field": 1,
+    "palette": 3,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "speed-inferno-exposure.png",
+    "field": 1,
+    "palette": 3,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-aurora-sigma.png",
+    "field": 2,
+    "palette": 0,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-aurora-exposure.png",
+    "field": 2,
+    "palette": 0,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-ember-sigma.png",
+    "field": 2,
+    "palette": 1,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-ember-exposure.png",
+    "field": 2,
+    "palette": 1,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-glacier-sigma.png",
+    "field": 2,
+    "palette": 2,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-glacier-exposure.png",
+    "field": 2,
+    "palette": 2,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-inferno-sigma.png",
+    "field": 2,
+    "palette": 3,
+    "range": 0,
+    "sigma": 2.5,
+    "exposure": 1.2
+  },
+  {
+    "file": "enstrophy-inferno-exposure.png",
+    "field": 2,
+    "palette": 3,
+    "range": 1,
+    "sigma": 2.5,
+    "exposure": 1.2
+  }
+]

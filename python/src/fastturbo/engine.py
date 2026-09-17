@@ -179,6 +179,8 @@ class NativeUI:
     """Main-thread control plane over the reference native controller/pump."""
     def __init__(self):
         self._native = native_library()
+        if not self._native.info.get("capabilities", {}).get("native_rendering", True):
+            raise NativeError(self._native.info.get("native_rendering_error", "Native GPU rendering is unavailable in this build."))
         self._handle = self._native.lib.ft_ui_create()
         if not self._handle:
             raise NativeError("Could not create native UI controller")

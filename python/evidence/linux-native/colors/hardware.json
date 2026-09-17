@@ -1,0 +1,31 @@
+{
+  "abi_version": 1,
+  "backend": "CUDA / VkFFT",
+  "capabilities": {
+    "drag": false,
+    "forcing": false,
+    "headless": true,
+    "native_rendering": true,
+    "vortex_injection": false
+  },
+  "compute_capability": "8.6",
+  "cuda_driver_version": 13020,
+  "cuda_runtime_version": 13020,
+  "defaults": {
+    "cfl": 3.0,
+    "fixed_dt": null,
+    "integrator": "etdrk4",
+    "k0": 4,
+    "operator": "stress",
+    "padded_resolution": 1536,
+    "resolution": 1024,
+    "reynolds": 27898.36614974335,
+    "seed": "2",
+    "viscosity": 3.5844394005835056e-05
+  },
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "gpu_memory_bytes": 25294995456,
+  "native_rendering_error": "GPU rendering was not built. Install OpenGL/X11/libpng development files and rebuild, or use --headless.",
+  "os": "Linux",
+  "physical_memory_bytes": 65459703808
+}

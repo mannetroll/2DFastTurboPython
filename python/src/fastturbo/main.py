@@ -13,7 +13,7 @@ from .engine import Configuration, Engine, native_library
 def parser():
     p = argparse.ArgumentParser(description="2DFastTurbo Python · native Metal or CUDA / VkFFT")
     modes = p.add_mutually_exclusive_group()
-    modes.add_argument("--benchmark", action="store_true", help="Headless batch benchmark")
+    modes.add_argument("--benchmark", "--headless", dest="benchmark", action="store_true", help="Headless batch benchmark (no Qt or display required)")
     modes.add_argument("--gui-benchmark", action="store_true", help="Visible GUI benchmark, then exit")
     p.add_argument("--resolution", type=int, default=2048, help="Retained N; nonlinear workspace M=3N/2")
     p.add_argument("--reynolds", type=float, default=None, help="Viscosity=1/Re")
@@ -113,6 +113,7 @@ def benchmark(args):
                   "initial_stats": initial, "stats": stats, "frame": frame,
                   "seconds": seconds, "simtime_per_s": simulated / max(seconds, 1e-12),
                   "steps_per_s": steps / max(seconds, 1e-12),
+                  "milliseconds_per_step": seconds * 1000 / max(steps, 1),
                   "turnovers_per_s": simulated / max(initial["initial_turnover_time"] * seconds, 1e-12),
                   "gpu_seconds": gpu_seconds, "gpu_ms_per_step": gpu_seconds * 1000 / max(steps, 1),
                   "batches": batches, "snapshots": snapshots, "snapshot_seconds": snapshot_seconds,
@@ -214,10 +215,14 @@ class GUIBenchmark:
                 if self.args.export or self.args.fields:
                     self.window.native.call("export", png=str(self.args.export) if self.args.export else None,
                                             fields=str(self.args.fields) if self.args.fields else None)
+                presentation_seconds = state.get("rendering", {}).get("presentation_seconds", seconds)
+                intervals = state["presentations"] - (1 if "rendering" in state else 0)
                 result = {"passed": True, "mode": "gui-benchmark", "solver": "FastTurbo Python", **state,
                           "seconds": seconds, "simulation_time_per_second": stats["simulation_time"] / seconds,
                           "steps_per_second": stats["steps"] / seconds,
-                          "presentation": {"frames": state["presentations"], "presented_frames_per_second": state["presentations"] / seconds},
+                          "presentation": {"frames": state["presentations"],
+                                           "seconds": presentation_seconds,
+                                           "presented_frames_per_second": intervals / max(presentation_seconds, 1e-12)},
                           "python_ui_poll_seconds": self.window.poll_seconds, "python_ui_poll_calls": self.window.poll_calls,
                           "python_ui_poll_wall_percent": 100 * self.window.poll_seconds / seconds}
                 emit(result, self.args.output)

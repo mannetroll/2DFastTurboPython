@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "mode": "gui-benchmark",
+  "solver": "FastTurbo Python",
+  "allocated_bytes": 1711656,
+  "backend": "CUDA / VkFFT",
+  "canvas": {
+    "height_points": 640.0,
+    "scale": 1.0,
+    "visible": true,
+    "width_points": 640.0
+  },
+  "color_range": "sigma",
+  "config": {
+    "cfl": 3.0,
+    "fixed_dt": null,
+    "integrator": "etdrk4",
+    "k0": 4,
+    "operator": "stress",
+    "padded_resolution": 192,
+    "resolution": 128,
+    "reynolds": 50000.0,
+    "seed": "2",
+    "viscosity": 1.9999999494757503e-05
+  },
+  "display": "vorticity",
+  "effective_reynolds": 50000.0,
+  "elapsed_seconds": 2.0003163070000483,
+  "error_message": null,
+  "exporting": false,
+  "exposure": 1.2,
+  "flow": false,
+  "focused": false,
+  "frame": {
+    "grid_size": 128,
+    "max_speed": 0.0,
+    "max_vorticity": 11.257062911987305,
+    "mean_vorticity": -3.445165930315852e-09,
+    "sequence": 21235,
+    "std_vorticity": 1.3628953695297241,
+    "time": 395.4338877098635
+  },
+  "generation": 2,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "history": [
+    0.4900528072027933,
+    0.4833513585424498,
+    0.4811458546997045,
+    0.47907583210258264,
+    0.47706001937880144,
+    0.4750654236530182,
+    0.47303058266439035,
+    0.4710203484845455,
+    0.46917960421265714
+  ],
+  "palette": "ember",
+  "palinstrophy_control": 9.464538930238708,
+  "performance": {
+    "batch_steps": 32,
+    "milliseconds_per_step": 0.0932346036136478,
+    "simtime_per_s": 196.45662175738167,
+    "steps_per_s": 10725.631484892361,
+    "turnovers_per_s": 125.068169509684
+  },
+  "presentations": 136,
+  "ready": true,
+  "regulated": false,
+  "rendering": {
+    "api": "CUDA / OpenGL",
+    "device_copy_bytes": 23789568,
+    "draw_submit_seconds": 0.011568107995117316,
+    "swap_seconds": 0.008335746996181115,
+    "upload_seconds": 0.0994142780027687,
+    "uploads": 121
+  },
+  "running": false,
+  "settled": true,
+  "sigma": 2.5,
+  "stats": {
+    "allocated_bytes": 1711656,
+    "dt": 0.019482780247926712,
+    "energy": 0.46917960421265714,
+    "enstrophy": 0.9287418475812714,
+    "gpu_milliseconds": 0.41942399740219116,
+    "initial_turnover_time": 1.570796330733617,
+    "is_finite": true,
+    "palinstrophy": 6.977591995149851,
+    "palinstrophy_ratio": 0.0009464538930238708,
+    "reynolds": 50000.0,
+    "simulation_time": 395.4338877098635,
+    "steps": 21235
+  },
+  "seconds": 2.0003163070000483,
+  "simulation_time_per_second": 197.68567917286592,
+  "steps_per_second": 10615.821070742033,
+  "presentation": {
+    "frames": 136,
+    "presented_frames_per_second": 67.98924726258142
+  },
+  "python_ui_poll_seconds": 0.001920038000207569,
+  "python_ui_poll_calls": 9,
+  "python_ui_poll_wall_percent": 0.0959867193747535
+}

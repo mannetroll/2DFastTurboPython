@@ -1,0 +1,72 @@
+{
+  "scope": "Native Ubuntu 26.04.1, NVIDIA RTX 3090, Qt xcb / Xwayland",
+  "passed": true,
+  "python_tests": {
+    "passed": 48,
+    "skipped_windows_only": 12,
+    "failures": 0
+  },
+  "final_rendering_recheck": "3 passed after fatal-error resume guards",
+  "native_ctest": "1 passed",
+  "gui_assertions": 52,
+  "pixel_comparisons": 24,
+  "maximum_pixel_byte_error": 1,
+  "windows_trajectory_max_relative_error": 1.8721444895292742e-06,
+  "performance": [
+    {
+      "n": 1024,
+      "headless": {
+        "n": 1024,
+        "R_turbo": 1.1985839984041038,
+        "ms_per_step": 1.3862442048227328,
+        "steps_per_s": 721.3736198290372
+      },
+      "interactive": {
+        "n": 1024,
+        "R_turbo": 1.1293359736995643,
+        "ms_per_step": 1.482453584049762,
+        "steps_per_s": 674.5573762034445
+      },
+      "gui_overhead_percent": 5.7774861667386
+    },
+    {
+      "n": 2048,
+      "headless": {
+        "n": 2048,
+        "R_turbo": 0.16488431261469355,
+        "ms_per_step": 5.422594477370671,
+        "steps_per_s": 184.41356885032715
+      },
+      "interactive": {
+        "n": 2048,
+        "R_turbo": 0.1477713108062054,
+        "ms_per_step": 6.030713306023815,
+        "steps_per_s": 165.81786419877463
+      },
+      "gui_overhead_percent": 10.37879318967009
+    }
+  ],
+  "stdlib_only_headless": true,
+  "reference_trees_modified": false,
+  "sm90_compilation": true,
+  "unverified": [
+    "WSLg graphics sharing remains blocked in historical probes; not retested here",
+    "H100 execution",
+    "macOS and Windows runtime regression tests",
+    "Linux HDR",
+    "per-monitor HiDPI",
+    "native Wayland surface embedding",
+    "Linux binary distribution"
+  ],
+  "hardware_limit": "Extended grid check reached N9216; N12288 VkFFT allocation failed; N16384 not reached.",
+  "native_libraries_sha256": {
+    "libfastturbo.so": "a7fda972536695f9d5dc881cc904cbd7614b4bfc39847348ec0fd17da255148f",
+    "libfastturbo_gl.so": "ed280eb9af9ea149719586b7ee526909baec07170a00ffcb91826adfa1d6bd3f"
+  },
+  "shared_cuda_source_sha256": {
+    "solver.cu": "ac975c95da644133225499c763a032ada8f337234352814a02e69b655d7f159c",
+    "kernels.cuh": "bf7225b2bb377ab2ec987c3e71721b80776fd1c39e054354f27feb160f2aeafe",
+    "fft.cpp": "29f81f15323a33edaa8a0fcde4300bc2131a196a1b223d9d794470f455764e9c",
+    "solver.hpp": "22907b0ebe6dc37fc385afa2600acadc57695eb2fd6c06593a58750fc5093d89"
+  }
+}
