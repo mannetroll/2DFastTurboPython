@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+from .build_info import vkfft_version
 
 
 def build(project: Path, native: Path, force=False) -> Path:
@@ -35,9 +36,10 @@ def build(project: Path, native: Path, force=False) -> Path:
         files.extend(sorted(p for p in folder.rglob("*") if p.is_file() and p.suffix != ".md"))
     files.append(reference / "CMakeLists.txt")
     distribution = os.environ.get("FASTTURBO_DISTRIBUTION", "OFF")
-    architectures = os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86")
+    architectures = os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "native")
     manifest = {"files": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
                 "cuda": str(cuda), "msvc": vs, "distribution": distribution, "architectures": architectures,
+                "vkfft_version": vkfft_version(mac / "ThirdParty/VkFFTSource/vkFFT/vkFFT.h"),
                 "nvcc": subprocess.check_output([str(cuda / "bin/nvcc.exe"), "--version"], text=True)}
     # MSVC's nested VkFFT includes can exceed MAX_PATH in an extracted sdist.
     # Publish immutable, content-addressed headers at a short temporary path.

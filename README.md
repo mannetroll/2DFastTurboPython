@@ -4,6 +4,18 @@ A shared Python-hosted turbulence application for macOS, Windows and Linux, usin
 native Swift/Metal/VkFFT or C++/CUDA/VkFFT backends. Python supplies the PySide6 controls;
 all CFD timesteps, FFTs, buffers and high-rate field rendering stay native.
 
+For the same headless, time-based benchmark on each supported machine:
+
+```sh
+cd python
+uv run 2dbench
+```
+
+This measures the production solver at retained 2048² and 4096² for 20 seconds
+each, with normal 3/2 padding, automatic backend/device metadata and one compact
+comparison table. Use `--seconds 2` for a quick test or `--json` to archive a run.
+See the [benchmark options and timing definition](python/README.md#run-a-benchmark).
+
 Validated platform and GPU configurations from the shared `main` branch:
 
 ```text

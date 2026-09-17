@@ -229,13 +229,17 @@ char* ft_initialize(const char*) {
     return response([]{
         if(mainThread&&mainThread!=GetCurrentThreadId())throw std::runtime_error("Initialize on the main thread.");
         mainThread=GetCurrentThreadId();
-        ComPtr<IDXGIFactory2> factory;hrCheck(CreateDXGIFactory1(IID_PPV_ARGS(&factory)),"Create DXGI factory");
-        ComPtr<IDXGIAdapter1> adapter;bool found=false;
-        for(UINT i=0;factory->EnumAdapters1(i,adapter.ReleaseAndGetAddressOf())!=DXGI_ERROR_NOT_FOUND;++i){
-            if(cudaD3D11GetDevice(&deviceId,adapter.Get())==cudaSuccess){found=true;break;}
-            cudaGetLastError();
+        if(std::getenv("FASTTURBO_DEVICE")) {
+            deviceId=requestedDevice(); // Compute-only: no DXGI/display initialization.
+        } else {
+            ComPtr<IDXGIFactory2> factory;hrCheck(CreateDXGIFactory1(IID_PPV_ARGS(&factory)),"Create DXGI factory");
+            ComPtr<IDXGIAdapter1> adapter;bool found=false;
+            for(UINT i=0;factory->EnumAdapters1(i,adapter.ReleaseAndGetAddressOf())!=DXGI_ERROR_NOT_FOUND;++i){
+                if(cudaD3D11GetDevice(&deviceId,adapter.Get())==cudaSuccess){found=true;break;}
+                cudaGetLastError();
+            }
+            if(!found)throw std::runtime_error("No CUDA-compatible Direct3D adapter found.");
         }
-        if(!found)throw std::runtime_error("No CUDA-compatible Direct3D adapter found.");
         CUDA_CHECK(cudaSetDevice(deviceId));
         cudaDeviceProp prop{};CUDA_CHECK(cudaGetDeviceProperties(&prop,deviceId));gpuName=prop.name;
         MEMORYSTATUSEX memory{};memory.dwLength=sizeof(memory);GlobalMemoryStatusEx(&memory);
@@ -247,6 +251,7 @@ char* ft_initialize(const char*) {
         if(cudaRuntimeGetVersion(&version)==cudaSuccess)info["cuda_runtime_version"]=version;
         version=0;
         if(cudaDriverGetVersion(&version)==cudaSuccess)info["cuda_driver_version"]=version;
+        deviceMetadata(info,deviceId);
         return info;
     });
 }

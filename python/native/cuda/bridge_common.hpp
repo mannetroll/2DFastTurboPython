@@ -4,11 +4,30 @@
 #include "cuda_support.cuh"
 #include "json.hpp"
 #include <cstring>
+#include <cstdlib>
 #include <fstream>
 #include <mutex>
 using namespace turbo;
 using Json = nlohmann::json;
 namespace {
+// Selected before constructing any core. The benchmark uses an isolated process
+// per case; ordinary GUI initialization retains its existing adapter selection.
+int requestedDevice() {
+    const char* value=std::getenv("FASTTURBO_DEVICE");
+    if(!value)return 0;
+    std::string s(value);
+    if(s.empty()||s.find_first_not_of("0123456789")!=std::string::npos)
+        throw std::invalid_argument("FASTTURBO_DEVICE must be a nonnegative device index.");
+    return std::stoi(s);
+}
+void deviceMetadata(Json& info, int device) {
+    cudaDeviceProp prop{};CUDA_CHECK(cudaGetDeviceProperties(&prop,device));
+    size_t available=0,total=0;CUDA_CHECK(cudaMemGetInfo(&available,&total));
+    info["device_index"]=device;
+    info["compute_capability"]=std::to_string(prop.major)+"."+std::to_string(prop.minor);
+    info["available_memory_bytes"]=available;
+    info["precision"]="float32";
+}
 constexpr const char* fieldNames[] = {"vorticity", "speed", "enstrophy"};
 constexpr const char* paletteNames[] = {"aurora", "ember", "glacier", "inferno"};
 constexpr const char* rangeNames[] = {"sigma", "exposure"};

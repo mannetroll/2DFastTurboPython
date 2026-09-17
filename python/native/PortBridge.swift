@@ -7,6 +7,7 @@ import SwiftUI
 
 final class FastTurboResources {
     static var directory = ""
+    static var computeDevice: MTLDevice?
     static func library(device: MTLDevice) -> MTLLibrary? {
         try? device.makeLibrary(URL: URL(fileURLWithPath: directory).appendingPathComponent("default.metallib"))
     }
@@ -122,11 +123,25 @@ public func ftStringFree(_ pointer: UnsafeMutablePointer<CChar>?) { free(pointer
 public func ftInitialize(_ directory: UnsafePointer<CChar>?) -> UnsafeMutablePointer<CChar>? {
     response {
         guard Thread.isMainThread else { throw PortError(message: "Initialize FastTurbo on the main thread.") }
-        _ = NSApplication.shared
         if let directory { FastTurboResources.directory = String(cString: directory) }
         guard MTTVkFFTWasCompiledIn() else { throw PortError(message: "VkFFT was not compiled in.") }
-        guard let device = MTLCreateSystemDefaultDevice() else { throw FastTurboError.noMetalDevice }
+        let device: MTLDevice
+        var deviceIndex = 0
+        if let value = ProcessInfo.processInfo.environment["FASTTURBO_DEVICE"] {
+            let devices = MTLCopyAllDevices()
+            guard let index = Int(value), devices.indices.contains(index) else {
+                throw PortError(message: "Invalid Metal device index: \(value)")
+            }
+            deviceIndex = index
+            device = devices[index]
+        } else {
+            guard let selected = MTLCreateSystemDefaultDevice() else { throw FastTurboError.noMetalDevice }
+            device = selected
+        }
+        FastTurboResources.computeDevice = device
         return ["abi_version": 1, "defaults": configReport(FastTurboConfiguration()),
+                "backend": "Metal / VkFFT", "precision": "float32", "device_index": deviceIndex,
+                "unified_memory": device.hasUnifiedMemory,
                 "gpu": device.name, "os": ProcessInfo.processInfo.operatingSystemVersionString,
                 "recommended_working_set_bytes": device.recommendedMaxWorkingSetSize,
                 "physical_memory_bytes": ProcessInfo.processInfo.physicalMemory]
@@ -137,7 +152,8 @@ private final class EngineHandle {
     let core: FastTurboCore
     init(_ request: [String: Any]) throws {
         let c = try configuration(request)
-        core = try FastTurboCore(configuration: c, vorticity: readField(request["initial"] as? String, n: c.resolution))
+        core = try FastTurboCore(configuration: c, device: FastTurboResources.computeDevice,
+                                 vorticity: readField(request["initial"] as? String, n: c.resolution))
     }
 }
 
@@ -292,7 +308,7 @@ private final class UIHandle {
 @_cdecl("ft_ui_create")
 public func ftUICreate() -> UnsafeMutableRawPointer? {
     guard Thread.isMainThread else { return nil }
-    let handle = MainActor.assumeIsolated { UIHandle() }
+    let handle = MainActor.assumeIsolated { _ = NSApplication.shared; return UIHandle() }
     return Unmanaged.passRetained(handle).toOpaque()
 }
 

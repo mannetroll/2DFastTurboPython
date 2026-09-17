@@ -1,0 +1,21 @@
+FastTurbo 2D Benchmark
+Host:       ubuntu
+OS:         Ubuntu 26.04.1 LTS
+Arch:       x86_64
+GPU:        NVIDIA GeForce RTX 3090
+Device:     0
+Compute:    8.6
+Backend:    CUDA + VkFFT
+VRAM:       23.6 GiB
+CUDA:       13.3 runtime / 13.2 driver API
+VkFFT:      1.3.4
+Precision:  float32
+Git:        5be033e30759 (dirty)
+Workload:   ETDRK4 / stress, k0=10, seed=2, CFL=3, Re=27898.36614974
+Timing:     synchronized wall time, batch=8, warmup=8 steps
+Target:     2.0 s per case
+ Retained      Padded      Steps    Seconds    ms/step    steps/s
+----------------------------------------------------------------
+ 2048²        3072²           416       2.01      4.838      206.7
+ 4096²        6144²            96       2.07     21.548       46.4
+4096/2048 timestep ratio: 4.45x

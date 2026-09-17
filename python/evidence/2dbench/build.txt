@@ -1,0 +1,7 @@
+   Building fastturbo @ file:///home/tobbe/github/2DFastTurboPython/python
+Downloading scipy (33.7MiB)
+ Downloaded scipy
+      Built fastturbo @ file:///home/tobbe/github/2DFastTurboPython/python
+Uninstalled 1 package in 0.58ms
+Installed 2 packages in 13ms
+/home/tobbe/github/2DFastTurboPython/python/src/fastturbo/_native/libfastturbo.so

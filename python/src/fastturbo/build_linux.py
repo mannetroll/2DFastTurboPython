@@ -10,6 +10,7 @@ import re
 import shutil
 import subprocess
 import sys
+from .build_info import vkfft_version
 
 
 def _configure(source: Path, directory: Path, **definitions: str | Path) -> None:
@@ -46,9 +47,9 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     if not cxx:
         raise RuntimeError("C++ compiler not found; set CXX to the existing compiler executable.")
     cxx = str(Path(cxx).resolve())
-    architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86"))
-    if not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
-        raise RuntimeError("FASTTURBO_CUDA_ARCH must be a CUDA architecture, e.g. 86 or 90.")
+    architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "native"))
+    if architectures != "native" and not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
+        raise RuntimeError("FASTTURBO_CUDA_ARCH must be native or a CUDA architecture, e.g. 86 or 90.")
     renderer = os.environ.get("FASTTURBO_LINUX_RENDERER", "AUTO").upper()
     if renderer not in {"AUTO", "ON", "OFF"}:
         raise RuntimeError("FASTTURBO_LINUX_RENDERER must be AUTO, ON or OFF.")
@@ -64,6 +65,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     manifest = {
         "files": {str(p.relative_to(project.parent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
         "cuda": str(cuda.resolve()), "architectures": architectures,
+        "vkfft_version": vkfft_version(vkfft / "vkFFT.h"),
         "renderer": renderer, "cmake_prefix_path": os.environ.get("CMAKE_PREFIX_PATH", ""),
         "nvcc": version([str(nvcc), "--version"]),
         "cxx_path": cxx, "cxx": version([cxx, "--version"]),

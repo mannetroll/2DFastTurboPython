@@ -123,6 +123,67 @@ the GUI's automatic regulation is separate from the batch API.
 
 ## Run a benchmark
 
+For a comparable architecture benchmark from a source checkout:
+
+```sh
+cd python
+uv run 2dbench
+```
+
+This runs retained **2048² → padded 3072²** and **4096² → padded 6144²** for
+at least **20 seconds each**, then prints device/platform metadata, one compact
+performance table, and the 4096/2048 timestep ratio. It reuses the existing
+headless `2dfastturbo --benchmark` harness and production native engine:
+CUDA/VkFFT on Linux/Windows and Metal/VkFFT on macOS. It does not import Qt or
+create a window; Linux works over SSH without DISPLAY, Wayland, X11 or a desktop.
+
+```sh
+uv run 2dbench                         # Standard architecture comparison
+uv run 2dbench --seconds 2             # Quick test
+uv run 2dbench --sizes 1024 2048 4096   # Custom retained sizes
+uv run 2dbench --device 0              # CUDA visible-device / Metal device index
+uv run 2dbench --json > h100.json       # Archive results
+uv run 2dbench --help
+```
+
+The workload is fixed across devices: float32, ETDRK4, stress form, 3/2 padding,
+seeded PAO initialization, k₀=10, seed=2, CFL=3, Re=27898.36614974335, adaptive
+timesteps with palinstrophy regulation off, and batches of eight complete steps.
+The existing eight-step warmup is followed by a reset and synchronous inspection.
+`--warmup K` changes that step count. No workload setting changes with GPU model.
+
+`Seconds` is the existing harness's synchronized wall time: batch submission,
+completed native steps, and final diagnostic inspection. `ms/step` and `steps/s`
+derive from that interval. Both backends wait for completed GPU work before
+returning each batch. Startup, contexts, allocation, VkFFT plans, initialization,
+warmup and reset are outside timing. The deadline is checked after each batch,
+so overshoot is at most one batch plus final inspection. Expect roughly 40–50
+seconds plus initialization. JSON also preserves the native report, GPU timing,
+initialization time, exact configuration, per-case memory availability, Git
+commit and dirty status.
+
+Cases use separate processes to release native resources after failures. A lower
+bound on the production buffers is checked against free CUDA memory where
+available, or total unified memory on Metal. This is not a peak-memory guarantee:
+VkFFT scratch and other allocations vary. Native allocation errors produce an
+explicit `SKIPPED: insufficient device memory` row; other errors produce
+`FAILED`. Sizes are never reduced, subsequent cases still run, and any
+skipped/failed case returns exit status 1. JSON remains a single valid document;
+native/build diagnostics go to stderr. An externally killed process is reported
+as failed without guessing the cause.
+
+Source checkouts build the existing backend automatically and need its normal
+compiler/toolkit prerequisites; see [development setup](DEVELOPMENT.md). CUDA
+source builds default to CMake's `native` architecture detection. Explicit
+`FASTTURBO_CUDA_ARCH` (Linux) or `FASTTURBO_CUDA_ARCHITECTURES` overrides remain
+available for cross compilation, including `90` for H100. The toolkit must
+support the selected architecture. Metal indices follow `MTLCopyAllDevices`;
+CUDA indices respect `CUDA_VISIBLE_DEVICES`. VkFFT's version is recorded from
+the header used at build time; unavailable metadata is reported as unknown.
+
+The lower-level reference executables, legacy positional PAO/CNAB2 interface,
+parity tests, and existing benchmarks remain available.
+
 Run 200 timesteps without opening the desktop window and save JSON diagnostics:
 
 ```sh

@@ -31,6 +31,7 @@ classifiers = [
 Screenshots = "https://github.com/mannetroll/fastturbo-media"
 
 [project.scripts]
+2dbench = "fastturbo.bench:main"
 2dfastturbo = "fastturbo.main:main"
 fastturbo-build = "fastturbo.build:main"
 

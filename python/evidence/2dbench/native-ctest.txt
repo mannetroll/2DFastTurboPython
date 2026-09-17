@@ -1,0 +1,7 @@
+Test project /home/tobbe/github/2DFastTurboPython/python/build/linux
+    Start 1: core_lifecycle
+1/1 Test #1: core_lifecycle ...................   Passed    1.53 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   1.53 sec

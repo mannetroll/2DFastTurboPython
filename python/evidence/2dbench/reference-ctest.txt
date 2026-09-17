@@ -1,0 +1,13 @@
+Test project /home/tobbe/github/2DFastTurboPython/build-linux
+    Start 1: reference_help
+1/4 Test #1: reference_help ...................   Passed    0.01 sec
+    Start 2: reference_validation
+2/4 Test #2: reference_validation .............   Passed    6.67 sec
+    Start 3: reference_benchmark
+3/4 Test #3: reference_benchmark ..............   Passed    6.79 sec
+    Start 4: reference_cli
+4/4 Test #4: reference_cli ....................   Passed    0.15 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =  13.61 sec

@@ -60,7 +60,13 @@ def config_from(args):
         operator=args.operator, fixed_dt=args.fixed_dt)
 
 
-def benchmark(args):
+def run_benchmark(args):
+    """Shared headless harness; all numerical work stays in the native Engine.
+
+    advance() and inspect() wait for GPU completion on both CUDA and Metal.
+    Keep this timing definition shared with the existing --benchmark command.
+    """
+    initializing = time.perf_counter()
     config = config_from(args)
     with Engine(config, initial=args.initial) as engine:
         if args.warmup:
@@ -78,6 +84,7 @@ def benchmark(args):
         gpu_seconds = snapshot_seconds = final_batch = 0.0
         next_snapshot = 0.0
         start = time.perf_counter()
+        initialization_seconds = start - initializing
         def continuing():
             if args.wall_seconds is not None:
                 return time.perf_counter() - start < args.wall_seconds
@@ -111,7 +118,8 @@ def benchmark(args):
         report = {"schema_version": 1, "solver": "FastTurbo Python", "mode": "headless-with-snapshots" if args.snapshot_hz else "headless",
                   "config": {**config.payload(), "padded_resolution": config.padded_resolution, "batch": batch},
                   "initial_stats": initial, "stats": stats, "frame": frame,
-                  "seconds": seconds, "simtime_per_s": simulated / max(seconds, 1e-12),
+                  "seconds": seconds, "initialization_seconds": initialization_seconds,
+                  "simtime_per_s": simulated / max(seconds, 1e-12),
                   "steps_per_s": steps / max(seconds, 1e-12),
                   "milliseconds_per_step": seconds * 1000 / max(steps, 1),
                   "turnovers_per_s": simulated / max(initial["initial_turnover_time"] * seconds, 1e-12),
@@ -124,7 +132,11 @@ def benchmark(args):
                   "initial_source": "external-physical-field" if args.initial else "seeded-pao",
                   "initial_sha256": hashlib.sha256(args.initial.read_bytes()).hexdigest() if args.initial else None,
                   "hardware": native_library().info, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
-    emit(report, args.output)
+    return report
+
+
+def benchmark(args):
+    emit(run_benchmark(args), args.output)
     return 0
 
 

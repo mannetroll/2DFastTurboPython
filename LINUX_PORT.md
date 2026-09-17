@@ -441,9 +441,9 @@ FASTTURBO_CUDA_ARCH=90 uv run 2dfastturbo --headless --resolution 1024 \
 ```
 
 Keep `FASTTURBO_CUDA_ARCH=90` set for subsequent source-checkout invocations;
-otherwise the default 86 configuration triggers a rebuild. The alias
+otherwise the default `native` architecture detection triggers a rebuild. The alias
 `FASTTURBO_CUDA_ARCHITECTURES` and standard CMake architecture lists are also
-accepted. Local development defaults to 86; no large architecture collection is
+accepted. Local development defaults to native GPU detection; no large architecture collection is
 compiled. A separate Release **sm_90 build actually succeeded**, and cuobjdump
 confirmed a native `sm_90.cubin`; the installed RTX build remains `sm_86.cubin`.
 This verifies compilation only. H100/AWS execution, performance, ordinary Ubuntu

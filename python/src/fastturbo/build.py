@@ -10,6 +10,12 @@ import shutil
 import subprocess
 import sys
 
+if __package__:
+    from .build_info import vkfft_version
+else:
+    import runpy
+    vkfft_version = runpy.run_path(str(Path(__file__).with_name("build_info.py")))["vkfft_version"]
+
 PACKAGE = Path(__file__).resolve().parent
 PROJECT = PACKAGE.parents[1]
 ROOT = PROJECT.parent
@@ -28,8 +34,8 @@ def build(force: bool = False) -> Path:
         if __package__:
             from .build_linux import build as linux_build
         else:
-            import runpy
-            linux_build = runpy.run_path(str(PACKAGE / "build_linux.py"))["build"]
+            sys.path.insert(0, str(PACKAGE.parent))
+            from fastturbo.build_linux import build as linux_build
         return linux_build(PROJECT, NATIVE, force)
     if platform.system() == "Windows":
         if __package__:
@@ -37,8 +43,8 @@ def build(force: bool = False) -> Path:
             # PyInstaller archive, where Python source files are not on disk.
             from .build_windows import build as windows_build
         else:
-            import runpy
-            windows_build = runpy.run_path(str(PACKAGE / "build_windows.py"))["build"]
+            sys.path.insert(0, str(PACKAGE.parent))
+            from fastturbo.build_windows import build as windows_build
         return windows_build(PROJECT, NATIVE, force)
     if platform.system() != "Darwin":
         raise RuntimeError(f"Unsupported platform: {platform.system()}; expected macOS, Windows or Linux.")
@@ -56,6 +62,7 @@ def build(force: bool = False) -> Path:
     compiler = subprocess.check_output(["xcrun", "swiftc", "--version"], text=True, stderr=subprocess.STDOUT).strip()
     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     manifest = {"files": hashes, "sdk": sdk, "compiler": compiler, "target": "arm64-apple-macosx15.0"}
+    manifest["vkfft_version"] = vkfft_version(REFERENCE / "ThirdParty/VkFFTSource/vkFFT/vkFFT.h")
     NATIVE.mkdir(parents=True, exist_ok=True)
     build_dir = PROJECT / "build/native"
     build_dir.mkdir(parents=True, exist_ok=True)

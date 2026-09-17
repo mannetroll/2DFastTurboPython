@@ -32,6 +32,7 @@ void ft_string_free(char* p) { std::free(p); }
 char* ft_initialize(const char* resources) {
     return response([&] {
         initializeCudaLoader();
+        deviceId=requestedDevice();
         CUDA_CHECK(cudaSetDevice(deviceId));
         cudaDeviceProp prop{};
         CUDA_CHECK(cudaGetDeviceProperties(&prop, deviceId));
@@ -48,6 +49,7 @@ char* ft_initialize(const char* resources) {
             {"capabilities",{{"headless",true},{"native_rendering",linuxRenderingBuilt()},
                 {"forcing",false},{"drag",false},{"vortex_injection",false}}}};
         if(!linuxRenderingBuilt())info["native_rendering_error"]="GPU rendering was not built. Install OpenGL/X11/libpng development files and rebuild, or use --headless.";
+        deviceMetadata(info,deviceId);
         return info;
     });
 }
