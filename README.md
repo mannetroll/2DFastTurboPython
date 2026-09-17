@@ -32,10 +32,12 @@ Enable **Regulate with Palinstrophy** to adjust the Reynolds number automaticall
 Changing N or k₀ recalculates the initial Re from the calibration formula in either mode.
 
 Space pauses/resumes, Right advances one step, R resets, Cmd-Shift-R increments
-the seed, F focuses the flow, and Cmd-S exports a PNG. Closing or minimizing the
-window keeps the simulation running; View → Show Simulation or the Dock reopens it.
-On Windows, use Ctrl in place of Cmd; the tray icon can reopen the retained run.
-Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
+the seed, F focuses the flow, and Cmd-S exports a PNG. On Windows and Linux, use
+Ctrl in place of Cmd. The title-bar close button quits the application and stops
+the simulation on all three platforms. Minimizing keeps the simulation running.
+**File → Close Window** also quits on macOS and Linux; on Windows it hides the
+window to the notification area, where the tray icon can reopen the retained run.
+Press **Ctrl+Q on Windows or Linux** or **Cmd+Q on macOS** to quit the application.
 
 Windows build, test and run from the repository root:
 

@@ -424,7 +424,7 @@ class MainWindow(QMainWindow):
         menu = self.menuBar()
         file = menu.addMenu("File")
         self.save_action = file.addAction("Save Snapshot…", lambda: self.send("save"), QKeySequence.StandardKey.Save)
-        close_window = self.close if sys.platform == "linux" else self.hide_window
+        close_window = self.hide_window if sys.platform == "win32" else self.close
         self.close_action = file.addAction("Close Window", close_window, QKeySequence.StandardKey.Close)
         # Qt's portable Ctrl maps to Command on macOS; StandardKey.Quit is
         # unbound on Windows, so specify the requested shortcut explicitly.
@@ -631,14 +631,10 @@ class MainWindow(QMainWindow):
         if self._closing:
             event.accept()
             return
-        if sys.platform in {"win32", "linux"}:
-            QSettings().setValue("windowGeometry", self.saveGeometry())
-            self.shutdown()
-            event.accept()
-            QApplication.instance().quit()
-            return
-        self.hide_window()
-        event.ignore()  # macOS keeps the run alive for Dock reopen.
+        QSettings().setValue("windowGeometry", self.saveGeometry())
+        self.shutdown()
+        event.accept()
+        QApplication.instance().quit()
 
     def hide_window(self):
         if self._closing:

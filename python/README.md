@@ -84,10 +84,11 @@ k₀=10, seed 2 and palinstrophy regulation off. Enable **Regulate with Palinstr
 to adjust the Reynolds number automatically. Changing N or k₀ recalculates the
 initial Re from the calibration formula in either mode. Press
 **Space** to pause or resume, **Right Arrow** to single-step and **R** to reset.
-Press **Ctrl+Q on Windows** or **Cmd+Q on macOS** to quit the application.
-On Windows, the title-bar **X** and **Alt+F4** also quit and stop the simulation.
-**File → Close Window** hides it to the notification area while computing continues.
-On macOS, closing the window keeps the simulation running for Dock reopen.
+Press **Ctrl+Q on Windows or Linux** or **Cmd+Q on macOS** to quit the application.
+The title-bar close button (**X**, or the red button on macOS) also quits and
+stops the simulation on all three platforms. **File → Close Window** quits on
+macOS and Linux; on Windows it hides the window to the notification area while
+computing continues, and **Alt+F4** quits. Minimizing keeps the simulation running.
 
 ## Use from Python
 
