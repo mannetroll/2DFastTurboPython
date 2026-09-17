@@ -16,7 +16,10 @@ def main():
     sys.path.insert(0, str(source.resolve()))
     capture = io.StringIO()
     with contextlib.redirect_stdout(capture):
-        from palinstrophy import turbo_simulator as dns
+        if (source / "turbo_simulator.py").is_file():
+            import turbo_simulator as dns
+        else:
+            from palinstrophy import turbo_simulator as dns
         state = dns.create_dns_state(N=n, Re=re, K0=k0, CFL=cfl, backend="cpu",
                                      seed=seed, start_spectrum="PAO", populate_compact_ur=False)
     output.mkdir(parents=True, exist_ok=True)

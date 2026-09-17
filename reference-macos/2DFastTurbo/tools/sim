@@ -13,6 +13,7 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
+REPO_ROOT = ROOT.parents[1]
 
 
 def build():
@@ -68,9 +69,10 @@ def main():
         ("UPDATE", int, 100), ("SPECTRUM", str, "PAO"), ("METHOD", str, "CNAB2"),
     ]:
         parser.add_argument(name, type=convert, nargs="?", default=default)
-    parser.add_argument("--python-repo", type=Path, default=ROOT.parent / "palinstrophy",
-                        help="authoritative Python repository for the PAO initializer")
-    parser.add_argument("--python", type=Path, help="Python with palinstrophy dependencies (default: repository .venv)")
+    parser.add_argument("--python-repo", type=Path, default=HERE,
+                        help="PAO initializer source directory (default: tools directory)")
+    parser.add_argument("--python", type=Path,
+                        help="Python with NumPy/SciPy (default: repo/python/.venv/bin/python)")
     parser.add_argument("--json", type=Path, help="write full-precision diagnostics and provenance")
     parser.add_argument("--state-out", type=Path, help="write final omega, nonlinear history, and velocity arrays")
     args = parser.parse_args()
@@ -91,9 +93,16 @@ def main():
     if platform.system() != "Darwin":
         parser.error("the Swift/Metal runner requires macOS 15 or later")
     source = args.python_repo.resolve()
-    python = (args.python or source / ".venv/bin/python").absolute()
-    if not (source / "palinstrophy/turbo_simulator.py").is_file() or not python.is_file():
-        parser.error("Python initializer unavailable; set --python-repo and/or --python")
+    python = (args.python or REPO_ROOT / "python/.venv/bin/python").absolute()
+    if not any((source / name).is_file() for name in ["turbo_simulator.py", "palinstrophy/turbo_simulator.py"]):
+        parser.error(f"PAO initializer unavailable in {source}; set --python-repo")
+    if not python.is_file():
+        parser.error(f"Python unavailable at {python}; run uv sync in repo/python or set --python")
+    dependencies = subprocess.run([str(python), "-c", "import numpy; import scipy.fft"],
+                                  capture_output=True, text=True)
+    if dependencies.returncode:
+        parser.error(f"NumPy/SciPy unavailable in {python}; run uv sync in repo/python or set --python\n"
+                     + dependencies.stderr.strip())
     if args.json:
         args.json.parent.mkdir(parents=True, exist_ok=True)
     if args.state_out:

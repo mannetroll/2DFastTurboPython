@@ -1,6 +1,6 @@
 # Python / Swift CNAB2 solver comparison
 
-From the `2DFastTurbo` directory, run the equivalent of the Python baseline:
+From `reference-macos/2DFastTurbo`, run the equivalent of the Python baseline:
 
 ```bash
 SCIPYTURBO_SEED=1 ./tools/sim 512 10000 10 1001 0.25 metal 100 PAO CNAB2 \
@@ -20,10 +20,13 @@ order: `N Re K0 STEPS CFL BACKEND UPDATE SPECTRUM METHOD`. This tool supports
 
 - macOS 15 or later, a Metal GPU, and Xcode's Swift/C++ toolchain (`xcrun`).
 - The existing vendored VkFFT and metal-cpp headers in `ThirdParty/VkFFTSource`.
-- The sibling `../palinstrophy` checkout with its Python environment installed
-  (`uv sync` there). By default, initialization uses its `.venv/bin/python`.
-  Use `--python-repo /path/to/palinstrophy` and `--python /path/to/python` to
-  override these paths.
+- This repository's `python/.venv`, prepared with `uv sync` from `python/`.
+  The development dependencies include NumPy and SciPy for PAO initialization.
+  By default, the runner uses `repo/python/.venv/bin/python` and the checked-in
+  `tools/turbo_simulator.py`; no sibling checkout is needed for `tools/sim`.
+  `--python-repo /path/to/source` overrides the initializer directory (either
+  `turbo_simulator.py` or `palinstrophy/turbo_simulator.py` within it).
+  `--python /path/to/python` overrides the interpreter independently.
 
 The first invocation builds a release binary in `tools/.build/`; later invocations
 reuse it until the solver, launcher, bridge, vendored headers, or toolchain changes.

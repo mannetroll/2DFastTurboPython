@@ -35,7 +35,8 @@ Screenshots = "https://github.com/mannetroll/fastturbo-media"
 fastturbo-build = "fastturbo.build:main"
 
 [dependency-groups]
-dev = ["pytest>=8", "numpy>=2", "pyinstaller>=6.16"]
+# SciPy is used by the CPU PAO initializer for tools/sim, not the native solver.
+dev = ["pytest>=8", "numpy>=2", "scipy>=1.16", "pyinstaller>=6.16"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
