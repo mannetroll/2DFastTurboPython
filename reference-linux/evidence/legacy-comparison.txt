@@ -1,0 +1,13 @@
+Matched case: N=512, 1001 steps, CNAB2, seed=1
+Tolerance: atol=5e-10 + rtol=1e-05 × |reference| + both printed rounding radii
+Diagnostic          Max |Δ|   Max relative Δ
+T                   2.2e-08      1.69254e-07
+DT                    2e-11      8.22859e-08
+CN                    1e-07      9.94898e-08
+CFLM                9.2e-05      2.70217e-07
+TAU_L                     0                0
+Wall seconds: reference=0.28314071, candidate=0.11354969
+FPS:          reference=3535.3447, candidate=8815.5241
+T_R=T/wall:   reference=0.81321185, candidate=2.0277762
+Timing values describe these runs; use repeated measurements for performance conclusions.
+PASS: all initial, checkpoint, and final diagnostics agree within tolerance.

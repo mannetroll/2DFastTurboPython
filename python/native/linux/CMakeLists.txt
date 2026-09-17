@@ -4,21 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-find_package(CUDAToolkit 13.0 REQUIRED)
-add_library(cuda_platform STATIC cuda_loader.cpp)
-target_include_directories(cuda_platform PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(cuda_platform PUBLIC CUDA::cuda_driver CUDA::nvrtc ${CMAKE_DL_LIBS})
-
-# These are the SAME sources linked by the Windows backend, with no generated
-# numerical adaptations. Win32/D3D/controller code is deliberately excluded.
-add_library(turbo_core STATIC
-  "${FASTTURBO_WINDOWS}/src/solver.cu" "${FASTTURBO_WINDOWS}/src/fft.cpp")
-target_include_directories(turbo_core PUBLIC "${FASTTURBO_WINDOWS}/src")
-target_include_directories(turbo_core PRIVATE "${FASTTURBO_VKFFT}")
-target_compile_options(turbo_core PRIVATE
-  $<$<COMPILE_LANGUAGE:CUDA>:--fmad=false>
-  $<$<COMPILE_LANGUAGE:CXX>:-ffp-contract=off>)
-target_link_libraries(turbo_core PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
+include("${CMAKE_CURRENT_SOURCE_DIR}/../cuda/core.cmake")
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/../cuda/controller.cmake")
 add_library(fastturbo SHARED bridge.cpp ui.cpp "${adapted}/controller.cpp")

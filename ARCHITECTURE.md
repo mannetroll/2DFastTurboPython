@@ -17,6 +17,13 @@ simulation workers, persistent plans, buffers and frame leases.
 
 The Linux numerical library links no Qt, X11, Wayland, GL, EGL, Win32 or D3D
 libraries. Its optional `libfastturbo_gl.so` loads only for UI or PNG requests.
+The standalone `reference-linux` CMake executable uses the same
+`python/native/cuda/core.cmake` numerical target without linking the bridge or
+controller. Its production benchmarks execute the unchanged Windows solver.
+The historical PAO/CNAB2 comparison method lives in `python/native/cuda/legacy_*`
+and reuses the same VkFFT wrapper; it preserves the distinct historical seed,
+curl sign, compact layout, and checkpoint controller. See
+[`reference-linux/README.md`](reference-linux/README.md).
 A native rendering thread embeds a GLX child under the shared Qt xcb canvas,
 using Xwayland on a Wayland desktop. CUDA copies completed immutable snapshots
 device-to-device into a persistent OpenGL texture buffer. Mapping/unmapping and

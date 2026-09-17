@@ -19,6 +19,15 @@ The authoritative solver has persistent VkFFT plans and GPU buffers, native
 batches and reduction readbacks. It currently has no CUDA Graph implementation.
 There is therefore no Graph/non-Graph mode to preserve or compare.
 
+`core.cmake` now defines the shared Linux numerical build for both the Python
+backend and the standalone `reference-linux` validation/benchmark executable.
+The latter links no bridge, controller or renderer. The additional `legacy_*`
+files implement the historical PAO/CNAB2 compatibility method missing from the
+production CUDA API, with the historical LCG, compact spectrum and update cadence.
+They reuse the existing `FFT` class. Production ETDRK4/RK3 numerical code and the
+Python API remain unchanged; the two distinct initialization contracts are never
+interchanged. See [the native reference documentation](../../../reference-linux/README.md).
+
 Only explicit `export(fields=...)` / `export(spectrum=...)` requests read back
 fields for validation or files. `export(snapshot=True)` returns scalar frame
 metadata; the leased full snapshot remains in GPU memory.

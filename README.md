@@ -28,6 +28,11 @@ with Qt xcb and an embedded GLX surface through Xwayland. The earlier WSLg CUDA
 graphics-sharing limitation remains; native Wayland embedding is not supported.
 See [LINUX_PORT.md](LINUX_PORT.md) for setup and validation details.
 
+For a native Linux GPU-server executable with no Python or desktop dependencies,
+see [reference-linux](reference-linux/README.md). It shares the CUDA/VkFFT core,
+validates the recorded Windows and macOS cases, supports the historical CNAB2
+positional invocation, and benchmarks RTX 3090 (`sm_86`) or H100 (`sm_90`) builds.
+
 ![2DFastTurbo Python on macOS, showing vorticity and simulation controls after 5,000 iterations](docs/images/macos-5000-iterations.png)
 
 *Captured on Apple M1 Max after exactly 5,000 iterations: 2048² grid, 3072² padded
