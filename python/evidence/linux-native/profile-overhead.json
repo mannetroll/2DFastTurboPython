@@ -1,0 +1,37 @@
+{
+  "batch8": {
+    "count": 100,
+    "median_ms": 11.10328,
+    "mean_ms": 11.08876906,
+    "min_ms": 10.034132
+  },
+  "inspect": {
+    "count": 100,
+    "median_ms": 0.032766500000000004,
+    "mean_ms": 0.03641995,
+    "min_ms": 0.025618
+  },
+  "vorticity_snapshot": {
+    "count": 100,
+    "median_ms": 0.080676,
+    "mean_ms": 0.09547392,
+    "min_ms": 0.075111
+  },
+  "velocity_snapshot": {
+    "count": 100,
+    "median_ms": 0.158546,
+    "mean_ms": 0.16239594,
+    "min_ms": 0.153547
+  },
+  "noop_abi_upper_bound": {
+    "count": 2000,
+    "median_ms": 0.008656,
+    "mean_ms": 0.0087568925,
+    "min_ms": 0.008396
+  },
+  "notes": [
+    "No-op includes JSON encode/parse, ctypes, native dispatch, clock/statistics read and response allocation.",
+    "Inspection and snapshots include existing native GPU synchronization.",
+    "Timings exclude initialization and first FFT-plan creation."
+  ]
+}

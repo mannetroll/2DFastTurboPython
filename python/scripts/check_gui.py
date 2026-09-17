@@ -206,6 +206,9 @@ try:
         QTest.qWait(100)
         origin = window.mapToGlobal(QPoint(0, 0))
         screen = window.screen().grabWindow(0, origin.x(), origin.y(), window.width(), window.height())
+    elif sys.platform == "linux":
+        from capture_linux_window import capture
+        screen = capture(window.winId())
     else:
         screen = app.primaryScreen().grabWindow(int(window.winId()))
     screen.save(str(args.output.with_name("gui-window.png")))

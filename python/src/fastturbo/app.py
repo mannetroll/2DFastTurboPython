@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
 from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
 from .engine import Configuration, NativeUI
 from .environment import environment_summary
-from .platform_ui import fonts, install_lifecycle, prepare_application_name
+from .platform_ui import fonts, install_lifecycle, prepare_application_name, save_snapshot, sync_canvas_scale
 
 STYLE = """
 QMainWindow, QWidget#root { background: #090c13; color: #e6e8ec; }
@@ -493,7 +493,8 @@ class MainWindow(QMainWindow):
 
     def send(self, op, *, refresh=True, **kwargs):
         try:
-            self.native.call(op, **kwargs)
+            if op != "save" or not save_snapshot(self):
+                self.native.call(op, **kwargs)
             if refresh:
                 self.poll()
         except Exception as error:
@@ -596,6 +597,7 @@ class MainWindow(QMainWindow):
         if not self._attached:
             self._attached = True
             self.native.attach(int(self.canvas.winId()))
+            sync_canvas_scale(self)
             QTimer.singleShot(0, lambda: self.send("start"))
         else:
             self.native.call("visible", value=True)
@@ -618,6 +620,8 @@ class MainWindow(QMainWindow):
 
     def changeEvent(self, event):
         super().changeEvent(event)
+        if event.type() == QEvent.Type.DevicePixelRatioChange and self._attached and not self._closing:
+            sync_canvas_scale(self)
         if event.type() == QEvent.Type.WindowStateChange and self._attached and not self._closing:
             self.native.call("visible", value=not self.isMinimized())
 

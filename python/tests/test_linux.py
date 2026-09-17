@@ -60,7 +60,8 @@ def test_recorded_native_windows_trajectory():
             # the long recorded trajectory; do not require bitwise host-libm parity.
             assert actual[key] == pytest.approx(expected[key], rel=3e-6, abs=1e-9)
             errors[f"{phase}.{key}"] = abs(actual[key] - expected[key]) / max(abs(expected[key]), 1e-30)
-    output = ROOT / "python/evidence/linux/windows-parity.json"
+    evidence = Path(os.environ.get("FASTTURBO_EVIDENCE_DIR", ROOT / "python/evidence/linux"))
+    output = evidence / "windows-parity.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({"passed": True, "reference": str(source.relative_to(ROOT)),
         "config": c, "initial_stats": initial, "stats": final, "relative_errors": errors,
@@ -93,3 +94,48 @@ def test_native_batch_worker_gil_and_close():
         assert sorted(completed) == [17, 34, 51, 68]
     with pytest.raises(NativeError, match="closed"):
         engine.advance()
+
+
+@pytest.mark.gui
+@pytest.mark.parametrize("script", ["check_linux_rendering.py", "check_linux_workers.py"])
+def test_native_rendering_validation(tmp_path, script):
+    output = tmp_path / ("colors" if script == "check_linux_rendering.py" else "workers.json")
+    subprocess.run([sys.executable, str(ROOT / "python/scripts" / script), "--output", str(output)],
+                   check=True, timeout=120)
+
+
+@pytest.mark.gui
+def test_rendering_failure_stops_worker():
+    environment = {**os.environ, "DISPLAY": ""}
+    script = """
+import time
+from fastturbo.engine import NativeError, NativeUI
+ui = NativeUI()
+try:
+    ui.call('configure', resolution=128)
+    # With no display, renderer initialization must fail before using this ID.
+    ui.attach(1)
+    try:
+        ui.call('start')
+    except NativeError:
+        pass  # Renderer can fail before or after the start request.
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        state = ui.call()
+        if state['error_message'] and not state['running']:
+            assert 'display' in state['error_message'].lower()
+            break
+        time.sleep(.01)
+    else:
+        raise AssertionError('Renderer failure left the simulation running')
+    for op in ('start', 'toggle', 'running', 'step'):
+        try:
+            ui.call(op, value=True)
+        except NativeError:
+            pass
+        else:
+            raise AssertionError('Resumed work after a fatal renderer error: ' + op)
+finally:
+    ui.close()
+"""
+    subprocess.run([sys.executable, "-c", script], env=environment, check=True, timeout=30)

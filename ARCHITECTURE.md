@@ -3,20 +3,34 @@
 The application selects a native backend locally in `fastturbo.build`:
 macOS loads the existing `libfastturbo.dylib` (Metal/VkFFT), Windows loads
 `fastturbo.dll` (CUDA/VkFFT), and Linux loads `libfastturbo.so` (CUDA/VkFFT).
-All implement version 1 of `python/native/fastturbo.h`; Linux currently supports
-the headless engine API and explicitly reports native rendering unavailable.
+All implement version 1 of `python/native/fastturbo.h`. Linux supports the headless
+engine and a GPU-resident OpenGL/GLX renderer on verified native Ubuntu.
 The common Python `Configuration`, `Engine` / `create_engine`, `NativeUI`, CLI,
 controls, palettes and PySide6 dashboard are shared. ctypes releases the GIL for
 all native calls. `GUI_PARITY.md` records the control mapping.
 
 Windows and Linux compile the same unchanged CUDA solver/kernel/VkFFT files in
-`reference-windows/src`; `python/native/cuda` shares the bridge conversion and
-export helpers. The Linux numerical library links no Qt, X11, Wayland, GL, EGL,
-Win32 or D3D libraries. Its headless milestone, stored Windows numerical parity,
-N1024/N2048 timing and sm_90 compilation pass. WSLg CUDA graphics interoperability
-fails outside the sandbox; the Linux GUI/renderer is unfinished. No CPU rendering
-fallback exists. `LINUX_PORT.md` records the exact failed GPU probes, current
-limitations, the process-local WSL JIT loader fix and reproduction commands.
+`reference-windows/src`; `python/native/cuda` shares bridge conversions and the
+guarded native-controller adaptations. The generated Linux controller matches
+the prior Windows controller adaptation byte-for-byte. Both hosts keep native
+simulation workers, persistent plans, buffers and frame leases.
+
+The Linux numerical library links no Qt, X11, Wayland, GL, EGL, Win32 or D3D
+libraries. Its optional `libfastturbo_gl.so` loads only for UI or PNG requests.
+A native rendering thread embeds a GLX child under the shared Qt xcb canvas,
+using Xwayland on a Wayland desktop. CUDA copies completed immutable snapshots
+device-to-device into a persistent OpenGL texture buffer. Mapping/unmapping and
+a copy-stream wait protect ownership; solver work runs on a separate stream.
+Normal rendering has no CPU field/pixel readback. Explicit PNG exports use a GL
+framebuffer and requested pixel readback. Presentation is paced at 60 Hz;
+Python's 4 Hz telemetry timer schedules neither timesteps nor rendering.
+
+Native Ubuntu headless, GUI, numerical/pixel parity, measured GUI overhead and
+sm_90 compilation pass. Historical WSLg CUDA graphics sharing failures remain
+unresolved; native Ubuntu results do not establish WSLg compatibility. The
+NVRTC loader preloads matching builtins beside the loaded library; the older
+WSL driver-loader fix remains conditional. See `LINUX_PORT.md` for environment,
+commands, synchronization measurements and hardware limitations.
 
 The Windows CMake project links the reference solver directly, including its
 unchanged CUDA kernels and VkFFT implementation. The original C++ controller owns

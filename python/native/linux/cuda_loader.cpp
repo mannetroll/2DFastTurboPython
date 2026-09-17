@@ -1,5 +1,6 @@
 #include "cuda_loader.hpp"
 #include <cuda.h>
+#include <nvrtc.h>
 #include <dlfcn.h>
 #include <filesystem>
 #include <fstream>
@@ -10,6 +11,19 @@
 void initializeCudaLoader() {
     static std::once_flag once;
     std::call_once(once, [] {
+        // NVRTC dlopens its builtins by soname. The caller's RUNPATH is not
+        // inherited by that lookup in a relocatable/user-local toolkit.
+        // Resolve the library actually linked here and preload its matching
+        // builtins, without LD_LIBRARY_PATH or changes to the system loader.
+        Dl_info nvrtc{};
+        int major=0, minor=0;
+        if (!dladdr(reinterpret_cast<void*>(&nvrtcVersion), &nvrtc) ||
+            nvrtcVersion(&major, &minor) != NVRTC_SUCCESS)
+            throw std::runtime_error("Cannot locate the loaded CUDA NVRTC library.");
+        auto builtins = std::filesystem::path(nvrtc.dli_fname).parent_path() /
+            ("libnvrtc-builtins.so." + std::to_string(major) + "." + std::to_string(minor));
+        if (!dlopen(builtins.c_str(), RTLD_NOW | RTLD_LOCAL))
+            throw std::runtime_error(std::string("Cannot load matching CUDA NVRTC builtins: ") + dlerror());
         auto result = cuInit(0);
         if (result != CUDA_SUCCESS) {
             const char* error = nullptr;

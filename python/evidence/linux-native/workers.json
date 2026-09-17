@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "native_transport_buttons": true,
+  "native_save_dialog_cancel": true,
+  "export_failure_recovers": true,
+  "visible_canvas_sample_colors": 435,
+  "steps_without_python_events": 6279,
+  "presentations_without_python_events": 36,
+  "rendering": {
+    "api": "CUDA / OpenGL",
+    "device_copy_bytes": 7864320,
+    "draw_submit_seconds": 0.005847054997047962,
+    "swap_seconds": 0.0026007589981418278,
+    "upload_seconds": 0.05009888600125123,
+    "uploads": 40
+  }
+}

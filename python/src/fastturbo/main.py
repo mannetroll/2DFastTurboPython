@@ -215,10 +215,14 @@ class GUIBenchmark:
                 if self.args.export or self.args.fields:
                     self.window.native.call("export", png=str(self.args.export) if self.args.export else None,
                                             fields=str(self.args.fields) if self.args.fields else None)
+                presentation_seconds = state.get("rendering", {}).get("presentation_seconds", seconds)
+                intervals = state["presentations"] - (1 if "rendering" in state else 0)
                 result = {"passed": True, "mode": "gui-benchmark", "solver": "FastTurbo Python", **state,
                           "seconds": seconds, "simulation_time_per_second": stats["simulation_time"] / seconds,
                           "steps_per_second": stats["steps"] / seconds,
-                          "presentation": {"frames": state["presentations"], "presented_frames_per_second": state["presentations"] / seconds},
+                          "presentation": {"frames": state["presentations"],
+                                           "seconds": presentation_seconds,
+                                           "presented_frames_per_second": intervals / max(presentation_seconds, 1e-12)},
                           "python_ui_poll_seconds": self.window.poll_seconds, "python_ui_poll_calls": self.window.poll_calls,
                           "python_ui_poll_wall_percent": 100 * self.window.poll_seconds / seconds}
                 emit(result, self.args.output)

@@ -1,4 +1,199 @@
-# Linux port status — 2026-09-16
+# Linux port status — 2026-09-17
+
+**Native Ubuntu now runs the shared application with GPU-resident OpenGL rendering.
+The earlier WSLg interoperability limitation remains; it has not been retested on
+WSL or claimed fixed.** The current checkout is on a different host environment
+from the one originally described in `PythonPortLinux.txt`.
+
+## Current native Ubuntu validation
+
+Ubuntu 26.04.1 LTS, kernel `7.0.0-31-generic`, x86_64, GNOME Wayland with Xwayland,
+RTX 3090 / 24 GiB / sm_86, NVIDIA driver 595.91.07, driver CUDA capability 13.2.
+This fresh checkout had no toolkit, uv, CMake, Ninja or Qt xcb development/runtime
+dependencies. Missing development components were installed **under the user's
+home directory**, using NVIDIA's checksum-verified CUDA redistributables and
+Ubuntu development packages extracted locally. No system driver, compiler or
+system package was replaced. The actual tools are CUDA/nvcc 13.2.51, GCC/G++ 15.2,
+CMake 4.4.3, Ninja 1.13.2 (Kitware build), uv 0.12.15, CPython 3.14.4 and PySide6
+6.11.2. Python's `>=3.13` policy is unchanged.
+
+CUDA/OpenGL registration succeeds on the actual NVIDIA context. Direct Qt Wayland
+context creation failed on this host; the application uses Qt's `xcb` platform
+and an embedded GLX child through Xwayland. It rejects a Wayland QApplication
+before treating a native surface pointer as an X11 window ID. Desktop screenshots
+use the application's XComposite backing pixmap, because QScreen's root-screen
+capture returns black under this compositor.
+
+## Architecture and GPU ownership
+
+The shared `Configuration`, `Engine` / `create_engine`, `NativeUI`, CLI and PySide6
+window remain the application API. macOS uses Metal/VkFFT; Windows and Linux
+compile the **same unchanged CUDA solver, kernels and VkFFT plans** from
+`reference-windows/src`. No numerical reference file was changed.
+
+`python/native/cuda/controller.cmake` applies the existing Windows controller
+adaptations for both platforms. Generated Linux controller files are byte-for-byte
+identical to the previous Windows build's adaptations. The native simulation
+worker retains batching, live parameter updates, regulation, snapshots and run
+clocks. The reference has no CUDA Graph mode.
+
+`libfastturbo.so` contains the C ABI bridge and controller. It loads
+`libfastturbo_gl.so` only on a UI/PNG request; headless initialization never loads
+Qt, X11, GL or EGL. The OpenGL module owns a separate native presentation thread's
+X11 connection, GLX context, persistent texture buffer, CUDA interop registration
+and nonblocking copy stream. Each new immutable CUDA frame is copied **device to
+device** into the mapped OpenGL buffer. Unmapping and waiting for that copy stream
+protect the frame lease before GL sampling. Simulation uses its own CUDA stream.
+Recoloring a paused frame reuses the uploaded buffer. A native 60 Hz deadline
+controls presentation while the native solver runs independently.
+
+The shaders preserve the Windows/Metal periodic interpolation, orientation,
+normalization, palettes and velocity-direction lines. PNG export renders into an
+offscreen GL framebuffer and reads pixels only on explicit request. Normal steps
+and frames do not read physical fields or pixels into Python or host arrays.
+Readback helpers under `scripts/` are explicit validation captures, not the
+production rendering path. Linux presentation and PNG output are SDR; HDR display
+validation is not claimed.
+
+A new loader fix locates the **actually loaded NVRTC** library and preloads its
+matching builtins from that directory. NVRTC's internal `dlopen` did not inherit
+the caller's RUNPATH in the user-local toolkit. This fixes the observed plan
+failure without `LD_LIBRARY_PATH` for CUDA, preserving the prior conditional WSL
+JIT-loader fix.
+
+## Build, test and run
+
+For this prepared checkout, from the repository root:
+
+```sh
+source python/build/local-env.sh
+bash python/scripts/build-linux.sh
+bash python/scripts/test-linux.sh             # Headless gate + native CTest
+bash python/scripts/test-linux.sh --gui       # Complete suite on this desktop
+bash python/scripts/run-linux.sh --headless --resolution 1024 --reynolds 50000 \
+  --k0 4 --steps 3832 --output results/headless.json
+bash python/scripts/run-linux.sh              # Existing shared GUI
+bash python/scripts/benchmark-linux.sh --mode both --runs 3 --seconds 5 \
+  --output evidence/linux-native/final
+```
+
+The generated `python/build/local-env.sh` selects the local tools and locally
+extracted Qt xcb dependencies. It is machine setup, not a required application
+source file. On a normally provisioned Linux host, put uv/CMake/Ninja on PATH and
+set `CUDA_HOME` to the existing CUDA 13.x toolkit. Desktop builds also need the
+OpenGL, X11 and libpng development packages, and the Qt xcb runtime dependencies
+listed by [Qt](https://doc.qt.io/qt-6/linux-requirements.html). From `python/`:
+
+```sh
+uv sync
+FASTTURBO_LINUX_RENDERER=ON uv run fastturbo-build --force
+uv run 2dfastturbo
+uv run 2dfastturbo --headless --resolution 1024 --reynolds 50000 --k0 4
+uv run pytest -q
+uv run python scripts/check_linux_rendering.py
+uv run python scripts/check_linux_workers.py
+uv run python scripts/profile_overhead.py
+```
+
+`FASTTURBO_LINUX_RENDERER=AUTO` is the default: build graphics when dependencies
+are found. `ON` fails clearly if graphics development dependencies are missing;
+`OFF` builds only the headless library and harnesses. After installing missing
+dependencies, use `fastturbo-build --force` to reconfigure an existing AUTO cache.
+`CMAKE_PREFIX_PATH` supports development packages outside standard system paths.
+Only the Linux platform adapter selects xcb; platform checks do not enter the
+shared solver or control definitions.
+
+## Verification and actual measurements
+
+**48 Python tests passed, 12 Windows-specific tests skipped; native CTest 1/1
+passed.** These include the formerly failing GUI and PNG checks, headless execution
+without display variables or Qt/GL libraries (also verified with `python3 -S`
+and only the standard library), all integrator/form combinations,
+independent FP64 numerical checks, long-run decay, and deterministic Windows
+trajectory comparison. Maximum relative diagnostic error in the stored 3,832-step
+Windows trajectory is **1.8721445e-06**, within the unchanged 3 ppm tolerance.
+The independently invoked Linux build of the Windows CLI harness also matches
+spectra byte-for-byte, including N1024/N2048. This is binding parity on Linux;
+no new Windows execution or cross-OS raw-field comparison is claimed.
+
+The shared GUI check passes **52 assertions**. All 24 field/palette/range pixel
+comparisons pass at a maximum error of **1/255** against the independent reference
+(tolerance remains 2/255). The native worker check validates actual X11 canvas
+transport clicks, Save-dialog cancellation, recovery after an export error,
+visible GPU pixels, fatal-renderer-error shutdown, and continued
+stepping/presentation with no Python/Qt events.
+An observed 0.6-second interval contained 6,279 steps and 36 presentations.
+
+The optional `--all-resolutions` experiment successfully rebuilt/stepped through
+N9216, then failed VkFFT allocation at N12288 on this 24 GiB GPU. Its failed report
+is retained in `gui-all-resolutions.json`; it was not relabeled a passing test.
+N16384 was not reached. The original resolution choices are preserved. Successful
+higher-resolution control checks do not imply all high-resolution rendering or
+physics configurations fit this GPU.
+
+Three alternating headless/GUI five-second samples per grid, seed 2, k0=4,
+Re=50000, CFL=3, ETDRK4/stress. Headless uses batch 8 and eight warmup steps/reset;
+GUI uses native adaptive batches, two-second warmup/reset and a 640-pixel
+Vorticity/Ember/Sigma canvas. Medians:
+
+| Retained → padded | Headless ms/step | Headless steps/s | Headless R_turbo | GUI ms/step | GUI steps/s | GUI R_turbo | GUI overhead |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1024² → 1536² | 1.386244 | 721.374 | 1.198584 | 1.482454 | 674.557 | 1.129336 | 5.78% |
+| 2048² → 3072² | 5.422594 | 184.414 | 0.164884 | 6.030713 | 165.818 | 0.147771 | 10.38% |
+
+GUI overhead is `100*(R_headless-R_gui)/R_headless`. Presentation is about 60 Hz,
+measured over actual presentation intervals, including final paused frames;
+it is separate from the active simulation clock. Compared with historical
+configuration-matched Windows Python runs, native Linux headless R_turbo is
+4.14% lower at N1024 and 6.80% lower at N2048. Driver, toolchain, desktop activity
+and measurement date differ, so this does not isolate an operating-system cost.
+
+Native GPU-event intervals occupy 99.66% and 99.90% of headless wall time.
+A separate N1024 profile measured batch8 11.10328 ms, inspection 0.03277 ms,
+vorticity snapshot 0.08068 ms, velocity snapshot 0.15855 ms, and no-op ABI upper
+bound 0.00866 ms. In representative GUI runs the upload/map/unmap/wait intervals
+totaled 0.41949 s (N1024) and 0.51091 s (N2048) for 301 uploads each; these overlap
+the simulation worker and are not additive GUI overhead. GL draw submission and
+swap calls were much smaller. The measured bottleneck is native GPU work;
+rendering's largest measured host interval is CUDA/GL sharing and copy-stream
+waiting. No per-kernel profile or speculative solver optimization is claimed.
+
+Final timing records are in [`python/evidence/linux-native/final`](python/evidence/linux-native/final);
+the parent evidence directory retains the first timing round and all validation.
+The table uses the final three-run medians, including the completed canvas styling.
+The headless checkpoint precedes GUI work and is recorded in
+`headless-milestone.json` and `python/build/checkpoints/native-headless`.
+
+## H100 and remaining limits
+
+A separate Release build with `FASTTURBO_RENDERER=OFF` and CUDA architecture 90
+succeeds, and cuobjdump confirms native `sm_90.cubin`. The installed application
+retains sm_86. For a prepared H100 host, use:
+
+```sh
+cd python
+export FASTTURBO_CUDA_ARCH=90
+export FASTTURBO_LINUX_RENDERER=OFF
+uv sync
+uv run fastturbo-build --force
+uv run 2dfastturbo --headless --resolution 1024 --reynolds 50000 --k0 4 \
+  --wall-seconds 5 --output results/h100.json
+```
+
+H100 execution/performance, macOS/Windows runtime regressions on this host,
+Linux HDR, native Wayland-surface embedding and distributable Linux wheels remain
+untested or unfinished. Headless runtime needs no desktop or Qt initialization;
+the shared desktop package still declares PySide6 as an installation dependency.
+PNG exports currently need an X11/Xwayland display. WSLg's historical CUDA graphics
+sharing limitation remains as documented below. No WSL display driver was installed.
+
+---
+
+# Historical WSL headless checkpoint — 2026-09-16
+
+The remainder records the previous WSL environment and **pre-renderer source
+state**. Its two GUI failures describe that checkpoint, not the current native
+Ubuntu test results above.
 
 **The headless Linux CUDA milestone passes. The complete Linux application does
 not yet pass: GPU rendering through the tested WSLg stack is blocked.** The

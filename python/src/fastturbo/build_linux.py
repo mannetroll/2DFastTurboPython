@@ -37,6 +37,9 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86"))
     if not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
         raise RuntimeError("FASTTURBO_CUDA_ARCH must be a CUDA architecture, e.g. 86 or 90.")
+    renderer = os.environ.get("FASTTURBO_LINUX_RENDERER", "AUTO").upper()
+    if renderer not in {"AUTO", "ON", "OFF"}:
+        raise RuntimeError("FASTTURBO_LINUX_RENDERER must be AUTO, ON or OFF.")
     source = project / "native/linux"
     directory = project / "build/linux"
     directory.mkdir(parents=True, exist_ok=True)
@@ -49,6 +52,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     manifest = {
         "files": {str(p.relative_to(project.parent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
         "cuda": str(cuda.resolve()), "architectures": architectures,
+        "renderer": renderer, "cmake_prefix_path": os.environ.get("CMAKE_PREFIX_PATH", ""),
         "nvcc": version([str(nvcc), "--version"]),
         "cxx_path": cxx, "cxx": version([cxx, "--version"]),
         "cmake": version(["cmake", "--version"]), "build_type": "Release",
@@ -63,11 +67,21 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
             "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_CUDA_COMPILER={nvcc}",
             f"-DCMAKE_CXX_COMPILER={cxx}",
             f"-DCUDAToolkit_ROOT={cuda}", f"-DCMAKE_CUDA_ARCHITECTURES={architectures}",
+            f"-DFASTTURBO_RENDERER={renderer}",
             f"-DFASTTURBO_WINDOWS={reference}", f"-DFASTTURBO_VKFFT={vkfft}"], check=True)
         subprocess.run(["cmake", "--build", str(directory), "--parallel", "2"], check=True)
         staging = library.with_suffix(".so.tmp")
         shutil.copy2(directory / library.name, staging)
         os.replace(staging, library)
+        render_library = directory / "libfastturbo_gl.so"
+        # CMake leaves old outputs on disk when an optional target is disabled.
+        cache = (directory / "build.ninja").read_text()
+        if renderer != "OFF" and "build libfastturbo_gl.so:" in cache:
+            staging = native / "libfastturbo_gl.so.tmp"
+            shutil.copy2(render_library, staging)
+            os.replace(staging, native / render_library.name)
+        else:
+            (native / "libfastturbo_gl.so").unlink(missing_ok=True)
         for src, name in [(vkfft.parent / "LICENSE", "VkFFT-LICENSE.txt"),
                           (project / "native/windows/vendor/json-LICENSE.txt", "json-LICENSE.txt")]:
             shutil.copy2(src, native / name)

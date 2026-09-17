@@ -7,7 +7,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 find_package(CUDAToolkit 13.0 REQUIRED)
 add_library(cuda_platform STATIC cuda_loader.cpp)
 target_include_directories(cuda_platform PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(cuda_platform PUBLIC CUDA::cuda_driver ${CMAKE_DL_LIBS})
+target_link_libraries(cuda_platform PUBLIC CUDA::cuda_driver CUDA::nvrtc ${CMAKE_DL_LIBS})
 
 # These are the SAME sources linked by the Windows backend, with no generated
 # numerical adaptations. Win32/D3D/controller code is deliberately excluded.
@@ -20,12 +20,39 @@ target_compile_options(turbo_core PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:-ffp-contract=off>)
 target_link_libraries(turbo_core PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
 
-add_library(fastturbo SHARED bridge.cpp)
-target_include_directories(fastturbo PRIVATE .. ../windows/vendor)
+include("${CMAKE_CURRENT_SOURCE_DIR}/../cuda/controller.cmake")
+add_library(fastturbo SHARED bridge.cpp ui.cpp "${adapted}/controller.cpp")
+target_include_directories(fastturbo PRIVATE "${adapted}" .. ../windows/vendor)
 target_compile_options(fastturbo PRIVATE -ffp-contract=off -Wall -Wextra)
 target_link_libraries(fastturbo PRIVATE turbo_core cuda_platform)
 # NVRTC finds its matching builtins next to itself. No LD_LIBRARY_PATH required.
 set_target_properties(fastturbo PROPERTIES BUILD_RPATH "${CUDAToolkit_LIBRARY_DIR}")
+
+# Optional presentation module. It is dlopened only for UI/PNG requests, so a
+# compute-only machine never needs to load X11 or OpenGL libraries.
+set(FASTTURBO_RENDERER "AUTO" CACHE STRING "Linux renderer: AUTO, ON, OFF")
+set_property(CACHE FASTTURBO_RENDERER PROPERTY STRINGS AUTO ON OFF)
+if(NOT FASTTURBO_RENDERER MATCHES "^(AUTO|ON|OFF)$")
+  message(FATAL_ERROR "FASTTURBO_RENDERER must be AUTO, ON or OFF")
+endif()
+set(rendering 0)
+if(NOT FASTTURBO_RENDERER STREQUAL "OFF")
+  find_package(OpenGL QUIET)
+  find_package(X11 QUIET)
+  find_package(PNG QUIET)
+  if(OpenGL_FOUND AND X11_FOUND AND PNG_FOUND)
+    add_library(fastturbo_gl SHARED renderer.cpp)
+    target_include_directories(fastturbo_gl PRIVATE "${FASTTURBO_WINDOWS}/src")
+    target_link_libraries(fastturbo_gl PRIVATE CUDA::cudart OpenGL::GL X11::X11 PNG::PNG)
+    target_compile_options(fastturbo_gl PRIVATE -Wall -Wextra)
+    set(rendering 1)
+  elseif(FASTTURBO_RENDERER STREQUAL "ON")
+    message(FATAL_ERROR "Linux rendering requires OpenGL, X11 and libpng development files.")
+  else()
+    message(STATUS "Building headless only: OpenGL/X11/libpng development files not found")
+  endif()
+endif()
+target_compile_definitions(fastturbo PRIVATE FASTTURBO_HAS_RENDERER=${rendering})
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/core_tests.cpp"
   "#include \"cuda_loader.hpp\"\n#define main reference_core_main\n#include \"${FASTTURBO_WINDOWS}/tests/core_tests.cpp\"\n#undef main\nint main(){initializeCudaLoader();return reference_core_main();}\n")
 add_executable(core_tests "${CMAKE_CURRENT_BINARY_DIR}/core_tests.cpp")

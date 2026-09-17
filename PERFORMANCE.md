@@ -1,5 +1,38 @@
 # Measured performance and parity
 
+## Native Ubuntu CUDA/VkFFT + OpenGL, 2026-09-17
+
+Ubuntu 26.04.1, RTX 3090, driver 595.91.07, CUDA 13.2.51, GCC 15.2,
+Python 3.14.4. Three alternating headless/GUI five-second samples per grid;
+seed 2, k0=4, Re=50000, CFL=3, ETDRK4/stress. Headless: batch8 and eight warmup
+steps/reset. GUI: native adaptive batches, two-second warmup/reset, 640-pixel
+Vorticity/Ember/Sigma canvas through Xwayland/GLX. Medians:
+
+| Retained → padded | Headless ms/step | Headless steps/s | Headless R_turbo | GUI ms/step | GUI steps/s | GUI R_turbo | GUI overhead |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1024² → 1536² | 1.386244 | 721.374 | 1.198584 | 1.482454 | 674.557 | 1.129336 | 5.78% |
+| 2048² → 3072² | 5.422594 | 184.414 | 0.164884 | 6.030713 | 165.818 | 0.147771 | 10.38% |
+
+The GUI overhead formula uses R_turbo. Presentation remains approximately 60 Hz
+and does not bound solver throughput. Native GPU event intervals occupy
+99.66%/99.90% of headless wall time. A separate N1024 profile gives batch8
+11.10328 ms, inspection 0.03277 ms, vorticity snapshot 0.08068 ms, velocity snapshot
+0.15855 ms and no-op ABI upper bound 0.00866 ms. CUDA/OpenGL map/copy/unmap/wait
+intervals totaled 0.41949/0.51091 seconds for 301 uploads in representative GUI
+runs; these overlap native simulation and must not be added to GUI overhead.
+No per-kernel bottleneck or optimization is claimed.
+
+Historical Windows headless R_turbo is higher by the equivalent of a 4.14%/6.80%
+Linux shortfall. These are matched physical configurations across different
+OS/driver/toolchain/date, not an isolated OS experiment. Correctness: 48 Python
+tests passed, 12 Windows-only skips; native CTest passed; 52 GUI assertions and
+24 independent pixel comparisons passed. WSLg and H100 execution remain separate
+limitations; native Ubuntu GUI results do not establish WSLg support.
+
+Final raw timing records and comparison: [`python/evidence/linux-native/final`](python/evidence/linux-native/final).
+The parent directory retains the first round and validation/profiling evidence.
+Build/run details: [LINUX_PORT.md](LINUX_PORT.md).
+
 ## Linux/WSL CUDA/VkFFT, 2026-09-16 — headless milestone
 
 Ubuntu 24.04.5/WSL2 on Windows 10 Pro, RTX 3090, CUDA 13.3.73, GCC 13.3,

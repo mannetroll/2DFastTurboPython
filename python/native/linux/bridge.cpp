@@ -1,6 +1,7 @@
 // Linux host for the shared CUDA/VkFFT solver. Headless initialization needs only CUDA.
 #include "fastturbo.h"
 #include "cuda_loader.hpp"
+#include "ui.hpp"
 #include "../cuda/bridge_common.hpp"
 #include <chrono>
 #include <thread>
@@ -28,24 +29,26 @@ void writeSpectrum(Solver& s,const Options& o) {
 
 extern "C" {
 void ft_string_free(char* p) { std::free(p); }
-char* ft_initialize(const char*) {
-    return response([] {
+char* ft_initialize(const char* resources) {
+    return response([&] {
         initializeCudaLoader();
         CUDA_CHECK(cudaSetDevice(deviceId));
         cudaDeviceProp prop{};
         CUDA_CHECK(cudaGetDeviceProperties(&prop, deviceId));
+        initializeLinuxUI(resources,prop.name);
         int runtime=0, driver=0;
         CUDA_CHECK(cudaRuntimeGetVersion(&runtime));
         CUDA_CHECK(cudaDriverGetVersion(&driver));
-        return Json{{"abi_version",1},{"defaults",configReport(Config{})},
+        Json info{{"abi_version",1},{"defaults",configReport(Config{})},
             {"backend","CUDA / VkFFT"},{"gpu",prop.name},{"os","Linux"},
-            {"native_rendering_error","This Linux build supports headless CUDA execution. GPU rendering is unavailable in the validated WSLg environment. Use --headless; see LINUX_PORT.md for the measured interoperability failures."},
             {"gpu_memory_bytes",prop.totalGlobalMem},
             {"physical_memory_bytes",uint64_t(sysconf(_SC_PHYS_PAGES))*sysconf(_SC_PAGESIZE)},
             {"compute_capability",std::to_string(prop.major)+"."+std::to_string(prop.minor)},
             {"cuda_runtime_version",runtime},{"cuda_driver_version",driver},
-            {"capabilities",{{"headless",true},{"native_rendering",false},
+            {"capabilities",{{"headless",true},{"native_rendering",linuxRenderingBuilt()},
                 {"forcing",false},{"drag",false},{"vortex_injection",false}}}};
+        if(!linuxRenderingBuilt())info["native_rendering_error"]="GPU rendering was not built. Install OpenGL/X11/libpng development files and rebuild, or use --headless.";
+        return info;
     });
 }
 void* ft_engine_create(const char* input,char** error) {
@@ -72,7 +75,8 @@ char* ft_engine_call(void* handle,const char* input) {
                 auto f=core.snapshot(j.value("include_velocity",true));if(!f)throw std::runtime_error("No snapshot slot.");
                 exportFields(*f,j);
                 if(has(j,"png")){
-                    throw std::runtime_error("PNG rendering is not available in the headless build.");
+                    auto renderer=linuxRenderer();
+                    renderer->exportPNG(f,displayOptions(j),path(j,"png"),pixelSize(j));
                 }
                 return frameReport(*f);
             }
@@ -82,8 +86,4 @@ char* ft_engine_call(void* handle,const char* input) {
     });
 }
 
-void* ft_ui_create() { return nullptr; }
-void ft_ui_destroy(void*) {}
-char* ft_ui_attach(void*, void*) { return copyString("{\"error\":\"Headless build\"}"); }
-char* ft_ui_call(void*, const char*) { return copyString("{\"error\":\"Headless build\"}"); }
 }

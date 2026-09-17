@@ -2,37 +2,38 @@
 
 Source contract: `PORT_REFERENCE.md`, the existing Python GUI, and the native
 controllers. The macOS and Windows backends implement the same `ft_ui_call` operation names.
-Linux currently implements the headless engine API; GUI operations report an
-explicit unavailable-rendering error. The GPU-backed Wayland/OpenGL/EGL probes
-failed outside the sandbox. Linux GUI parity is **not achieved**; see
-[LINUX_PORT.md](LINUX_PORT.md). Existing status entries below describe historical
-macOS/Windows validation, not Linux validation.
+Linux now uses the same native controller and a CUDA/OpenGL canvas under Qt xcb.
+Native Ubuntu 26.04.1 / RTX 3090 / NVIDIA 595.91.07 validation passes: 52 shared GUI
+assertions, 24 independent field/palette/range pixel comparisons, native canvas
+transport, Save-dialog cancellation, and autonomous simulation/presentation.
+The Linux column below refers to this native Ubuntu run. Historical WSLg interop
+remains blocked and is not covered by these passing results; see [LINUX_PORT.md](LINUX_PORT.md).
 
 | Control | macOS backend | Windows backend | Linux backend | Status | Notes |
 |---|---|---|---|---|---|
-| Play/Pause, Space, native canvas buttons | Native pump transport | Controller transport | GUI blocked; not verified | Tested on Windows | Completes current batch; holds run averages |
-| Single step, Right | Native single step | Controller singleStep | GUI blocked; not verified | Tested | Exactly one completed step, paused afterwards |
-| Reset, R | Native generation reset | Controller reset | GUI blocked; not verified | Tested | Same seed; reuses compatible allocations/plans |
-| Seed text/new seed | UInt64 configuration | UInt64 configuration | GUI blocked; not verified | Tested | Full 64-bit range and increment wrapping |
-| Retained N | Core replacement | Core replacement | GUI blocked; not verified | Tested | All GUI N=128…4096; padded M=3N/2 |
-| k0 | Initial condition replacement | Initial condition replacement | GUI blocked; not verified | Tested | Recalibrates Re when regulated |
-| Re / viscosity | Live native 1/Re | Live CUDA 1/Re | GUI blocked; not verified | Tested | Same field/clock/generation; logarithmic slider |
-| Palinstrophy regulation | Native regulator | Existing Windows regulator | GUI blocked; not verified | Tested | Disabling holds effective Re |
-| CFL | Native live parameter | Controller live parameter | GUI blocked; not verified | Tested | Worker applies latest value between batches |
-| IMEX RK3 / IF RK3 / ETD RK4 | Native integrators | Same native CUDA integrators | GUI blocked; not verified | Tested | Selecting RK3 caps GUI CFL at 1.5 |
-| Stress / Advective | Native formulations | Native formulations | GUI blocked; not verified | Tested | Reinitializes problem |
-| Vorticity / Speed / Enstrophy | Native render fields | Original D3D shaders | GUI blocked; not verified | Tested | Frame exports and independent pixel comparison |
-| Inferno / Ember / Aurora / Glacier | Metal palettes | Matching HLSL palettes | GUI blocked; not verified | Tested | Correct named-to-native enum mapping |
-| Sigma / Exposure range | Native signed normalization | Native signed normalization | GUI blocked; not verified | Tested | Independent values retained |
-| Sigma 1.5…3.5 / Exposure 0.25…3 | Native display values | Native shader uniforms | GUI blocked; not verified | Tested | Rendering changes do not mutate solver state |
-| Velocity direction overlay | Native flow lines | Native flow lines | GUI blocked; not verified | Tested | Requests velocity only when needed |
-| Focus, F | Shared Qt layout / native flag | Same shared Qt layout | GUI blocked; not verified | Tested | Preserves square canvas side |
-| Save PNG | Native macOS save panel / export | Native Windows save dialog / D3D export | GUI blocked; not verified | Export tested | 1800² SDR default; explicit readback only |
-| Dismiss error | Native controller | Controller/error state | GUI blocked; not verified | Implemented | GPU failures are returned as visible status |
-| Menus, editing, shortcuts | Shared Qt | Shared Qt | GUI blocked; not verified | Tested | Native platform Save shortcut |
-| Hide, minimize, reopen | Native visibility gate | Native visibility gate | GUI blocked; not verified | Tested | Simulation continues; snapshots gated |
-| Reopen a closed window | Dock / View menu | Tray icon / View menu | GUI blocked; not verified | Implemented | Tray offers Show, Pause/Resume and Quit |
-| CLI/GUI benchmark | Native pump limits | Generation-scoped controller limits | GUI blocked; not verified | Tested in benchmarks | Same warmup/reset and fixed/adaptive batching |
+| Play/Pause, Space, native canvas buttons | Native pump transport | Controller transport | Verified on native Ubuntu | Tested on Windows | Completes current batch; holds run averages |
+| Single step, Right | Native single step | Controller singleStep | Verified on native Ubuntu | Tested | Exactly one completed step, paused afterwards |
+| Reset, R | Native generation reset | Controller reset | Verified on native Ubuntu | Tested | Same seed; reuses compatible allocations/plans |
+| Seed text/new seed | UInt64 configuration | UInt64 configuration | Verified on native Ubuntu | Tested | Full 64-bit range and increment wrapping |
+| Retained N | Core replacement | Core replacement | Verified on native Ubuntu | Tested | Original choices N128…16384; M=3N/2. Linux rebuild/step checked through N9216; N12288 allocation failed on 24 GiB, N16384 not reached |
+| k0 | Initial condition replacement | Initial condition replacement | Verified on native Ubuntu | Tested | Recalibrates Re when regulated |
+| Re / viscosity | Live native 1/Re | Live CUDA 1/Re | Verified on native Ubuntu | Tested | Same field/clock/generation; logarithmic slider |
+| Palinstrophy regulation | Native regulator | Existing Windows regulator | Verified on native Ubuntu | Tested | Disabling holds effective Re |
+| CFL | Native live parameter | Controller live parameter | Verified on native Ubuntu | Tested | Worker applies latest value between batches |
+| IMEX RK3 / IF RK3 / ETD RK4 | Native integrators | Same native CUDA integrators | Verified on native Ubuntu | Tested | Selecting RK3 caps GUI CFL at 1.5 |
+| Stress / Advective | Native formulations | Native formulations | Verified on native Ubuntu | Tested | Reinitializes problem |
+| Vorticity / Speed / Enstrophy | Native render fields | Original D3D shaders | Verified on native Ubuntu | Tested | Frame exports and independent pixel comparison |
+| Inferno / Ember / Aurora / Glacier | Metal palettes | Matching HLSL palettes | Verified on native Ubuntu | Tested | Correct named-to-native enum mapping |
+| Sigma / Exposure range | Native signed normalization | Native signed normalization | Verified on native Ubuntu | Tested | Independent values retained |
+| Sigma 1.5…3.5 / Exposure 0.25…3 | Native display values | Native shader uniforms | Verified on native Ubuntu | Tested | Rendering changes do not mutate solver state |
+| Velocity direction overlay | Native flow lines | Native flow lines | Verified on native Ubuntu | Tested | Requests velocity only when needed |
+| Focus, F | Shared Qt layout / native flag | Same shared Qt layout | Verified on native Ubuntu | Tested | Preserves square canvas side |
+| Save PNG | Native macOS save panel / export | Native Windows save dialog / D3D export | Verified on native Ubuntu | Export tested | 1800² SDR default; explicit readback only. Linux uses a shared Qt Save dialog |
+| Dismiss error | Native controller | Controller/error state | Verified on native Ubuntu | Implemented | GPU failures are returned as visible status |
+| Menus, editing, shortcuts | Shared Qt | Shared Qt | Verified on native Ubuntu | Tested | Native platform Save shortcut |
+| Hide, minimize, reopen | Native visibility gate | Native visibility gate | Verified on native Ubuntu | Tested | Simulation continues; snapshots gated |
+| Reopen a closed window | Dock / View menu | Tray icon / View menu | Verified on native Ubuntu | Implemented | Tray offers Show, Pause/Resume and Quit |
+| CLI/GUI benchmark | Native pump limits | Generation-scoped controller limits | Verified on native Ubuntu | Tested in benchmarks | Same warmup/reset and fixed/adaptive batching |
 | Drag, forcing, vortex injection, presets | Absent in source | Absent in source | Absent in source; capabilities false | Not applicable | No new controls or physical terms introduced |
 
 macOS runtime execution is unavailable on the Windows validation machine. Its
@@ -43,10 +44,18 @@ Windows uses Segoe UI/Consolas; macOS retains its original system font/Menlo.
 The inherited `native_hdr_presented` test name checks that frames were presented;
 it does not establish HDR monitor validation. Windows SDR output was exercised.
 
-Linux headless configuration, Re/CFL edits, seed/reset, resolution, native batches,
-diagnostics and explicit field/spectrum exports are tested through the common
-`Engine` API. This does not verify the corresponding GUI controls. PNG export,
-render field/palette/range/flow semantics, native UI transport, interactive
-throughput and GUI overhead remain unfinished. macOS/Windows runtime regression
-tests were not available on this Linux machine; shared ABI signatures and source
-paths remain compatible, and reference numerical files are unchanged.
+Linux also verifies headless configuration, Re/CFL edits, seed/reset, native
+batches, diagnostics and explicit field/spectrum exports through `Engine`.
+No full-field readback is used for normal stepping or presentation. Linux pixel
+checks preserve the existing 2/255 tolerance and observe at most 1/255 error.
+Linux native transport and Save-dialog checks are in `check_linux_workers.py`;
+independent shader checks are in `check_linux_rendering.py`. The test-only
+XComposite capture helper reads the application's actual backing pixmap on
+Xwayland, where QScreen root screenshots return black.
+
+The extended all-resolution experiment's failed N12288 allocation report is
+retained, not weakened or marked passing. Linux HDR, per-monitor HiDPI and native
+Wayland surface hosting are unverified; the current Linux presentation is SDR
+through GLX. macOS/Windows runtime regression tests were unavailable here; ABI
+signatures remain compatible, the generated Windows controller is unchanged,
+and reference numerical files remain unchanged.

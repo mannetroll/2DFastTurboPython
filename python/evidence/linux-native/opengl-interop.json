@@ -1,0 +1,65 @@
+{
+  "hardware": {
+    "abi_version": 1,
+    "backend": "CUDA / VkFFT",
+    "capabilities": {
+      "drag": false,
+      "forcing": false,
+      "headless": true,
+      "native_rendering": false,
+      "vortex_injection": false
+    },
+    "compute_capability": "8.6",
+    "cuda_driver_version": 13020,
+    "cuda_runtime_version": 13020,
+    "defaults": {
+      "cfl": 3.0,
+      "fixed_dt": null,
+      "integrator": "etdrk4",
+      "k0": 4,
+      "operator": "stress",
+      "padded_resolution": 1536,
+      "resolution": 1024,
+      "reynolds": 27898.36614974335,
+      "seed": "2",
+      "viscosity": 3.5844394005835056e-05
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_memory_bytes": 25294995456,
+    "native_rendering_error": "This Linux build supports headless CUDA execution. GPU rendering is unavailable in the validated WSLg environment. Use --headless; see LINUX_PORT.md for the measured interoperability failures.",
+    "os": "Linux",
+    "physical_memory_bytes": 65459703808
+  },
+  "qt_platform": "xcb",
+  "environment": {
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-0",
+    "XDG_RUNTIME_DIR": "/run/user/1000",
+    "GALLIUM_DRIVER": null
+  },
+  "window_exposed": true,
+  "context_created": true,
+  "context_current": true,
+  "vendor": "NVIDIA Corporation",
+  "renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "version": "3.3.0 NVIDIA 595.91.07",
+  "external_memory_extensions": [
+    "GL_EXT_memory_object",
+    "GL_EXT_memory_object_fd",
+    "GL_EXT_semaphore",
+    "GL_EXT_semaphore_fd",
+    "GL_NV_memory_object_sparse",
+    "GL_NV_timeline_semaphore"
+  ],
+  "gl_error": 0,
+  "cudaGLGetDevices": {
+    "code": 0,
+    "error": "no error",
+    "count": 1
+  },
+  "cudaGraphicsGLRegisterBuffer": {
+    "code": 0,
+    "error": "no error"
+  },
+  "supported": true
+}

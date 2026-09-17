@@ -3,7 +3,7 @@
    Initialize once on the main thread with the packaged resources directory.
    Engine calls may use workers; serialize each handle with its destruction.
    UI calls and native view attach/destroy require the main thread.
-   Parent view is NSView on macOS, HWND on Windows. */
+   Parent view is NSView on macOS, HWND on Windows, X11 Window on Linux. */
 #if defined(_WIN32) && defined(FASTTURBO_EXPORTS)
 #define FT_API __declspec(dllexport)
 #else

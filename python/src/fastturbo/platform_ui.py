@@ -1,11 +1,28 @@
 """Small platform presentation/lifecycle adaptations for the shared window."""
+import os
 import sys
 from PySide6.QtGui import QFontDatabase
-from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+from PySide6.QtWidgets import QApplication, QFileDialog, QMenu, QSystemTrayIcon
 
 
 def prepare_application_name(name):
     """Set macOS's in-memory bundle name before Qt creates the native menus."""
+    if sys.platform == "linux":
+        import ctypes
+        # Initialize Xlib threading before Qt or the native rendering worker
+        # opens a connection. This module is never imported by headless runs.
+        global _x11
+        _x11 = ctypes.CDLL("libX11.so.6")
+        if not _x11.XInitThreads():
+            raise RuntimeError("X11 thread initialization failed.")
+        # The native GLX canvas embeds an X11 child. Xwayland also provides this
+        # contract on Wayland desktops; a wl_surface is not an X11 Window ID.
+        if os.environ.get("QT_QPA_PLATFORM", "xcb") != "xcb":
+            raise RuntimeError("The Linux GPU canvas requires QT_QPA_PLATFORM=xcb and an X11/Xwayland display.")
+        existing = QApplication.instance()
+        if existing is not None and existing.platformName() != "xcb":
+            raise RuntimeError("Create the Linux QApplication with QT_QPA_PLATFORM=xcb before attaching the GPU canvas.")
+        os.environ.setdefault("QT_QPA_PLATFORM", "xcb")
     if sys.platform != "darwin":
         return
     import ctypes as C
@@ -51,6 +68,23 @@ def fonts():
     regular = "Segoe UI" if "Segoe UI" in available else QApplication.font().family()
     mono = "Consolas" if "Consolas" in available else QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont).family()
     return regular, mono
+
+
+def save_snapshot(window):
+    """Linux uses the existing shared Save action with Qt's native file dialog."""
+    if sys.platform != "linux":
+        return False
+    filename, _ = QFileDialog.getSaveFileName(window, "Save Snapshot", "2DFastTurbo.png", "PNG image (*.png)")
+    if filename:
+        if not filename.lower().endswith(".png"):
+            filename += ".png"
+        window.native.call("export", png=filename)
+    return True
+
+
+def sync_canvas_scale(window):
+    if sys.platform == "linux":
+        window.native.call("set", canvas_scale=window.canvas.devicePixelRatioF())
 
 
 def install_lifecycle(window):
