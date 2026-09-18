@@ -155,7 +155,8 @@ struct UIHandle {
                     if(s.frame)renderer.drawField(s.frame,display,0,0,side,scale);
                     renderer.begin(scale,false);
                     auto white=D2D1::ColorF(.9f,.92f,.95f),dark=D2D1::ColorF(0,0,0,.35f);
-                    if(!s.ready)renderer.text(L"Preparing the flow",D2D1::RectF(side/2-65,side/2-15,side/2+100,side/2+15),12,white);
+                    if(!s.ready)renderer.text(s.error.empty()?L"Preparing the flow":L"Flow initialization failed - see error below",
+                        D2D1::RectF(20,side/2-15,side-20,side/2+30),12,white);
                     renderer.rectangle(D2D1::RectF(14,14,204,40),dark,13);
                     renderer.text(L"UNFORCED · SEED "+std::to_wstring(s.config.seed),D2D1::RectF(24,14,204,40),8,white,true);
                     renderer.rectangle(D2D1::RectF(14,side-49,128,side-14),dark,18);
