@@ -6,6 +6,7 @@ GPU error. This module never implements a timestep, initializer, or timing loop.
 from __future__ import annotations
 
 import argparse
+import hashlib
 from datetime import datetime, timezone
 import json
 import math
@@ -100,6 +101,9 @@ def platform_metadata(hardware):
         "cuda_driver": cuda_version(hardware.get("cuda_driver_version")),
         "vkfft_version": build.get("vkfft_version"),
         "cuda_build_architectures": build.get("architectures"),
+        "native_directory": str(NATIVE.resolve()),
+        "native_sha256": (hashlib.sha256((NATIVE / "fastturbo.dll").read_bytes()).hexdigest()
+                          if (NATIVE / "fastturbo.dll").is_file() else None),
         "precision": hardware.get("precision", "float32"),
         "git_commit": commit, "git_dirty": dirty,
     }
@@ -205,6 +209,9 @@ def format_header(report):
         lines.append(f"Memory:     {report['physical_memory_bytes'] / 2**30:.1f} GiB {label}")
     if report.get("cuda_runtime"):
         lines.append(f"CUDA:       {report['cuda_runtime']} runtime / {report.get('cuda_driver', 'unknown')} driver API")
+        lines.append(f"GPU targets: {report.get('cuda_build_architectures') or 'unknown'}")
+        lines.append(f"Native DLL: {report.get('native_directory') or 'unknown'}")
+        lines.append(f"DLL SHA256: {report.get('native_sha256') or 'unknown'}")
     lines.append(f"VkFFT:      {report.get('vkfft_version') or 'unknown'}")
     lines.append(f"Precision:  {report['precision']}")
     lines.append(f"Git:        {(report.get('git_commit') or 'unknown')[:12]}" + (" (dirty)" if report.get("git_dirty") else ""))

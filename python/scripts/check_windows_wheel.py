@@ -1,4 +1,5 @@
 """Exercise the wheel's native resources without CUDA Toolkit paths or sources."""
+import argparse
 import hashlib
 import json
 import os
@@ -11,7 +12,9 @@ import zipfile
 
 project = Path(__file__).resolve().parents[1]
 version = tomllib.loads((project / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
-wheel = project / f"dist/fastturbo-{version}-py3-none-win_amd64.whl"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--wheel", type=Path, default=project / f"dist/fastturbo-{version}-py3-none-win_amd64.whl")
+wheel = parser.parse_args().wheel.resolve()
 target = Path(tempfile.mkdtemp(prefix="wheel-check-", dir=project / "build")).resolve()
 with zipfile.ZipFile(wheel) as archive:
     assert "Tag: py3-none-win_amd64" in archive.read(f"fastturbo-{version}.dist-info/WHEEL").decode()
