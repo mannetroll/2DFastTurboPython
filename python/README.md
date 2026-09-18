@@ -142,8 +142,9 @@ uv run 2dbench
 ```
 
 This runs retained **2048² → padded 3072²** and **4096² → padded 6144²** for
-at least **20 seconds each**, then prints device/platform metadata, one compact
-performance table, and the 4096/2048 timestep ratio. It reuses the existing
+at least **20 seconds each**. The device/platform header and table headings print
+before benchmarking starts; each result row prints as its case finishes, followed
+by the 4096/2048 timestep ratio. It reuses the existing
 headless `2dfastturbo --benchmark` harness and production native engine:
 CUDA/VkFFT on Linux/Windows and Metal/VkFFT on macOS. It does not import Qt or
 create a window; Linux works over SSH without DISPLAY, Wayland, X11 or a desktop.

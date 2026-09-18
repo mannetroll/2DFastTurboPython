@@ -59,6 +59,7 @@ def parser():
     p.add_argument("--warmup", type=warmup_steps, default=8, help="warmup steps, followed by reset (default: 8)")
     p.add_argument("--json", action="store_true", help="emit one JSON document; build diagnostics go to stderr")
     p.add_argument("--_case-file", type=Path, help=argparse.SUPPRESS)
+    p.add_argument("--_metadata-only", action="store_true", help=argparse.SUPPRESS)
     return p
 
 
@@ -141,6 +142,8 @@ def run_case(args):
     hardware = {}
     try:
         hardware = get_backend_info()
+        if args._metadata_only:
+            return {"hardware": hardware}
         if reason := memory_reason(n, hardware):
             result = failure(n, reason)
         else:
@@ -166,12 +169,14 @@ def run_case(args):
     return {"hardware": hardware, "result": result}
 
 
-def launch_case(args, n):
+def launch_case(args, n, *, metadata_only=False):
     with tempfile.TemporaryDirectory(prefix="fastturbo-bench-") as folder:
         output = Path(folder) / "case.json"
         command = [sys.executable, "-m", "fastturbo.bench", "--sizes", str(n),
                    "--seconds", str(args.seconds), "--warmup", str(args.warmup),
                    "--device", str(args.device), "--_case-file", str(output)]
+        if metadata_only:
+            command.append("--_metadata-only")
         # A file carries results so compiler/native stdout cannot corrupt JSON.
         process = subprocess.run(command, stdout=sys.stderr, stderr=sys.stderr)
         if process.returncode or not output.is_file():
@@ -186,7 +191,7 @@ def scaling(results):
     return None
 
 
-def format_report(report):
+def format_header(report):
     lines = ["FastTurbo 2D Benchmark"]
     fields = [("Host", "hostname"), ("OS", "os"), ("Arch", "arch"), ("GPU", "gpu"),
               ("Device", "device_index"), ("Compute", "compute_capability"), ("Backend", "backend")]
@@ -207,15 +212,15 @@ def format_report(report):
     lines.append(f"Timing:     synchronized wall time, batch=8, warmup={report['warmup_steps']} steps")
     lines.append(f"Target:     {report['target_seconds']:.1f} s per case")
     lines.extend([" Retained      Padded      Steps    Seconds    ms/step    steps/s", "-" * 64])
-    for r in report["results"]:
-        prefix = f" {str(r['n']) + '²':<13}{str(r['padded_n']) + '²':<12}"
-        if r["status"] == "ok":
-            lines.append(prefix + f"{r['steps']:>7} {r['seconds']:>10.2f} {r['ms_per_step']:>10.3f} {r['steps_per_second']:>10.1f}")
-        else:
-            lines.append(prefix + f"{r['status'].upper()}: {r['reason']}")
-    if report["timestep_ratio_4096_2048"] is not None:
-        lines.append(f"4096/2048 timestep ratio: {report['timestep_ratio_4096_2048']:.2f}x")
     return "\n".join(lines)
+
+
+def format_result(result):
+    prefix = f" {str(result['n']) + '²':<13}{str(result['padded_n']) + '²':<12}"
+    if result["status"] == "ok":
+        return prefix + (f"{result['steps']:>7} {result['seconds']:>10.2f} "
+                         f"{result['ms_per_step']:>10.3f} {result['steps_per_second']:>10.1f}")
+    return prefix + f"{result['status'].upper()}: {result['reason']}"
 
 
 def main(argv=None):
@@ -223,7 +228,18 @@ def main(argv=None):
     if args._case_file:
         args._case_file.write_text(json.dumps(run_case(args), allow_nan=False), encoding="utf-8")
         return 0
-    cases = [launch_case(args, n) for n in args.sizes]
+    if not args.json:
+        # Release the probe's GPU context before starting any timed worker.
+        probe = launch_case(args, args.sizes[0], metadata_only=True)
+        header = {**platform_metadata(probe["hardware"]),
+                  "target_seconds": args.seconds, "warmup_steps": args.warmup}
+        print(format_header(header), flush=True)
+    cases = []
+    for n in args.sizes:
+        case = launch_case(args, n)
+        cases.append(case)
+        if not args.json:
+            print(format_result(case["result"]), flush=True)
     hardware = next((case["hardware"] for case in cases if case["hardware"]), {})
     results = [case["result"] for case in cases]
     report = {"schema_version": 1, **platform_metadata(hardware),
@@ -231,7 +247,10 @@ def main(argv=None):
               "target_seconds": args.seconds, "warmup_steps": args.warmup,
               "timing": "synchronized wall time, including batch submission and final inspection; initialization/warmup/reset excluded",
               "batch_steps": 8, "results": results, "timestep_ratio_4096_2048": scaling(results)}
-    print(json.dumps(report, indent=2, allow_nan=False) if args.json else format_report(report))
+    if args.json:
+        print(json.dumps(report, indent=2, allow_nan=False))
+    elif report["timestep_ratio_4096_2048"] is not None:
+        print(f"4096/2048 timestep ratio: {report['timestep_ratio_4096_2048']:.2f}x", flush=True)
     return 0 if all(r["status"] == "ok" for r in results) else 1
 
 

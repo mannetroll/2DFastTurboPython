@@ -1,4 +1,5 @@
 """CLI/orchestration checks; only the explicitly marked smoke tests need a GPU."""
+import io
 import json
 import os
 from pathlib import Path
@@ -106,6 +107,17 @@ def test_preflight_prevents_allocation(monkeypatch):
     assert bench.run_case(bench.parser().parse_args([]))["result"]["status"] == "skipped"
 
 
+def test_metadata_probe_does_not_benchmark(monkeypatch):
+    monkeypatch.setenv("FASTTURBO_DEVICE", "0")
+    def hardware():
+        assert os.environ["FASTTURBO_DEVICE"] == "2"
+        return {"gpu": "Selected GPU"}
+    monkeypatch.setattr(bench, "get_backend_info", hardware)
+    monkeypatch.setattr(bench, "run_benchmark", lambda _: pytest.fail("benchmark started during metadata probe"))
+    args = bench.parser().parse_args(["--device", "2", "--_metadata-only"])
+    assert bench.run_case(args) == {"hardware": {"gpu": "Selected GPU"}}
+
+
 def test_native_errors_are_reported(monkeypatch):
     monkeypatch.setenv("FASTTURBO_DEVICE", "0")
     def bad():
@@ -118,7 +130,10 @@ def test_native_errors_are_reported(monkeypatch):
 @pytest.mark.parametrize("as_json", [False, True])
 def test_output_and_continue_after_skip(monkeypatch, capsys, as_json):
     visited = []
-    def launch(args, n):
+    def launch(args, n, *, metadata_only=False):
+        if metadata_only:
+            assert not as_json
+            return {"hardware": {"gpu": "Example GPU", "backend": "Metal / VkFFT"}}
         visited.append(n)
         row = bench.failure(n, "out of memory") if n == 2048 else {
             "n": n, "padded_n": 6144, "status": "ok", "steps": 16,
@@ -140,7 +155,7 @@ def test_output_and_continue_after_skip(monkeypatch, capsys, as_json):
 
 
 def test_success_output_scaling(monkeypatch, capsys):
-    def launch(args, n):
+    def launch(args, n, *, metadata_only=False):
         ms = 2 if n == 2048 else 10
         return {"hardware": {"gpu": "Example", "backend": "CUDA / VkFFT"}, "result": {
             "n": n, "padded_n": n * 3 // 2, "status": "ok", "steps": 20000 // ms,
@@ -150,6 +165,37 @@ def test_success_output_scaling(monkeypatch, capsys):
     output = capsys.readouterr().out
     assert "4096/2048 timestep ratio: 5.00x" in output
     assert "Retained      Padded      Steps    Seconds    ms/step    steps/s" in output
+
+
+def test_header_and_rows_are_flushed_before_next_benchmark(monkeypatch):
+    class Output(io.StringIO):
+        flushed = ""
+        def flush(self):
+            self.flushed = self.getvalue()
+    output = Output()
+    monkeypatch.setattr(bench.sys, "stdout", output)
+    visited = []
+    def launch(args, n, *, metadata_only=False):
+        if metadata_only:
+            assert not visited
+            return {"hardware": {"gpu": "Example GPU", "backend": "Metal / VkFFT"}}
+        assert "GPU:        Example GPU" in output.flushed
+        assert "Target:     20.0 s per case" in output.flushed
+        assert "-" * 64 in output.flushed
+        assert "4096²" not in output.flushed
+        if visited:
+            assert "2048²" in output.flushed
+        else:
+            assert "2048²" not in output.flushed
+        visited.append(n)
+        return {"hardware": {}, "result": {"n": n, "padded_n": n * 3 // 2,
+            "status": "ok", "steps": 16, "seconds": 20, "ms_per_step": 1250,
+            "steps_per_second": .8}}
+    monkeypatch.setattr(bench, "launch_case", launch)
+    assert bench.main([]) == 0
+    assert visited == [2048, 4096]
+    assert output.flushed.count("FastTurbo 2D Benchmark") == 1
+    assert "4096/2048 timestep ratio: 1.00x" in output.flushed
 
 
 def test_worker_process_failure(monkeypatch):
