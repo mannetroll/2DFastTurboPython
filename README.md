@@ -16,6 +16,22 @@ each, with normal 3/2 padding, automatic backend/device metadata and one compact
 comparison table. Use `--seconds 2` for a quick test or `--json` to archive a run.
 See the [benchmark options and timing definition](python/README.md#run-a-benchmark).
 
+Recorded headless `2dbench` results (milliseconds per simulation step):
+
+| OS / GPU | 2048² → 3072² | steps/s | 4096² → 6144² | steps/s |
+| --- | ---: | ---: | ---: | ---: |
+| macOS / Apple M1 Max | 12.876 ms | 77.7 | 82.376 ms | 12.1 |
+| Ubuntu / RTX 3090 | 4.854 ms | 206.0 | 21.689 ms | 46.1 |
+| Windows / RTX 3090 | 4.943 ms | 202.3 | 21.806 ms | 45.9 |
+| Windows / RTX 5090 | **1.498 ms** | **667.6** | **12.152 ms** | **82.3** |
+
+The [RTX 5090 run](python/evidence/2dbench/rtx5090-windows.json), recorded on
+2026-09-18 with Windows 10, CUDA 13.4 and VkFFT 1.3.4, achieved **3.30× / 1.79×**
+the listed Windows RTX 3090 throughput at 2048² / 4096². These runs use the same
+benchmark workload but different systems and CUDA versions. See the
+[full benchmark comparison](python/2dbench.md) for workload details, relative
+performance and the 4096/2048 timestep ratios.
+
 Validated platform and GPU configurations from the shared `main` branch:
 
 ```text
