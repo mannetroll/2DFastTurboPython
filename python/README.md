@@ -186,7 +186,10 @@ as failed without guessing the cause.
 
 Source checkouts build the existing backend automatically and need its normal
 compiler/toolkit prerequisites; see [development setup](DEVELOPMENT.md). CUDA
-source builds default to CMake's `native` architecture detection. Explicit
+source builds on Linux default to CMake's `native` architecture detection.
+Windows builds default to `86-real;89-real;120-real;86-virtual`, including
+RTX 30/40/50-series machine code and forward-compatible PTX for portable wheels
+and USB bundles. Explicit
 `FASTTURBO_CUDA_ARCH` (Linux) or `FASTTURBO_CUDA_ARCHITECTURES` overrides remain
 available for cross compilation, including `90` for H100. The toolkit must
 support the selected architecture. Metal indices follow `MTLCopyAllDevices`;

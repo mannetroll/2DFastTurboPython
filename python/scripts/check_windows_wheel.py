@@ -37,6 +37,14 @@ result = subprocess.run([sys.executable, "-c", program], cwd=target, env=environ
 if result.returncode:
     raise RuntimeError(result.stdout[:2000] + result.stderr)
 report = json.loads(result.stdout)
+# Force the driver to use embedded PTX, catching host-only builds even when
+# the validation machine can execute their native cubins successfully.
+ptx = subprocess.run([sys.executable, "-c", program], cwd=target,
+                     env={**environment, "CUDA_FORCE_PTX_JIT": "1", "CUDA_CACHE_DISABLE": "1"},
+                     capture_output=True, text=True, timeout=120)
+if ptx.returncode:
+    raise RuntimeError("Portable PTX validation failed: " + ptx.stdout[:2000] + ptx.stderr)
+report["ptx_fallback"] = json.loads(ptx.stdout)
 report.update(wheel=wheel.name, version=version, sha256=hashlib.sha256(wheel.read_bytes()).hexdigest())
 (project / "results").mkdir(exist_ok=True)
 (project / "results/wheel-validation.json").write_text(json.dumps(report, indent=2)+"\n")

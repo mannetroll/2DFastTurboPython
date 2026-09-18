@@ -36,7 +36,9 @@ def build(project: Path, native: Path, force=False) -> Path:
         files.extend(sorted(p for p in folder.rglob("*") if p.is_file() and p.suffix != ".md"))
     files.append(reference / "CMakeLists.txt")
     distribution = os.environ.get("FASTTURBO_DISTRIBUTION", "OFF")
-    architectures = os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "native")
+    # Wheels and USB bundles must also run on GPUs other than the build host.
+    # Ship RTX 30/40/50-series cubins plus baseline PTX for forward compatibility.
+    architectures = os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86-real;89-real;120-real;86-virtual")
     manifest = {"files": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
                 "cuda": str(cuda), "msvc": vs, "distribution": distribution, "architectures": architectures,
                 "vkfft_version": vkfft_version(mac / "ThirdParty/VkFFTSource/vkFFT/vkFFT.h"),
@@ -73,7 +75,7 @@ def build(project: Path, native: Path, force=False) -> Path:
             if not force and library.is_file() and stamp.is_file() and json.loads(stamp.read_text()) == manifest:
                 return library
             subprocess.run([str(source / "build.cmd"), vs, str(cuda), str(source), str(directory),
-                            str(reference), str(mac), architectures, distribution, str(headers)], check=True)
+                            str(reference), str(mac), architectures.replace(";", "/"), distribution, str(headers)], check=True)
             for name in ["fastturbo.dll"]:
                 try:
                     shutil.copy2(directory / name, native / name)

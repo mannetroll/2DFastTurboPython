@@ -19,6 +19,11 @@ On Windows x64 with CUDA 13.0, MSVC x64 C++ tools, CMake and Ninja:
 uv build --wheel
 ```
 
+Windows builds include RTX 30/40/50-series machine code and baseline PTX by
+default. Leave `FASTTURBO_CUDA_ARCHITECTURES` unset for portable releases;
+an override of `native` restricts the result to the build host's GPU architecture.
+This also applies to `scripts/package-windows.ps1` USB bundles.
+
 The build selects the backend for the host platform. macOS produces
 `fastturbo-0.1.2-py3-none-macosx_15_0_arm64.whl`; Windows produces
 `fastturbo-0.1.2-py3-none-win_amd64.whl`. Build both from the same source version,
