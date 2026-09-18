@@ -123,6 +123,17 @@ the GUI's automatic regulation is separate from the batch API.
 
 ## Run a benchmark
 
+FastTurbo 0.1.2 wheels include the **`2dbench`** command alongside `2dfastturbo`.
+After installing the wheel, run `2dbench` directly. To run the published release
+with uv on a platform with a prebuilt wheel:
+
+```sh
+uvx --python 3.13 --no-build --from "fastturbo>=0.1.2" 2dbench
+```
+
+The wheel contains the benchmark module and native engine; running it requires
+no source checkout or compiler toolchain.
+
 For a comparable architecture benchmark from a source checkout:
 
 ```sh
