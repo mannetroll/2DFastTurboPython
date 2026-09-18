@@ -1,12 +1,5 @@
 # FastTurbo
 
-Linux source-checkout status: the shared CUDA/VkFFT backend and PySide6 GUI with
-GPU-resident OpenGL rendering are tested on native Ubuntu 26.04.1 / RTX 3090.
-Use `uv run 2dfastturbo --headless` for execution without Qt/display initialization.
-Desktop builds need OpenGL/X11/libpng development files and Qt's xcb runtime
-libraries. The earlier WSLg CUDA sharing limitation remains; prebuilt Linux wheels
-are not supplied. See [Linux build and validation status](../LINUX_PORT.md).
-
 **Watch two-dimensional turbulence evolve on your GPU.**
 
 FastTurbo combines an interactive desktop application with a Python API for
@@ -60,12 +53,20 @@ ensures installation uses available wheels.
 | Platform | Requirements |
 | --- | --- |
 | macOS | macOS 15 or later, Apple Silicon (arm64), Metal |
-| Windows | Windows 10 or 11, x64 Python, NVIDIA GPU with compute capability 8.6 or later, and a driver compatible with CUDA 13.0 |
+| Windows | Windows 10 or 11, x64 Python, NVIDIA GPU with compute capability 8.6 or later, and a driver compatible with the bundled CUDA 13.1 runtime |
 
-The Windows wheel bundles the CUDA runtime and NVRTC; install the NVIDIA driver
-separately. Linux, Intel Macs, Windows ARM64 and CPU-only execution are not
+The Windows wheel includes native code for RTX 30/40/50-series GPUs, baseline
+PTX, the CUDA runtime and NVRTC; install the NVIDIA driver separately.
+Linux, Intel Macs, Windows ARM64 and CPU-only execution are not
 supported by these wheels. If pip reports no matching distribution, check your
 Python version, operating system and architecture.
+
+Linux source builds are tested on native Ubuntu 26.04.1 / RTX 3090, including the
+PySide6 GUI with GPU-resident OpenGL rendering. Local `linux_x86_64` wheels depend
+on system CUDA/graphics libraries and are not part of this PyPI release.
+Desktop builds need OpenGL/X11/libpng development files and Qt's xcb runtime
+libraries. `uv run 2dfastturbo --headless` runs without Qt/display initialization.
+See `LINUX_PORT.md` in the source repository for setup and validation details.
 
 ## Explore the flow
 
@@ -185,7 +186,7 @@ native/build diagnostics go to stderr. An externally killed process is reported
 as failed without guessing the cause.
 
 Source checkouts build the existing backend automatically and need its normal
-compiler/toolkit prerequisites; see [development setup](DEVELOPMENT.md). CUDA
+compiler/toolkit prerequisites; see `python/DEVELOPMENT.md` in the source repository. CUDA
 source builds on Linux default to CMake's `native` architecture detection.
 Windows builds default to `86-real;89-real;120-real;86-virtual`, including
 RTX 30/40/50-series machine code and forward-compatible PTX for portable wheels
