@@ -24,6 +24,7 @@ class Configuration:
     integrator: str = "etdrk4"
     operator: str = "stress"
     fixed_dt: float | None = None
+    start_spectrum: str = "PAO"
 
     @property
     def padded_resolution(self):
@@ -34,6 +35,8 @@ class Configuration:
         return 10 ** (1.066240 * math.log10(resolution) - 0.083911 * math.log10(k0) + 1.286396)
 
     def payload(self):
+        if self.start_spectrum not in ("PAO", "KM3"):
+            raise ValueError("Start spectrum must be PAO or KM3")
         if isinstance(self.seed, bool) or not isinstance(self.seed, int) or not 0 <= self.seed < 2**64:
             raise ValueError("Seed must be an unsigned 64-bit integer")
         value = asdict(self)

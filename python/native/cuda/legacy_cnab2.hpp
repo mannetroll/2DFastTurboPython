@@ -8,6 +8,7 @@ namespace turbo::legacy {
 struct Config {
     int n = 512, steps = 1001, update = 100, seed = 1;
     double reynolds = 10000, k0 = 10, cfl = .25;
+    StartSpectrum startSpectrum = StartSpectrum::pao;
     int m() const { return 3*n/2; }
     void validate() const;
 };

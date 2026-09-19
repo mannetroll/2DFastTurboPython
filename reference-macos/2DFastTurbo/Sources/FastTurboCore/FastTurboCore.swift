@@ -523,6 +523,7 @@ public final class FastTurboCore: @unchecked Sendable {
             try execute(command)
         } else {
             writePao(to: pointer)
+            if configuration.startSpectrum == .km3 { reshapeKM3(pointer) }
         }
         clock.contents().storeBytes(of: GPUClock(), as: GPUClock.self)
         memset(correction.contents(), 0, correction.length)
@@ -538,6 +539,62 @@ public final class FastTurboCore: @unchecked Sendable {
         if statistics.energy > 0, statistics.enstrophy > 0 {
             let length = 2 * Double.pi * sqrt(statistics.energy / statistics.enstrophy)
             initialTurnoverTime = length / sqrt(2 * statistics.energy)
+        }
+    }
+
+    // Same shell redistribution as the CUDA initializer in km3.hpp. The
+    // existing unnormalized positive-curl spectrum supplies the PAO energy.
+    private func reshapeKM3(_ pointer: UnsafeMutablePointer<SIMD2<Float>>) {
+        let n = configuration.resolution, half = n / 2, width = n / 2 + 1
+        let scale = Float(n * n), k0 = max(1, Double(configuration.initialWaveNumber))
+        func hash(_ x: Int, _ z: Int, _ salt: Int) -> Double {
+            let a = (Double(x) + 1) * 12.9898 + (Double(z) + 1) * 78.233
+                + (Double(configuration.seed) + 1) * 0.010001 + (Double(salt) + 1) * 37.719
+            let s = sin(a) * 43758.5453123
+            return s - floor(s)
+        }
+        var shells = [Double](repeating: 0, count: half + 1)
+        var weights = shells, target = shells
+        for x in 0..<half {
+            for z in 0..<n {
+                let y = Double(z < half ? z : z - n), k2 = Double(x * x) + y * y
+                let k = sqrt(k2), shell = Int(k + 0.5), zh = x == 0 && z > half ? n - z : z
+                if k > 0 && k <= Double(half) && shell <= half {
+                    let w = pointer[z * width + x], multiplicity = x == 0 ? 1.0 : 2.0
+                    let power = Double(w.x) * Double(w.x) + Double(w.y) * Double(w.y)
+                    shells[shell] += multiplicity * power / (Double(scale) * Double(scale) * k2)
+                    weights[shell] += multiplicity * (0.75 + 0.50 * hash(x, zh, 17))
+                }
+            }
+        }
+        var original = 0.0, total = 0.0
+        for shell in 1...half {
+            let k = Double(shell), low = k / k0
+            target[shell] = k < k0 ? (low * low * low * low) / (k0 * k0 * k0) : 1 / (k * k * k)
+            original += shells[shell]
+            total += target[shell]
+        }
+        guard original > 0 && total > 0 else { return }
+        let norm = original / total
+        for x in 0..<half {
+            for z in 0..<n {
+                let y = Double(z < half ? z : z - n), k = sqrt(Double(x * x) + y * y)
+                let shell = Int(k + 0.5), zh = x == 0 && z > half ? n - z : z
+                var u = SIMD2<Float>.zero, v = SIMD2<Float>.zero
+                if k > 0 && k <= Double(half) && shell <= half && weights[shell] > 0 {
+                    let power = norm * target[shell] * (0.75 + 0.50 * hash(x, zh, 17)) / weights[shell]
+                    let sign = x == 0 && z > half ? -1.0 : 1.0
+                    let phase = sign * 2 * Double.pi * hash(x, zh, 53)
+                    let direction = SIMD2<Float>(Float(cos(phase)), Float(sin(phase)))
+                    if x == 0 { u = Float(sqrt(power)) * direction }
+                    else {
+                        v = Float(sqrt(power / (1 + y * y / Double(x * x)))) * direction
+                        u = Float(-y / Double(x)) * v
+                    }
+                }
+                let curl = v * Float(x) - u * Float(y)
+                pointer[z * width + x] = z == half ? .zero : SIMD2(-curl.y, curl.x) * scale
+            }
         }
     }
 

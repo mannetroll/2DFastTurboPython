@@ -54,6 +54,10 @@ private func configuration(_ values: [String: Any], base: FastTurboConfiguration
         guard let form = NonlinearFormulation(rawValue: value) else { throw PortError(message: "Unknown nonlinear form.") }
         c.nonlinearFormulation = form
     }
+    if let value = values["start_spectrum"] as? String {
+        guard let spectrum = StartSpectrum(rawValue: value) else { throw PortError(message: "Unknown start spectrum.") }
+        c.startSpectrum = spectrum
+    }
     if let value = values["fixed_dt"] { c.fixedTimeStep = (value as? Double).map(Float.init) }
     guard (16...16384).contains(c.resolution), c.resolution % 2 == 0,
           c.initialWaveNumber > 0, c.initialWaveNumber <= 1_000_000,
@@ -69,7 +73,8 @@ private func configReport(_ c: FastTurboConfiguration) -> [String: Any] {
     ["resolution": c.resolution, "padded_resolution": c.paddedResolution,
      "reynolds": c.reynolds, "viscosity": c.viscosity, "k0": c.initialWaveNumber,
      "seed": String(c.seed), "cfl": c.cfl, "integrator": c.integrator.rawValue,
-     "operator": c.nonlinearFormulation.rawValue, "fixed_dt": c.fixedTimeStep as Any? ?? NSNull()]
+     "operator": c.nonlinearFormulation.rawValue, "start_spectrum": c.startSpectrum.rawValue,
+     "fixed_dt": c.fixedTimeStep as Any? ?? NSNull()]
 }
 
 private func statsReport(_ s: FastTurboStatistics) -> [String: Any] {

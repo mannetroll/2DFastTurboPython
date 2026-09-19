@@ -9,8 +9,10 @@
 namespace turbo {
 enum class Integrator { imexRK3, ifHeunRK3, etdrk4 };
 enum class Form { stress, advective };
+enum class StartSpectrum { pao, km3 };
 inline constexpr const char* methods[] = {"imexRK3", "ifHeunRK3", "etdrk4"};
 inline constexpr const char* forms[] = {"stress", "advective"};
+inline constexpr const char* startSpectra[] = {"PAO", "KM3"};
 inline double initialReynolds(int n, int k) {
     return std::pow(10., 1.066240 * std::log10(double(n)) - .083911 * std::log10(double(k)) + 1.286396);
 }
@@ -21,12 +23,14 @@ struct Config {
     float cfl = 3, fixedDt = 0;
     Integrator integrator = Integrator::etdrk4;
     Form form = Form::stress;
+    StartSpectrum startSpectrum = StartSpectrum::pao;
     int m() const { return 3*n/2; }
     void validate() const {
         if (n < 16 || n > 16384 || n % 2 || k0 <= 0 || !(reynolds > 0) ||
             !std::isfinite(float(1/reynolds)) || !(cfl > 0) || !std::isfinite(cfl) ||
-            fixedDt < 0 || !std::isfinite(fixedDt) || int(integrator)<0 || int(integrator)>2 || int(form)<0 || int(form)>1)
-            throw std::invalid_argument("Invalid resolution, Reynolds number, k0, CFL, fixed timestep or method.");
+            fixedDt < 0 || !std::isfinite(fixedDt) || int(integrator)<0 || int(integrator)>2 || int(form)<0 || int(form)>1 ||
+            int(startSpectrum)<0 || int(startSpectrum)>1)
+            throw std::invalid_argument("Invalid resolution, Reynolds number, k0, CFL, fixed timestep, method or start spectrum.");
     }
     bool operator==(const Config&) const = default;
 };

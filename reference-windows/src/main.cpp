@@ -49,13 +49,14 @@ std::string reportJSON(const Options& o,const Statistics& initial,const Statisti
        <<",\"reynolds\":"<<o.config.reynolds<<",\"viscosity\":"<<float(1/o.config.reynolds)
        <<",\"k0\":"<<o.config.k0<<",\"seed\":"<<o.config.seed<<",\"cfl\":"<<o.config.cfl
        <<",\"integrator\":"<<quote(methods[int(o.config.integrator)])<<",\"operator\":"<<quote(forms[int(o.config.form)])
+       <<",\"start_spectrum\":"<<quote(startSpectra[int(o.config.startSpectrum)])
        <<",\"batch\":"<<o.batch<<",\"fixed_dt\":"<<(o.config.fixedDt?std::to_string(o.config.fixedDt):"null")<<"},\n\"initial_stats\":";
     stats(initial);out<<",\n\"stats\":";stats(final);
     out<<",\n\"seconds\":"<<seconds<<",\"simtime_per_s\":"<<advance/elapsed<<",\"steps_per_s\":"<<double(final.step-initial.step)/elapsed
        <<",\"turnovers_per_s\":"<<(initial.turnover>0?advance/(elapsed*initial.turnover):0)
        <<",\"gpu_seconds\":"<<gpuSeconds<<",\"batches\":"<<batches<<",\"snapshots\":"<<snapshots<<",\"presented_fps\":"<<fps
        <<",\"warmup_steps\":"<<o.warmup<<",\"spectrum_normalization\":\"fourier-series\""
-       <<",\"vorticity_convention\":\"omega = dx(v) - dy(u)\",\"initial_source\":"<<quote(o.initial.empty()?"seeded-pao":"external-physical-field")
+       <<",\"vorticity_convention\":\"omega = dx(v) - dy(u)\",\"initial_source\":"<<quote(o.initial.empty()?(o.config.startSpectrum==StartSpectrum::km3?"seeded-km3":"seeded-pao"):"external-physical-field")
        <<",\"hardware\":{\"gpu\":"<<quote(prop.name)<<",\"owned_solver_buffer_bytes\":"<<final.allocatedBytes<<",\"vkfft_internal_bytes\":"<<final.fftBytes<<"}\n}\n";
     return out.str();
 }
@@ -65,7 +66,7 @@ void writeReport(const Options& o,const std::string& json) {
 }
 static Options parse(int argc,char** argv) {
     Options o;std::map<std::string,std::string> values;
-    const std::set<std::string> keys={"--resolution","--reynolds","--k0","--seed","--cfl","--integrator","--operator","--fixed-dt","--steps","--until","--turnovers","--wall-seconds","--batch","--warmup","--initial","--spectrum","--fields","--output","--snapshot-hz","--display","--palette","--color-range","--sigma","--exposure","--export","--capture","--render-check","--canvas-size","--gui-warmup-seconds"};
+    const std::set<std::string> keys={"--resolution","--reynolds","--k0","--seed","--cfl","--integrator","--operator","--start-spectrum","--fixed-dt","--steps","--until","--turnovers","--wall-seconds","--batch","--warmup","--initial","--spectrum","--fields","--output","--snapshot-hz","--display","--palette","--color-range","--sigma","--exposure","--export","--capture","--render-check","--canvas-size","--gui-warmup-seconds"};
     for(int i=1;i<argc;++i) {
         std::string key=argv[i];
         if(key=="--help"){o.help=true;continue;}
@@ -90,6 +91,7 @@ static Options parse(int argc,char** argv) {
     if(values.contains("--seed")) {auto v=values.at("--seed");if(v.empty()||v.find_first_not_of("0123456789")!=std::string::npos)throw std::invalid_argument("Seed must be uint64.");o.config.seed=std::stoull(v);}
     o.config.integrator=Integrator(choice("--integrator",{"imexRK3","ifHeunRK3","etdrk4"},2));
     o.config.form=Form(choice("--operator",{"stress","advective"},0));
+    o.config.startSpectrum=StartSpectrum(choice("--start-spectrum",{"PAO","KM3"},0));
     o.steps=integer("--steps",200);o.batch=integer("--batch",8);o.fixedBatch=values.contains("--batch");o.warmup=integer("--warmup",8);
     o.wallSeconds=number("--wall-seconds",0);o.snapshotHz=number("--snapshot-hz",0);
     o.guiWarmup=number("--gui-warmup-seconds",2);o.canvasSide=number("--canvas-size",640);
@@ -139,6 +141,7 @@ static int run(int argc,char** argv) {
               "--integrator imexRK3|ifHeunRK3|etdrk4 --operator stress|advective\n"
               "--steps K | --until T | --turnovers K | --wall-seconds S\n"
               "--batch 1..32 --warmup K --fixed-dt DT --snapshot-hz HZ\n"
+              "--start-spectrum PAO|KM3 (default PAO)\n"
               "--initial FILE --spectrum FILE --fields FILE --output FILE\n"
               "--paused --display vorticity|speed|enstrophy --palette aurora|ember|glacier|inferno\n"
               "--color-range sigma|exposure --sigma 1.5..3.5 --exposure .25..3 --flow-lines\n"

@@ -19,6 +19,7 @@ def parser():
     p.add_argument("--reynolds", type=float, default=None, help="Viscosity=1/Re")
     p.add_argument("--k0", type=int, default=10)
     p.add_argument("--seed", type=int, default=2)
+    p.add_argument("--start-spectrum", choices=["PAO", "KM3"], default="PAO")
     p.add_argument("--cfl", type=float, default=3)
     p.add_argument("--integrator", choices=["imexRK3", "ifHeunRK3", "etdrk4"], default="etdrk4")
     p.add_argument("--operator", choices=["stress", "advective"], default="stress")
@@ -57,7 +58,7 @@ def emit(result, output):
 def config_from(args):
     return Configuration(resolution=args.resolution, reynolds=args.reynolds if args.reynolds is not None else Configuration().reynolds,
         k0=args.k0, seed=args.seed, cfl=args.cfl, integrator=args.integrator,
-        operator=args.operator, fixed_dt=args.fixed_dt)
+        operator=args.operator, fixed_dt=args.fixed_dt, start_spectrum=args.start_spectrum)
 
 
 def run_benchmark(args):
@@ -129,7 +130,7 @@ def run_benchmark(args):
                   "target_wall_seconds": args.wall_seconds, "target_time": target,
                   "final_batch_seconds": final_batch, "final_inspection_seconds": finish - inspection_start,
                   "spectrum_normalization": "fourier-series", "vorticity_convention": "omega = dx(v) - dy(u)",
-                  "initial_source": "external-physical-field" if args.initial else "seeded-pao",
+                  "initial_source": "external-physical-field" if args.initial else "seeded-" + config.start_spectrum.lower(),
                   "initial_sha256": hashlib.sha256(args.initial.read_bytes()).hexdigest() if args.initial else None,
                   "hardware": native_library().info, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
     return report

@@ -77,6 +77,7 @@ Config configuration(const Json& j, Config c={}) {
     c.cfl=float(scalar(j,"cfl",c.cfl));
     c.integrator=Integrator(choice(j,"integrator",methods,int(c.integrator)));
     c.form=Form(choice(j,"operator",forms,int(c.form)));
+    c.startSpectrum=StartSpectrum(choice(j,"start_spectrum",startSpectra,int(c.startSpectrum)));
     if (j.contains("fixed_dt")) {
         c.fixedDt=has(j,"fixed_dt")?float(scalar(j,"fixed_dt",0)):0;
         if (has(j,"fixed_dt") && !(c.fixedDt>0)) throw std::invalid_argument("Fixed timestep must be positive.");
@@ -88,7 +89,8 @@ Config configuration(const Json& j, Config c={}) {
 Json configReport(const Config& c) {
     return {{"resolution",c.n},{"padded_resolution",c.m()},{"reynolds",c.reynolds},{"viscosity",float(1/c.reynolds)},
         {"k0",c.k0},{"seed",std::to_string(c.seed)},{"cfl",c.cfl},{"integrator",methods[int(c.integrator)]},
-        {"operator",forms[int(c.form)]},{"fixed_dt",c.fixedDt>0?Json(c.fixedDt):Json(nullptr)}};
+        {"operator",forms[int(c.form)]},{"start_spectrum",startSpectra[int(c.startSpectrum)]},
+        {"fixed_dt",c.fixedDt>0?Json(c.fixedDt):Json(nullptr)}};
 }
 Json statsReport(const Statistics& s) {
     return {{"steps",s.step},{"simulation_time",s.time},{"dt",s.dt},{"energy",s.energy},{"enstrophy",s.enstrophy},

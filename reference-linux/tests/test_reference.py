@@ -92,25 +92,28 @@ def test_legacy_determinism_and_checkpoint_cadence(tmp_path):
     assert (tmp_path / "a/initial-omega.c64").read_bytes() != (tmp_path / "a/omega.c64").read_bytes()
 
 
-@pytest.mark.parametrize("n,method,form,warmup", [
-    (34, method, form, 0) for method in ("imexRK3", "ifHeunRK3", "etdrk4")
+@pytest.mark.parametrize("n,method,form,warmup,start_spectrum", [
+    (34, method, form, 0, "PAO") for method in ("imexRK3", "ifHeunRK3", "etdrk4")
     for form in ("stress", "advective")
-] + [(1024, "etdrk4", "stress", 3), (2048, "etdrk4", "stress", 3)])
-def test_full_state_binding_parity(tmp_path, n, method, form, warmup):
+] + [(1024, "etdrk4", "stress", 3, "PAO"), (2048, "etdrk4", "stress", 3, "PAO"),
+     (34, "etdrk4", "stress", 0, "KM3")])
+def test_full_state_binding_parity(tmp_path, n, method, form, warmup, start_spectrum):
     native, binding = tmp_path / "native.c64", tmp_path / "binding.c64"
     field, binding_field = tmp_path / "native.f32", tmp_path / "binding.f32"
     steps = 129 if n >= 1024 else 17
-    config = Configuration(resolution=n, reynolds=50000, seed=7, cfl=1, integrator=method, operator=form)
+    config = Configuration(resolution=n, reynolds=50000, seed=7, cfl=1, integrator=method,
+                           operator=form, start_spectrum=start_spectrum)
     with Engine(config) as engine:
         engine.advance(warmup + steps)
         engine.export(spectrum=binding, fields=binding_field)
         expected = engine.inspect()
     result = run("--benchmark", "--n", n, "--steps", steps, "--warmup", warmup,
                  "--reynolds", 50000, "--seed", 7, "--cfl", 1, "--integrator", method,
-                 "--operator", form, "--spectrum", native, "--fields", field,
+                 "--operator", form, "--start-spectrum", start_spectrum, "--spectrum", native, "--fields", field,
                  "--compare-spectrum", binding, "--json")
     report = json.loads(result.stdout)
     assert report["parity"]["status"] == "PASS"
+    assert report["start_spectrum"] == start_spectrum
     assert report["completed_timed_steps"] == steps
     assert report["completed_total_steps"] == warmup + steps
     assert report["gpu_event_ms"] > 0 and report["ms_per_step"] > 0
@@ -122,7 +125,7 @@ def test_full_state_binding_parity(tmp_path, n, method, form, warmup):
     fields = np.fromfile(field, dtype="<f4")
     expected_fields = np.fromfile(binding_field, dtype="<f4")
     np.testing.assert_allclose(fields, expected_fields, rtol=3e-6, atol=3e-6)
-    record(f"binding-n{n}-{method}-{form}", {"spectrum": errors, "fields": norms(fields, expected_fields),
+    record(f"binding-n{n}-{method}-{form}-{start_spectrum}", {"spectrum": errors, "fields": norms(fields, expected_fields),
                                            "stats": report["stats"], "status": "PASS"})
 
 
@@ -134,6 +137,30 @@ def test_canonical_legacy_log(tmp_path):
     log = tmp_path / "legacy.txt"
     log.write_text(result.stdout)
     assert compare(ROOT / "reference-macos/2DFastTurbo/tools/sim_512_1001_metal_macOS.txt", log)
+
+
+@pytest.mark.parametrize("n", [32, 512])
+def test_km3_legacy_initializer_and_production_layout(tmp_path, n):
+    run(n, 10000, 10, 0, .25, "cuda", 100, "KM3", "CNAB2", "--dump", tmp_path,
+        "--output", tmp_path / "km3.json")
+    report = json.loads((tmp_path / "km3.json").read_text())
+    assert report["config"]["start_spectrum"] == "KM3"
+    velocity = np.fromfile(tmp_path / "initial-velocity.c64", dtype="<c8").reshape(2, n, n//2)
+    x = np.arange(n//2)[None, :]
+    y = (np.fft.fftfreq(n) * n)[:, None]
+    np.testing.assert_allclose(x * velocity[0] + y * velocity[1], 0, atol=2e-7)
+    if n == 512:
+        # cudaturbo/mem_cuda: N512, Re10000, K0=10, seed1, KM3.
+        assert report["initial"]["Energy"] == pytest.approx(.9968169, rel=3e-6)
+        assert report["initial"]["WiWi"] == pytest.approx(481.14905, rel=3e-6)
+        assert report["initial"]["CFLM"] == pytest.approx(327.3059082, rel=3e-6)
+    with Engine(Configuration(resolution=n, reynolds=10000, k0=10, seed=1,
+                              cfl=.25, start_spectrum="KM3")) as engine:
+        engine.export(spectrum=tmp_path / "production.c64")
+    actual = np.fromfile(tmp_path / "production.c64", dtype="<c8").reshape(n, n)[:, :n//2]
+    expected = -np.fromfile(tmp_path / "initial-omega.c64", dtype="<c8").reshape(n, n//2)
+    expected[n//2] = 0  # Production excludes Nyquist and uses positive curl.
+    np.testing.assert_allclose(actual, expected, rtol=3e-6, atol=1e-7)
 
 
 def test_runtime_dependencies_and_reject_changed_parity_data(tmp_path):

@@ -81,6 +81,7 @@ Supported options:
 | `--batch` | Synchronous native batch size 1..256, default 8 |
 | `--reynolds` | Fixed Reynolds number, default 27898.36614974335; regulation off |
 | `--k0`, `--cfl` | Initial wavenumber 4, CFL 3 |
+| `--start-spectrum` | `PAO` (default) or `KM3`, the cudaturbo k⁻³ shell redistribution |
 | `--integrator` | `imexRK3`, `ifHeunRK3`, or `etdrk4` (default) |
 | `--operator` | `stress` (default) or `advective` |
 | `--fixed-dt` | Optional positive float32 timestep |
@@ -120,6 +121,9 @@ parameters, batch size, and warmup policy for OS/GPU comparisons.
 ```sh
 SCIPYTURBO_SEED=1 ./build-linux/reference-linux/fastturbo_reference \
   512 10000 10 1001 0.25 cuda 100 PAO CNAB2
+# Match cudaturbo's KM3 start spectrum:
+SCIPYTURBO_SEED=1 ./build-linux/reference-linux/fastturbo_reference \
+  512 10000 10 1001 0.25 cuda 100 KM3 CNAB2
 # Optional evidence exports:
 SCIPYTURBO_SEED=1 ./build-linux/reference-linux/fastturbo_reference \
   512 10000 10 1001 0.25 cuda 100 PAO CNAB2 \
@@ -127,7 +131,7 @@ SCIPYTURBO_SEED=1 ./build-linux/reference-linux/fastturbo_reference \
 ```
 
 Arguments retain `N Re K0 Steps CFL backend Update spectrum method` semantics.
-This mode supports `cuda PAO CNAB2`, power-of-two N, seed 1..5010 (default 1), and
+This mode supports `cuda PAO CNAB2` or `cuda KM3 CNAB2`, power-of-two N, seed 1..5010 (default 1), and
 optional `--device`, `--output`, `--dump`. It prints the historical diagnostics,
 decimal precision, and checkpoints at 1, every Update, and the final iteration.
 Printed iteration `T` precedes the completed step's time increment; final `T`
@@ -143,6 +147,14 @@ it is not used to substitute for production ETDRK4 benchmark steps. Its FFTs
 reuse the production CUDA/VkFFT class, with the historical unpruned spectrum and
 unaligned pitch. No Python subprocess, CPU FFT, or CPU timestep is used.
 
+KM3 uses the shared `reference-windows/src/km3.hpp` host initializer to preserve
+the PAO energy inside the Nyquist circle and redistribute integer shells with
+E(k) ∝ k⁴ below k₀ and E(k) ∝ k⁻³ above it. It includes cudaturbo's deterministic
+per-mode jitter and hash phases. PAO remains unchanged by default. Production
+RK3/ETDRK4 retains its existing exclusion of the Nyquist axes and positive curl;
+historical CNAB2 retains its compact layout and negative curl. Initialization is
+outside the timed region, and all FFTs and timesteps remain native CUDA work.
+
 `--dump` exports initial coefficients and final `omega.c64`, `history.c64`,
 `velocity.f32` using the macOS comparison runner's compact layouts:
 omega/history `[N,N/2]`, initial velocity `[2,N,N/2]`, physical velocity `[2,M,M]`.
@@ -153,13 +165,13 @@ from production `--spectrum` / `--fields` exports.
 
 `python/native/cuda/core.cmake` defines the targets used by this executable and
 `python/native/linux`. It compiles the original `reference-windows/src/solver.cu`,
-`kernels.cuh`, and `fft.cpp` directly. Those production numerical sources are
-unchanged. There is no solver or FFT implementation under `reference-linux/`.
+`kernels.cuh`, and `fft.cpp` directly. KM3 initialization is shared with this
+production solver. There is no solver or FFT implementation under `reference-linux/`.
 
 The missing historical method lives once in `python/native/cuda/legacy_*`, next
 to the shared build boundary. Both Linux targets compile it into the same core
-archive; the Python bridge's public API and its production behavior are unchanged.
-The existing Windows and macOS build/source trees are unchanged. The CLI links
+archive. The Python configuration and PySide6 GUI expose the same PAO/KM3 choice;
+the Metal core also implements the KM3 construction. The CLI links
 only that numerical archive and the existing CUDA loader, with no controller,
 Python bridge, renderer, or GUI dependencies.
 

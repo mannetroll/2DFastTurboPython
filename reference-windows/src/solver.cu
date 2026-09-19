@@ -1,6 +1,7 @@
 #include "solver.hpp"
 #include "fft.hpp"
 #include "kernels.cuh"
+#include "km3.hpp"
 #include <array>
 #include <numbers>
 #include <utility>
@@ -66,6 +67,18 @@ std::vector<V2> nativeSpectrum(const Config& c) {
             int sy=ky>=0?ky:ky+n;state[sy*width+kx]=w;
             if(kx==0)state[((n-sy)%n)*width]=V2(w.x,-w.y);
         }
+    }
+    if(c.startSpectrum==StartSpectrum::km3) {
+        reshapeKM3(n,c.k0,c.seed,[&](int x,int z) {
+            const double y=z<half?z:z-n,k2=double(x)*x+y*y;
+            const auto w=state[size_t(z)*width+x];
+            return (double(w.x)*w.x+double(w.y)*w.y)/(double(scale)*scale*k2);
+        },[&](int x,int z,float ur,float ui,float vr,float vi) {
+            // The production solver excludes both Nyquist axes.
+            const float y=float(z<half?z:z-n);
+            state[size_t(z)*width+x]=z==half?V2(0):
+                V2(-float(x)*vi+y*ui,float(x)*vr-y*ur)*scale;
+        });
     }
     return state;
 }

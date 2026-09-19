@@ -45,7 +45,7 @@ def test_recorded_native_windows_trajectory():
     source = ROOT / "reference-windows/benchmarks/2026-09-13/headless-1.json"
     reference = json.loads(source.read_text())
     c = reference["config"]
-    config = Configuration(**{k: c[k] for k in Configuration.__dataclass_fields__})
+    config = Configuration(**{k: c[k] for k in Configuration.__dataclass_fields__ if k in c})
     with Engine(config) as engine:
         initial = engine.inspect()
         engine.advance(reference["stats"]["steps"])

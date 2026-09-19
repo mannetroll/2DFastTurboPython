@@ -81,6 +81,26 @@ try:
     window.send("reset")
     s = wait(lambda s: s["ready"] and s["settled"])
     check("reset_zeroes_run", s["stats"]["steps"] == 0 and s["stats"]["simulation_time"] == 0 and s["performance"]["simtime_per_s"] == 0)
+    spectrum_file = args.output.with_suffix(".initial.f32")
+    omega_bytes = 4 * s["config"]["resolution"]**2
+    window.native.call("export", fields=str(spectrum_file))
+    pao = spectrum_file.read_bytes()[:omega_bytes]
+    for spectrum in ("KM3", "PAO"):
+        generation = s["generation"]
+        window.start_spectrum.setCurrentIndex(window.start_spectrum.findData(spectrum))
+        s = wait(lambda s: s["ready"] and s["settled"] and s["generation"] > generation)
+        check("spectrum_" + spectrum, s["config"]["start_spectrum"] == spectrum
+              and window.start_spectrum.currentData() == spectrum and s["stats"]["steps"] == 0)
+        window.native.call("export", fields=str(spectrum_file))
+        values = spectrum_file.read_bytes()[:omega_bytes]
+        check("spectrum_field_" + spectrum, (values == pao) == (spectrum == "PAO"))
+        if spectrum == "KM3":
+            window.send("step")
+            wait(lambda s: s["settled"] and s["stats"]["steps"] == 1)
+            window.send("reset")
+            s = wait(lambda s: s["ready"] and s["settled"] and s["stats"]["steps"] == 0)
+            window.native.call("export", fields=str(spectrum_file))
+            check("km3_reset_reproducible", spectrum_file.read_bytes()[:omega_bytes] == values)
     QTest.mouseClick(window.regulated, Qt.MouseButton.LeftButton)
     s = wait(lambda s: s["regulated"])
     # Regulation off holds current effective Re, then manual edits preserve state.

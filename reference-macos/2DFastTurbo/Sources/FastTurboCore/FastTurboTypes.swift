@@ -23,6 +23,10 @@ public enum NonlinearFormulation: String, CaseIterable, Codable, Sendable {
     var shaderIndex: UInt32 { self == .stress ? 0 : 1 }
 }
 
+public enum StartSpectrum: String, CaseIterable, Codable, Sendable {
+    case pao = "PAO", km3 = "KM3"
+}
+
 public struct FastTurboConfiguration: Equatable, Sendable {
     public var resolution = 1024
     public var reynolds: Double
@@ -31,6 +35,7 @@ public struct FastTurboConfiguration: Equatable, Sendable {
     public var cfl: Float = 3
     public var integrator: Integrator = .etdrk4
     public var nonlinearFormulation: NonlinearFormulation = .stress
+    public var startSpectrum: StartSpectrum = .pao
     /// Overrides the CFL controller for convergence tests. Endpoint clipping still applies.
     public var fixedTimeStep: Float? = nil
     public var paddedResolution: Int { 3 * resolution / 2 }

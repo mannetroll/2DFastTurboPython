@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QScrollArea,
     QSizePolicy, QVBoxLayout, QWidget)
 
-from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, WAVENUMBERS, FloatSlider
+from .controls import FIELDS, METHODS, PALETTES, RESOLUTIONS, START_SPECTRA, WAVENUMBERS, FloatSlider
 from .engine import Configuration, NativeUI
 from .environment import environment_summary
 from .platform_ui import fonts, install_lifecycle, prepare_application_name, save_snapshot, sync_canvas_scale
@@ -303,6 +303,9 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(14, 10, 14, 10)
         layout.setSpacing(6)
         self.k0 = self._combo(layout, "k₀", WAVENUMBERS, lambda v: self.send("configure", k0=v))
+        self.start_spectrum = self._combo(layout, "Start spectrum", START_SPECTRA,
+                                         lambda v: self.send("configure", start_spectrum=v))
+        self.start_spectrum.setToolTip("Initial energy spectrum. Changing it restarts the simulation.")
         row = QHBoxLayout()
         row.addWidget(label("Seed"))
         self.seed = QLineEdit("2")
@@ -519,6 +522,7 @@ class MainWindow(QMainWindow):
         self.state = state
         config = state["config"]
         for widget, value in [(self.k0, config["k0"]), (self.resolution, config["resolution"]),
+                              (self.start_spectrum, config["start_spectrum"]),
                               (self.method, config["integrator"]), (self.form, config["operator"]),
                               (self.color_range, state["color_range"])]:
             blocked(widget, widget.setCurrentIndex, widget.findData(value))

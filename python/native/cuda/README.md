@@ -2,7 +2,7 @@
 
 Windows and Linux compile the same files directly from `reference-windows/src`:
 `solver.cu`, `kernels.cuh`, `solver.hpp`, `types.hpp`, `fft.cpp`, `fft.hpp`, and
-`cuda_support.cuh`. The reference tree is unchanged. There is no copied Linux
+`cuda_support.cuh`, and the shared KM3 initializer `km3.hpp`. There is no copied Linux
 solver, and neither window-system headers nor renderer libraries enter this core.
 
 `bridge_common.hpp` contains the original Windows bridge's JSON configuration,
@@ -24,9 +24,12 @@ backend and the standalone `reference-linux` validation/benchmark executable.
 The latter links no bridge, controller or renderer. The additional `legacy_*`
 files implement the historical PAO/CNAB2 compatibility method missing from the
 production CUDA API, with the historical LCG, compact spectrum and update cadence.
-They reuse the existing `FFT` class. Production ETDRK4/RK3 numerical code and the
-Python API remain unchanged; the two distinct initialization contracts are never
-interchanged. See [the native reference documentation](../../../reference-linux/README.md).
+They reuse the existing `FFT` class. Production and historical solvers both
+support PAO (the unchanged default) and KM3 via `km3.hpp`. The Python API exposes
+`Configuration(start_spectrum="KM3")`; the shared JSON bridge carries the same
+choice to the GUI controller and reports it back. Each solver retains its PAO
+seed sequence, curl convention, and spectrum layout. See
+[the native reference documentation](../../../reference-linux/README.md).
 
 Only explicit `export(fields=...)` / `export(spectrum=...)` requests read back
 fields for validation or files. `export(snapshot=True)` returns scalar frame

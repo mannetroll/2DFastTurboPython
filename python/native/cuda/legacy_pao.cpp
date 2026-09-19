@@ -1,4 +1,5 @@
 #include "legacy_cnab2.hpp"
+#include "km3.hpp"
 #include <array>
 #include <numbers>
 
@@ -6,7 +7,7 @@ namespace turbo::legacy {
 void Config::validate() const {
     // Preserve the historical power-of-two domain, without the old 2048 cap.
     if(n<16 || n>16384 || (n&(n-1)) || steps<0 || update<1 || seed<1 || seed>5010 ||
-       !(reynolds>0) || !(k0>0) || !(cfl>0) ||
+       !(reynolds>0) || !(k0>0) || !(cfl>0) || int(startSpectrum)<0 || int(startSpectrum)>1 ||
        !std::isfinite(float(reynolds)) || !std::isfinite(float(k0)) || !std::isfinite(float(cfl)) ||
        !(float(1/float(reynolds))>0))
         throw std::invalid_argument("Legacy mode requires power-of-two N=16..16384, positive Re/K0/CFL, steps>=0, update>0, seed=1..5010.");
@@ -47,6 +48,16 @@ Initial initialize(const Config& c) {
             out.velocity[component*count+size_t(n-z)*half]={v.x,-v.y};
         }
         for(int x=0;x<half;++x)out.velocity[component*count+size_t(half)*half+x]={};
+    }
+    if(c.startSpectrum==StartSpectrum::km3) {
+        reshapeKM3(n,double(k0),uint64_t(c.seed),[&](int x,int z) {
+            const size_t i=size_t(z)*half+x;
+            const auto u=out.velocity[i],v=out.velocity[count+i];
+            return double(u.x)*u.x+double(u.y)*u.y+double(v.x)*v.x+double(v.y)*v.y;
+        },[&](int x,int z,float ur,float ui,float vr,float vi) {
+            const size_t i=size_t(z)*half+x;
+            out.velocity[i]={ur,ui};out.velocity[count+i]={vr,vi};
+        });
     }
     double a1=0,a2=0,a3=0,a4=0,a5=0,a6=0;
     // Preserve the initializer's x-major FP64 diagnostic accumulation order.

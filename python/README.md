@@ -73,7 +73,7 @@ See `LINUX_PORT.md` in the source repository for setup and validation details.
 - **Live visualization:** switch between vorticity, enstrophy and speed; choose
   Ember, Inferno, Aurora or Glacier colors and adjust the display range.
 - **Interactive controls:** pause, single-step, reset the flow or change the
-  seed. Adjust resolution, Reynolds number, timestep control and integration
+  seed. Choose a PAO or KM3 start spectrum. Adjust resolution, Reynolds number, timestep control and integration
   method from the window.
 - **Native GPU computation:** FFTs, simulation buffers, timesteps and field
   rendering stay in the native backend while Python provides the controls.
@@ -90,6 +90,15 @@ The title-bar close button (**X**, or the red button on macOS) also quits and
 stops the simulation on all three platforms. **File → Close Window** quits on
 macOS and Linux; on Windows it hides the window to the notification area while
 computing continues, and **Alt+F4** quits. Minimizing keeps the simulation running.
+
+**Start spectrum** defaults to **PAO**, the original exponentially decaying
+spectrum. **KM3 (k⁻³)** redistributes its energy into a k⁻³ tail above k₀,
+with a k⁴ rise below k₀ and deterministic seeded phases, matching cudaturbo's
+KM3 construction. Changing the chooser restarts the flow; Reset repeats the
+selected spectrum and seed. You can also launch with
+`2dfastturbo --start-spectrum KM3` or use
+`Configuration(start_spectrum="KM3")` in Python. An imported initial field
+overrides this choice for that initialization.
 
 ## Use from Python
 
