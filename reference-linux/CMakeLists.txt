@@ -14,6 +14,44 @@ target_compile_definitions(fastturbo_reference PRIVATE FASTTURBO_VKFFT_VERSION=$
 target_compile_options(fastturbo_reference PRIVATE -ffp-contract=off -Wall -Wextra -Wpedantic)
 target_link_libraries(fastturbo_reference PRIVATE turbo_core cuda_platform)
 set_target_properties(fastturbo_reference PROPERTIES BUILD_RPATH "${CUDAToolkit_LIBRARY_DIR}")
+
+# Standalone architecture benchmark. Git is optional and used only at configure
+# time; the installed executable needs neither Git nor the source checkout.
+set(bench_commit "unknown")
+set(bench_dirty "null")
+find_package(Git QUIET)
+if(GIT_FOUND)
+  execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse HEAD
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" RESULT_VARIABLE git_status
+    OUTPUT_VARIABLE git_commit OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+  if(git_status EQUAL 0)
+    set(bench_commit "${git_commit}")
+    execute_process(COMMAND "${GIT_EXECUTABLE}" status --porcelain --untracked-files=normal
+      WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" RESULT_VARIABLE git_status
+      OUTPUT_VARIABLE git_changes ERROR_QUIET)
+    if(git_status EQUAL 0)
+      if(git_changes STREQUAL "")
+        set(bench_dirty "false")
+      else()
+        set(bench_dirty "true")
+      endif()
+    endif()
+  endif()
+endif()
+math(EXPR vkfft_major "${vkfft_version} / 10000")
+math(EXPR vkfft_minor "(${vkfft_version} / 100) % 100")
+math(EXPR vkfft_patch "${vkfft_version} % 100")
+set(bench_vkfft "${vkfft_major}.${vkfft_minor}.${vkfft_patch}")
+configure_file(bench_build.hpp.in bench_build.hpp @ONLY)
+add_executable(2dbench bench.cpp)
+target_include_directories(2dbench PRIVATE "${CMAKE_CURRENT_BINARY_DIR}"
+  "${PROJECT_SOURCE_DIR}/python/native/windows/vendor")
+target_compile_options(2dbench PRIVATE -ffp-contract=off -Wall -Wextra -Wpedantic)
+target_link_libraries(2dbench PRIVATE turbo_core cuda_platform)
+set_target_properties(2dbench PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+  BUILD_RPATH "${CUDAToolkit_LIBRARY_DIR}" INSTALL_RPATH "${CUDAToolkit_LIBRARY_DIR}")
+include(GNUInstallDirs)
+install(TARGETS 2dbench RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT benchmark)
 if(BUILD_TESTING)
   add_test(NAME reference_help COMMAND fastturbo_reference --help)
   add_test(NAME reference_validation COMMAND fastturbo_reference --validate --json)
@@ -21,4 +59,10 @@ if(BUILD_TESTING)
   add_test(NAME reference_cli COMMAND "${CMAKE_COMMAND}"
     -DEXE=$<TARGET_FILE:fastturbo_reference> -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli.cmake")
   set_tests_properties(reference_validation reference_benchmark PROPERTIES TIMEOUT 180 RESOURCE_LOCK cuda)
+  add_test(NAME bench_cli COMMAND "${CMAKE_COMMAND}"
+    -DEXE=$<TARGET_FILE:2dbench> -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/bench_cli.cmake")
+  add_test(NAME bench_gpu COMMAND "${CMAKE_COMMAND}"
+    -DEXE=$<TARGET_FILE:2dbench> -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/bench_gpu.cmake")
+  set_tests_properties(bench_cli PROPERTIES TIMEOUT 60)
+  set_tests_properties(bench_gpu PROPERTIES TIMEOUT 180 RESOURCE_LOCK cuda)
 endif()

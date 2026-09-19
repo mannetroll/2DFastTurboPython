@@ -32,6 +32,19 @@ benchmark workload but different systems and CUDA versions. See the
 [full benchmark comparison](python/2dbench.md) for workload details, relative
 performance and the 4096/2048 timestep ratios.
 
+On Linux, build and run **native `2dbench` without Python or uv**:
+
+```sh
+cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86
+cmake --build build-linux --target 2dbench -j2
+./build-linux/2dbench
+```
+
+It uses the same workload, options and JSON report as the Python command. Requires
+CMake 3.26+, a CUDA-compatible C++20 compiler, CUDA Toolkit 13.x and an NVIDIA GPU
+with a compatible driver. Use architecture `90` for H100 or `'86;90'` for both.
+See [native benchmark build, installation and timing](reference-linux/2dbench.md).
+
 Validated platform and GPU configurations from the shared `main` branch:
 
 ```text
@@ -81,8 +94,8 @@ Linux currently requires a source build; distributable Linux wheels are not
 supplied. Published wheels are release snapshots; use the checkout below for
 the latest changes on `main`.
 
-All platforms require **Python 3.13+**. Source builds also require uv and the
-following platform tools:
+The Python application requires **Python 3.13+** on all platforms. Its source
+builds also require uv and the following platform tools:
 
 | Platform | Runtime hardware / OS | Source-build requirements |
 | --- | --- | --- |

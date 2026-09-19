@@ -4,6 +4,11 @@ This executable validates and benchmarks FastTurbo on a headless NVIDIA server.
 It requires no Python, Qt, display server, graphics API, or desktop session at
 build or runtime. CUDA is mandatory; initialization errors terminate the run.
 
+For the compact time-based architecture comparison, build the native
+[`2dbench`](2dbench.md) target. It defaults to 2048² and 4096² for 20 seconds each,
+has no Python dependency, and runs independently of this reference validator's
+recorded parity fixtures.
+
 The default benchmark first checks the recorded Windows CUDA trajectory, all six
 production integrator/operator combinations, and the historical macOS CNAB2
 trajectory. A failed check returns a nonzero exit code before benchmarking.

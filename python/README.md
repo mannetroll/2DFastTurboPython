@@ -124,6 +124,10 @@ the GUI's automatic regulation is separate from the batch API.
 
 ## Run a benchmark
 
+Linux also has a [standalone native `2dbench`](../reference-linux/2dbench.md),
+built with CMake and CUDA. It needs no Python or uv at build or runtime and uses
+the same workload, public options and timing definition described below.
+
 FastTurbo 0.1.2 wheels include the **`2dbench`** command alongside `2dfastturbo`.
 After installing the wheel, run `2dbench` directly. To run the published release
 with uv on a platform with a prebuilt wheel:

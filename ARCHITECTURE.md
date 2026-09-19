@@ -20,6 +20,11 @@ libraries. Its optional `libfastturbo_gl.so` loads only for UI or PNG requests.
 The standalone `reference-linux` CMake executable uses the same
 `python/native/cuda/core.cmake` numerical target without linking the bridge or
 controller. Its production benchmarks execute the unchanged Windows solver.
+The native `2dbench` target links that same core and CUDA loader. Its C++ host
+runs each grid size in an isolated child process, performs the Python benchmark's
+warmup/reset and synchronized timing sequence, and formats text or JSON reports.
+Neither Linux executable needs Python; `2dbench` also needs no source checkout
+or recorded reference fixtures at runtime. See [native benchmark](reference-linux/2dbench.md).
 The historical PAO/CNAB2 comparison method lives in `python/native/cuda/legacy_*`
 and reuses the same VkFFT wrapper; it preserves the distinct historical seed,
 curl sign, compact layout, and checkpoint controller. See

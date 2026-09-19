@@ -1,0 +1,7 @@
+#pragma once
+namespace bench_build {
+inline constexpr const char* commit = "@bench_commit@";
+inline constexpr const char* dirty = "@bench_dirty@";
+inline constexpr const char* vkfft = "@bench_vkfft@";
+inline constexpr const char* architectures = "@CMAKE_CUDA_ARCHITECTURES@";
+}
