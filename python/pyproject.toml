@@ -36,7 +36,7 @@ Screenshots = "https://github.com/mannetroll/fastturbo-media"
 fastturbo-build = "fastturbo.build:main"
 
 [dependency-groups]
-# SciPy is used by the CPU PAO initializer for tools/sim, not the native solver.
+# SciPy is used by independent CPU validation, not the native solver or tools/sim.
 dev = ["pytest>=8", "numpy>=2", "scipy>=1.16", "pyinstaller>=6.16"]
 
 [tool.setuptools.packages.find]

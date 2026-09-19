@@ -688,7 +688,10 @@ final class SimulationController: ObservableObject {
                        initialField: initialFieldURL, spectrumOutput: spectrumOutputURL, fixedBatch: fixedBatchSteps)
     }
 
-    func newSeed() { configuration.seed &+= 1 }
+    func newSeed() {
+        if configuration.integrator == .cnab2 { configuration.seed = configuration.seed % 5010 + 1 }
+        else { configuration.seed &+= 1 }
+    }
 
     func setLogarithmicReynolds(_ value: Double) {
         guard !isPalinstrophyRegulated, value.isFinite else { return }
@@ -700,7 +703,7 @@ final class SimulationController: ObservableObject {
 
     func setCFL(_ value: Double) {
         guard value.isFinite else { return }
-        let cfl = Float(min(3, max(1, value)))
+        let cfl = Float(min(3, max(configuration.integrator == .cnab2 ? 0.05 : 1, value)))
         if cfl != configuration.cfl { configuration.cfl = cfl }
     }
 

@@ -69,6 +69,7 @@ final class FastTurboGUIDiagnostics {
         if let name = argument("--integrator") {
             guard let integrator = Integrator(rawValue: name) else { fail("Unknown integrator: \(name)"); return }
             configuration.integrator = integrator
+            if integrator == .cnab2, argument("--cfl") == nil { configuration.cfl = 0.25 }
         }
         if let name = argument("--operator") {
             guard let formulation = NonlinearFormulation(rawValue: name) else { fail("Unknown nonlinear operator: \(name)"); return }

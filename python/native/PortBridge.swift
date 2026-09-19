@@ -49,6 +49,7 @@ private func configuration(_ values: [String: Any], base: FastTurboConfiguration
     if let value = values["integrator"] as? String {
         guard let method = Integrator(rawValue: value) else { throw PortError(message: "Unknown integrator.") }
         c.integrator = method
+        if method == .cnab2, base.integrator != method, values["cfl"] == nil { c.cfl = 0.25 }
     }
     if let value = values["operator"] as? String {
         guard let form = NonlinearFormulation(rawValue: value) else { throw PortError(message: "Unknown nonlinear form.") }
@@ -66,6 +67,7 @@ private func configuration(_ values: [String: Any], base: FastTurboConfiguration
           c.fixedTimeStep.map({ $0.isFinite && $0 > 0 }) ?? true else {
         throw PortError(message: "Invalid grid, Reynolds number, wave number, CFL or fixed timestep.")
     }
+    try c.validateCNAB2()
     return c
 }
 
@@ -146,6 +148,7 @@ public func ftInitialize(_ directory: UnsafePointer<CChar>?) -> UnsafeMutablePoi
         FastTurboResources.computeDevice = device
         return ["abi_version": 1, "defaults": configReport(FastTurboConfiguration()),
                 "backend": "Metal / VkFFT", "precision": "float32", "device_index": deviceIndex,
+                "integrators": Integrator.allCases.map(\.rawValue),
                 "unified_memory": device.hasUnifiedMemory,
                 "gpu": device.name, "os": ProcessInfo.processInfo.operatingSystemVersionString,
                 "recommended_working_set_bytes": device.recommendedMaxWorkingSetSize,
@@ -360,10 +363,15 @@ public func ftUICall(_ pointer: UnsafeMutableRawPointer?, _ json: UnsafePointer<
             case "save": model.saveSnapshot()
             case "dismiss": model.statusMessage = nil
             case "configure":
-                var next = try configuration(request, base: model.configuration)
-                if request["cap_cfl"] as? Bool == true,
-                   next.integrator != model.configuration.integrator && next.integrator != .etdrk4 {
-                    next.cfl = min(next.cfl, 1.5)
+                var values = request
+                if request["cap_cfl"] as? Bool == true, request["integrator"] as? String == "CNAB2" { values["operator"] = "stress" }
+                var next = try configuration(values, base: model.configuration)
+                if request["cap_cfl"] as? Bool == true, next.integrator != model.configuration.integrator {
+                    if next.integrator == .cnab2 { next.cfl = min(next.cfl, 0.25) }
+                    else {
+                        next.cfl = max(next.cfl, 1)
+                        if next.integrator != .etdrk4 { next.cfl = min(next.cfl, 1.5) }
+                    }
                 }
                 model.configuration = next
             case "set":

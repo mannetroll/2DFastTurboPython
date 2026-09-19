@@ -141,11 +141,11 @@ final class FastTurboAPITests: XCTestCase {
             return Float(20 * cos(phase))
         }
         for integrator in Integrator.allCases {
-            for formulation in NonlinearFormulation.allCases {
+            for formulation in NonlinearFormulation.allCases where integrator != .cnab2 || formulation == .stress {
                 var configuration = FastTurboConfiguration()
                 configuration.resolution = n
                 configuration.reynolds = 10_000
-                configuration.cfl = 3
+                configuration.cfl = integrator == .cnab2 ? 0.25 : 3
                 configuration.integrator = integrator
                 configuration.nonlinearFormulation = formulation
                 let core = try FastTurboCore(configuration: configuration, device: device(), vorticity: field)
@@ -155,7 +155,7 @@ final class FastTurboAPITests: XCTestCase {
                 let frame = try XCTUnwrap(core.snapshotSync())
                 let frameBytes = Data(bytes: frame.buffer.contents(), count: frame.buffer.length)
 
-                try core.setCFLSync(1)
+                try core.setCFLSync(integrator == .cnab2 ? 0.05 : 1)
                 try core.setReynoldsSync(1_000)
                 let changed = try core.inspectSync()
                 XCTAssertEqual(changed.step, before.step)
@@ -168,7 +168,12 @@ final class FastTurboAPITests: XCTestCase {
                 let after = try core.advanceSync(steps: 1)
                 XCTAssertEqual(after.step, before.step + 1)
                 XCTAssertGreaterThan(after.time, before.time)
-                XCTAssertLessThan(after.timeStep, before.timeStep * 0.5)
+                if integrator == .cnab2 {
+                    XCTAssertEqual(after.timeStep, before.timeStep,
+                                   "CNAB2 must wait for its next controller checkpoint")
+                } else {
+                    XCTAssertLessThan(after.timeStep, before.timeStep * 0.5)
+                }
                 let evolved = try core.spectrumSync()[8 * n + 6]
                 let expected = Double(spectrum[8 * n + 6].x)
                     * exp(-100 * (after.time - before.time) / 1_000)
@@ -176,11 +181,19 @@ final class FastTurboAPITests: XCTestCase {
                                "Live viscosity must affect \(integrator), \(formulation)")
                 XCTAssertEqual(Data(bytes: frame.buffer.contents(), count: frame.buffer.length), frameBytes)
 
+                if integrator == .cnab2 {
+                    let checkpoint = try core.advanceSync(steps: 95)
+                    XCTAssertEqual(checkpoint.step, 100)
+                    XCTAssertLessThan(checkpoint.timeStep, before.timeStep,
+                                      "CNAB2 must apply the new CFL at step 100")
+                }
+
                 for invalid: Float in [0, -1, .nan, .infinity] {
                     XCTAssertThrowsError(try core.setCFLSync(invalid))
                 }
+                let latestStep = try core.inspectSync().step
                 try core.setCFLSync(3)
-                XCTAssertEqual(try core.advanceSync(steps: 1).step, after.step + 1)
+                XCTAssertEqual(try core.advanceSync(steps: 1).step, latestStep + 1)
             }
         }
     }

@@ -316,10 +316,17 @@ enum FastTurboShaders {
         spectra[i] = w;
         if (p.stage == 3) {
             int x = int(gid.x), y = wave(gid.y, specializedN);
+            if (specializedIntegrator == 3 && gid.y == specializedN / 2) y = -int(specializedN / 2);
             float k2 = float(x * x + y * y);
             float2 iw = timesI(w);
             spectra[stride + i] = k2 > 0 ? iw * (float(y) / k2) : float2(0);
             spectra[2 * stride + i] = k2 > 0 ? iw * (-float(x) / k2) : float2(0);
+        }
+        // CNAB2 preserves the unpaired compact cutoff. On the retained grid,
+        // take each real field's self-conjugate mode after velocity reconstruction.
+        if (specializedIntegrator == 3 && gid.x == 0 && gid.y == specializedN / 2) {
+            spectra[i].y = 0;
+            if (p.stage == 3) { spectra[stride + i].y = 0; spectra[2 * stride + i].y = 0; }
         }
     }
 

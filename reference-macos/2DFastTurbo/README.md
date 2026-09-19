@@ -10,6 +10,16 @@ second**, rather than the number of small timesteps executed.
 Substantial optimizations include GPU-resident simulation and rendering, tuned
 FFTs, compact half-spectrum storage, and ETDRK4 with full 3/2 dealiasing.
 
+The macOS core also supports **CNAB2** with native historical PAO and KM3
+initialization. The native app's **Spectrum** selector below k₀ offers **PAO**
+and **KM3 (k⁻³)** for every method; changing it restarts the flow with the selected
+spectrum and current seed. The app and Python Metal backend share CNAB2 with
+[`tools/sim`](tools/README.md), a standalone Swift/Metal command that needs no
+Python. CNAB2 requires stress form, power-of-two N from 16 to 16384, and seeds
+1–5010; its default CFL is 0.25. Selecting it in the GUI applies stress form and
+caps CFL at 0.25. Its controller updates at step 1 and every 100 steps, regardless
+of GUI batches; its compact KM3 cutoff mode is retained.
+
 The live view uses HDR on compatible displays, with highlights reaching up to
 twice SDR white. PNG exports use standard sRGB. The [M1 Max HDR comparison](HDR_benchmark.md)
 found no meaningful simulation slowdown at a 640 × 640-point canvas.
@@ -158,13 +168,14 @@ instead transforms `u`, `v`, `∂xω`, and `∂yω` to physical space and transf
 This path avoids amplifying product-transform roundoff by two spectral derivatives
 and supplies the full-resolution convergence reference. Both retain the same band.
 
-Three methods are available for measured comparisons:
+The following three methods were used for the measured comparisons above:
 
 - The predecessor's low-storage IMEX RK3 with Crank–Nicolson diffusion.
 - Integrating-factor Heun RK3, adapted from Astra onto the stress formulation.
 - ETDRK4 with cancellation-resistant phi-function evaluation near zero.
 
-CFL is reduced from padded physical velocities on the GPU at every step. Its
+CFL for these three methods is reduced from padded physical velocities on the GPU
+at every step. Its
 normalization matches Metal2DTurbo: `dt_target = 2*CFL/(N*max(|u|+|v|))`.
 Decreases take effect immediately; growth follows the legacy 0.8/0.2 smoothing
 rule. Every stage uses one immutable timestep. Command-buffer batch size does

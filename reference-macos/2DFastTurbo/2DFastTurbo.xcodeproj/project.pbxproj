@@ -13,11 +13,15 @@
 		103E8BB884DB557818246FCF /* Sources/FastTurboApp/FastTurboView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B9751E24AE7E524CD06DBD /* Sources/FastTurboApp/FastTurboView.swift */; };
 		10AB9C809C85012FA109F620 /* Tests/FastTurboAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7928D3EDA74FDF4C089A7B55 /* Tests/FastTurboAPITests.swift */; };
 		145BDFB9C0014955F6422B26 /* Sources/FastTurboCore/FastTurboCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594C170137946A5DF86ED0D6 /* Sources/FastTurboCore/FastTurboCore.swift */; };
+		8ECB741BEE2A702F65891F5B /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D8E4B95C2FD1F49283DC29 /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */; };
+		15F71DD8C60F4C38E1DDF510 /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED330C8DDDEFD8EF28A5CCA7 /* Sources/FastTurboCore/FastTurboCNAB2.swift */; };
 		149B14D39489D601FB706857 /* Benchmarks/LegacyMetal/MetalTurbulenceSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBBDA3AB9F29243C4967D28 /* Benchmarks/LegacyMetal/MetalTurbulenceSolver.swift */; };
 		15745D499D742155FFE41691 /* Benchmarks/LegacyMetal/ShaderSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304F95AC38B5E8EF0E5D6EDB /* Benchmarks/LegacyMetal/ShaderSource.swift */; };
 		16361C120B06E3D6163C0FE7 /* Sources/FastTurboApp/FastTurboApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C197ACA6044FCCBC5BED529 /* Sources/FastTurboApp/FastTurboApplication.swift */; };
 		20E47A3CACCC76F72B63C10E /* Sources/FastTurboCore/FastTurboShaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B62F878FE59231B1E92DA32 /* Sources/FastTurboCore/FastTurboShaders.swift */; };
 		22EA24109B8374FF656EAC0D /* Sources/FastTurboCore/FastTurboCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863D1DF657E6B542B4706E24 /* Sources/FastTurboCore/FastTurboCore.swift */; };
+		16D8ACA1DCD1DBD8834C66FD /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8A872F468F9BF2E3BE640B /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */; };
+		0E26A1168AB2697EC84DD31E /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F17F3E9174CBBC3D65C3E0 /* Sources/FastTurboCore/FastTurboCNAB2.swift */; };
 		3A18ABE9014C3939E1ED90A6 /* Sources/Bridge/MTTVkFFTCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFCEF7B71369D259226815A2 /* Sources/Bridge/MTTVkFFTCore.cpp */; settings = {COMPILER_FLAGS = "-Wno-deprecated-declarations"; }; };
 		429D2E9AE7DD586D69460609 /* Benchmarks/LegacyMetal/SolverConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236E2C4F975A447E68ED3740 /* Benchmarks/LegacyMetal/SolverConfiguration.swift */; };
 		46C7A81ACC731BBC6D3C5BA3 /* Sources/Tools/BenchmarkCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DA6CD8E5514001D0D1E53C /* Sources/Tools/BenchmarkCLI.swift */; };
@@ -26,6 +30,8 @@
 		53D7BF9B4D8B697FF5ADCE76 /* Sources/FastTurboCore/FastTurboShaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302DC5E1CC71141CA5E2867A /* Sources/FastTurboCore/FastTurboShaders.swift */; };
 		53DCF070BA7AC13327C19971 /* Sources/FastTurboApp/FastTurboWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FEAD57525B522CE35E9BB9 /* Sources/FastTurboApp/FastTurboWindow.swift */; };
 		6211CF6DF7AE73F0C76DDFD5 /* Sources/FastTurboCore/FastTurboCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D30146E3AFB6BB2A36029C3 /* Sources/FastTurboCore/FastTurboCore.swift */; };
+		A23C8F912F99F2055A1896D8 /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE154E1D52A36B2A0C0AD4AD /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */; };
+		C556B7F869B2CD0CCDA1049B /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F993A7386B23BDA91E201B3 /* Sources/FastTurboCore/FastTurboCNAB2.swift */; };
 		883DBDA4CCD6F7C5C5CF38EF /* Sources/Tools/BenchmarkCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2BD531E2E6ECC0FA919A76 /* Sources/Tools/BenchmarkCLI.swift */; };
 		88B7579D598B558B0ADD311C /* Resources/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B537D170CE334714BC86947 /* Resources/Assets.xcassets */; };
 		920F3E278CB19B092B9ADEB7 /* Sources/Tools/BenchmarkCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD264B15BD1670295FE31DA /* Sources/Tools/BenchmarkCLI.swift */; };
@@ -73,6 +79,8 @@
 		43B9751E24AE7E524CD06DBD /* Sources/FastTurboApp/FastTurboView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboApp/FastTurboView.swift; sourceTree = SOURCE_ROOT; };
 		55A052997DDD7E0C2F496329 /* Tests/FastTurboLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests/FastTurboLifecycleTests.swift; sourceTree = SOURCE_ROOT; };
 		594C170137946A5DF86ED0D6 /* Sources/FastTurboCore/FastTurboCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCore.swift; sourceTree = SOURCE_ROOT; };
+		01D8E4B95C2FD1F49283DC29 /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2Shaders.swift; sourceTree = SOURCE_ROOT; };
+		ED330C8DDDEFD8EF28A5CCA7 /* Sources/FastTurboCore/FastTurboCNAB2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2.swift; sourceTree = SOURCE_ROOT; };
 		5C34943DE81B8842BAE9243F /* Sources/FastTurboApp/PresentationTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboApp/PresentationTypes.swift; sourceTree = SOURCE_ROOT; };
 		63F3DA19D9A61CDBDEE8E104 /* Sources/FastTurboBench/BenchMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboBench/BenchMain.swift; sourceTree = SOURCE_ROOT; };
 		6538A2267B2E5B2ED47DF39E /* Sources/Bridge/MTTVkFFTCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sources/Bridge/MTTVkFFTCore.cpp; sourceTree = SOURCE_ROOT; };
@@ -84,8 +92,12 @@
 		74DA6CD8E5514001D0D1E53C /* Sources/Tools/BenchmarkCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Tools/BenchmarkCLI.swift; sourceTree = SOURCE_ROOT; };
 		7928D3EDA74FDF4C089A7B55 /* Tests/FastTurboAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests/FastTurboAPITests.swift; sourceTree = SOURCE_ROOT; };
 		7D30146E3AFB6BB2A36029C3 /* Sources/FastTurboCore/FastTurboCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCore.swift; sourceTree = SOURCE_ROOT; };
+		CE154E1D52A36B2A0C0AD4AD /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2Shaders.swift; sourceTree = SOURCE_ROOT; };
+		7F993A7386B23BDA91E201B3 /* Sources/FastTurboCore/FastTurboCNAB2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2.swift; sourceTree = SOURCE_ROOT; };
 		7D5178C85853E2C149D2E851 /* Sources/Bridge/MTTFFT2DBackend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Bridge/MTTFFT2DBackend.h; sourceTree = SOURCE_ROOT; };
 		863D1DF657E6B542B4706E24 /* Sources/FastTurboCore/FastTurboCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCore.swift; sourceTree = SOURCE_ROOT; };
+		7B8A872F468F9BF2E3BE640B /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2Shaders.swift; sourceTree = SOURCE_ROOT; };
+		01F17F3E9174CBBC3D65C3E0 /* Sources/FastTurboCore/FastTurboCNAB2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboCNAB2.swift; sourceTree = SOURCE_ROOT; };
 		87D91155BD315BACC39280B0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		922838120BE772C470FE7DF4 /* Sources/FastTurboCore/FastTurboShaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/FastTurboCore/FastTurboShaders.swift; sourceTree = SOURCE_ROOT; };
 		A4D8F143B8E4BCD6B789A4AB /* 2DFastTurboTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 2DFastTurboTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				863D1DF657E6B542B4706E24 /* Sources/FastTurboCore/FastTurboCore.swift */,
+				7B8A872F468F9BF2E3BE640B /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */,
+				01F17F3E9174CBBC3D65C3E0 /* Sources/FastTurboCore/FastTurboCNAB2.swift */,
 				922838120BE772C470FE7DF4 /* Sources/FastTurboCore/FastTurboShaders.swift */,
 				2CF706406753A93A0CC6F98C /* Sources/FastTurboCore/FastTurboTypes.swift */,
 				EDDA996008EA77404BC2D49F /* Sources/Bridge/MTTVkFFTBackend.mm */,
@@ -191,6 +205,8 @@
 			isa = PBXGroup;
 			children = (
 				594C170137946A5DF86ED0D6 /* Sources/FastTurboCore/FastTurboCore.swift */,
+				01D8E4B95C2FD1F49283DC29 /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */,
+				ED330C8DDDEFD8EF28A5CCA7 /* Sources/FastTurboCore/FastTurboCNAB2.swift */,
 				302DC5E1CC71141CA5E2867A /* Sources/FastTurboCore/FastTurboShaders.swift */,
 				CBDCED0B9A540D65AACAFB1F /* Sources/FastTurboCore/FastTurboTypes.swift */,
 				717A6CA3B0F96CBC6E9A64FB /* Sources/Bridge/MTTVkFFTBackend.mm */,
@@ -205,6 +221,8 @@
 			isa = PBXGroup;
 			children = (
 				7D30146E3AFB6BB2A36029C3 /* Sources/FastTurboCore/FastTurboCore.swift */,
+				CE154E1D52A36B2A0C0AD4AD /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift */,
+				7F993A7386B23BDA91E201B3 /* Sources/FastTurboCore/FastTurboCNAB2.swift */,
 				3B62F878FE59231B1E92DA32 /* Sources/FastTurboCore/FastTurboShaders.swift */,
 				001CB177631FE177BD66FFEB /* Sources/FastTurboCore/FastTurboTypes.swift */,
 				09E9003EC893FDB5EAE7EBBC /* Sources/Bridge/MTTVkFFTBackend.mm */,
@@ -387,6 +405,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				145BDFB9C0014955F6422B26 /* Sources/FastTurboCore/FastTurboCore.swift in Sources */,
+				8ECB741BEE2A702F65891F5B /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */,
+				15F71DD8C60F4C38E1DDF510 /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */,
 				53D7BF9B4D8B697FF5ADCE76 /* Sources/FastTurboCore/FastTurboShaders.swift in Sources */,
 				E31F2E1D53E4079F160E016D /* Sources/FastTurboCore/FastTurboTypes.swift in Sources */,
 				E2B9986FC49F404FC8EF0D31 /* Sources/Bridge/MTTVkFFTBackend.mm in Sources */,
@@ -401,6 +421,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6211CF6DF7AE73F0C76DDFD5 /* Sources/FastTurboCore/FastTurboCore.swift in Sources */,
+				A23C8F912F99F2055A1896D8 /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */,
+				C556B7F869B2CD0CCDA1049B /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */,
 				20E47A3CACCC76F72B63C10E /* Sources/FastTurboCore/FastTurboShaders.swift in Sources */,
 				0A93E41FB5EBE4BD84BD4F64 /* Sources/FastTurboCore/FastTurboTypes.swift in Sources */,
 				F496CCF6DBA2FC1CDEC38E7F /* Sources/Bridge/MTTVkFFTBackend.mm in Sources */,
@@ -423,6 +445,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				22EA24109B8374FF656EAC0D /* Sources/FastTurboCore/FastTurboCore.swift in Sources */,
+				16D8ACA1DCD1DBD8834C66FD /* Sources/FastTurboCore/FastTurboCNAB2Shaders.swift in Sources */,
+				0E26A1168AB2697EC84DD31E /* Sources/FastTurboCore/FastTurboCNAB2.swift in Sources */,
 				EFC77C78C8BA5222D6A39984 /* Sources/FastTurboCore/FastTurboShaders.swift in Sources */,
 				F754004A16AEE6432EB9D0A4 /* Sources/FastTurboCore/FastTurboTypes.swift in Sources */,
 				C9E9F0AD70335DFF5E553258 /* Sources/Bridge/MTTVkFFTBackend.mm in Sources */,

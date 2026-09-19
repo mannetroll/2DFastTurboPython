@@ -100,8 +100,9 @@ selected spectrum and seed. You can also launch with
 `Configuration(start_spectrum="KM3")` in Python. An imported initial field
 overrides this choice for that initialization.
 
-On Linux CUDA, **Method → CNAB2** selects **Crank–Nicolson / Adams–Bashforth 2**,
-using the same mem_cuda-compatible path as `fastturbo_reference`. It supports
+On macOS Metal and Linux CUDA, **Method → CNAB2** selects
+**Crank–Nicolson / Adams–Bashforth 2**, using the same native solver as the platform's
+reference command (`tools/sim` on macOS, `fastturbo_reference` on Linux). It supports
 PAO and KM3, keeps VkFFT, and defaults to CFL **0.25**. CNAB2 uses stress form,
 a power-of-two resolution, and seeds **1–5010**; the GUI disables incompatible
 choices. Reset, pause, single-step, live Reynolds/CFL edits and PNG export work
@@ -123,8 +124,9 @@ on the N×N display grid; exports use the application's positive vorticity sign
 and normalized N×N spectrum. CNAB2 retains its compact cutoff coefficient in
 the spectrum, so use the real part of a complex inverse to reconstruct it.
 Its historical PAO random sequence differs from the RK3/ETDRK4 initializer.
-The CNAB2 option is advertised only by backends that implement it; Windows and
-Metal retain their existing method choices.
+The CNAB2 option is advertised only by backends that implement it; Windows
+retains its existing method choices. The macOS reference command also initializes
+PAO/KM3 natively and requires no Python; see its [usage and validation notes](../reference-macos/2DFastTurbo/tools/README.md).
 
 ## Use from Python
 

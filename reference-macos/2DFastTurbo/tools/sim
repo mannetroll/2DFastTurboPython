@@ -1,127 +1,43 @@
-#!/usr/bin/env python3
-"""Build and run the Swift/Metal CNAB2 comparison solver."""
-
-import argparse
-import hashlib
-import math
-import os
-from pathlib import Path
-import platform
-import subprocess
-import sys
-import tempfile
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
-REPO_ROOT = ROOT.parents[1]
-
-
-def build():
-    sdk = subprocess.check_output(["xcrun", "--sdk", "macosx", "--show-sdk-path"], text=True).strip()
-    version = subprocess.check_output(["xcrun", "swiftc", "--version"], stderr=subprocess.STDOUT)
-    bridge = ROOT / "Sources/Bridge"
-    vendor = ROOT / "ThirdParty/VkFFTSource"
-    includes = [bridge, vendor / "vkFFT", vendor / "metal-cpp"]
-    inputs = [Path(__file__), HERE / "CNAB2Comparison.swift", HERE / "CNAB2.metal"]
-    inputs += sorted(bridge.glob("*"))
-    inputs += sorted(vendor.rglob("*.h")) + sorted(vendor.rglob("*.hpp"))
-    digest = hashlib.sha256(version + sdk.encode() + platform.machine().encode())
-    for path in inputs:
-        if path.is_file():
-            digest.update(str(path.relative_to(ROOT)).encode())
-            digest.update(path.read_bytes())
-    cache = HERE / ".build"
-    cache.mkdir(exist_ok=True)
-    binary = cache / ("cnab2-" + digest.hexdigest()[:16])
-    if binary.is_file():
-        return binary
-    print("Building Swift/Metal CNAB2 comparison runner…", file=sys.stderr)
-    with tempfile.TemporaryDirectory(prefix="compile-", dir=cache) as directory:
-        out = Path(directory)
-        target = platform.machine() + "-apple-macos15.0"
-        flags = ["-O3", "-std=c++20", "-isysroot", sdk, "-target", target]
-        for include in includes:
-            flags += ["-I" if include == bridge else "-isystem", str(include)]
-        objects = []
-        for name in ["MTTVkFFTCore.cpp", "MTTVkFFTBackend.mm"]:
-            obj = out / (name + ".o")
-            arc = ["-fobjc-arc"] if name.endswith(".mm") else []
-            subprocess.run(["xcrun", "clang++", *flags, *arc, "-c", str(bridge / name), "-o", str(obj)],
-                           check=True, stdout=sys.stderr)
-            objects.append(str(obj))
-        subprocess.run([
-            "xcrun", "swiftc", "-O", "-parse-as-library", "-sdk", sdk, "-target", target,
-            "-module-cache-path", str(cache / "modules"),
-            "-import-objc-header", str(bridge / "MTTFFT2DBackend.h"),
-            str(HERE / "CNAB2Comparison.swift"), *objects, "-lc++",
-            "-framework", "Metal", "-framework", "Foundation", "-framework", "QuartzCore",
-            "-framework", "AppKit", "-o", str(out / "sim"),
-        ], check=True, stdout=sys.stderr)
-        (out / "sim").replace(binary)
-    return binary
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    for name, convert, default in [
-        ("N", int, 512), ("Re", float, 10000.0), ("K0", float, 10.0),
-        ("STEPS", int, 1001), ("CFL", float, 0.25), ("BACKEND", str, "metal"),
-        ("UPDATE", int, 100), ("SPECTRUM", str, "PAO"), ("METHOD", str, "CNAB2"),
-    ]:
-        parser.add_argument(name, type=convert, nargs="?", default=default)
-    parser.add_argument("--python-repo", type=Path, default=HERE,
-                        help="PAO initializer source directory (default: tools directory)")
-    parser.add_argument("--python", type=Path,
-                        help="Python with NumPy/SciPy (default: repo/python/.venv/bin/python)")
-    parser.add_argument("--json", type=Path, help="write full-precision diagnostics and provenance")
-    parser.add_argument("--state-out", type=Path, help="write final omega, nonlinear history, and velocity arrays")
-    args = parser.parse_args()
-    if args.N < 16 or args.N > 2048 or args.N & (args.N - 1):
-        parser.error("N must be a power of two from 16 through 2048")
-    if args.STEPS < 0 or args.UPDATE <= 0:
-        parser.error("STEPS must be nonnegative and UPDATE must be positive")
-    if any(not math.isfinite(v) or v <= 0 for v in [args.Re, args.K0, args.CFL]):
-        parser.error("Re, K0, and CFL must be finite and positive")
-    if (args.BACKEND.lower(), args.SPECTRUM.upper(), args.METHOD.upper()) != ("metal", "PAO", "CNAB2"):
-        parser.error("this comparison tool supports metal PAO CNAB2")
-    try:
-        seed = int(os.environ.get("SCIPYTURBO_SEED", "1"))
-    except ValueError:
-        parser.error("SCIPYTURBO_SEED must be an integer from 1 through 5010")
-    if not 1 <= seed <= 5010:
-        parser.error("SCIPYTURBO_SEED must be an integer from 1 through 5010")
-    if platform.system() != "Darwin":
-        parser.error("the Swift/Metal runner requires macOS 15 or later")
-    source = args.python_repo.resolve()
-    python = (args.python or REPO_ROOT / "python/.venv/bin/python").absolute()
-    if not any((source / name).is_file() for name in ["turbo_simulator.py", "palinstrophy/turbo_simulator.py"]):
-        parser.error(f"PAO initializer unavailable in {source}; set --python-repo")
-    if not python.is_file():
-        parser.error(f"Python unavailable at {python}; run uv sync in repo/python or set --python")
-    dependencies = subprocess.run([str(python), "-c", "import numpy; import scipy.fft"],
-                                  capture_output=True, text=True)
-    if dependencies.returncode:
-        parser.error(f"NumPy/SciPy unavailable in {python}; run uv sync in repo/python or set --python\n"
-                     + dependencies.stderr.strip())
-    if args.json:
-        args.json.parent.mkdir(parents=True, exist_ok=True)
-    if args.state_out:
-        args.state_out.mkdir(parents=True, exist_ok=True)
-    binary = build()
-    with tempfile.TemporaryDirectory(prefix="swift-cnab2-pao-") as directory:
-        subprocess.run([str(python), str(HERE / "export_pao.py"), str(source), directory,
-                        str(args.N), str(args.Re), str(args.K0), str(args.CFL), str(seed)],
-                       check=True, stdout=sys.stderr)
-        subprocess.run([str(binary), directory, str(args.STEPS), str(args.UPDATE), str(HERE / "CNAB2.metal"),
-                        str(args.json.resolve()) if args.json else "",
-                        str(args.state_out.resolve()) if args.state_out else ""], check=True)
-
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        sys.exit(130)
-    except (OSError, subprocess.CalledProcessError) as error:
-        print(f"sim: {error}", file=sys.stderr)
-        sys.exit(2)
+#!/bin/bash
+# Build the shared native Swift/Metal CNAB2 core, then replace this launcher.
+set -euo pipefail
+sim_here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+sim_root=$(cd -- "$sim_here/.." && pwd)
+sim_cache="$sim_here/.build"
+sim_core="$sim_root/Sources/FastTurboCore"
+sim_bridge="$sim_root/Sources/Bridge"
+sim_vendor="$sim_root/ThirdParty/VkFFTSource"
+sim_sdk=$(xcrun --sdk macosx --show-sdk-path)
+sim_arch=$(uname -m)
+sim_target="$sim_arch-apple-macos15.0"
+mkdir -p "$sim_cache"
+sim_sources=("$sim_core/FastTurboTypes.swift" "$sim_core/FastTurboCNAB2.swift"
+             "$sim_core/FastTurboCNAB2Shaders.swift" "$sim_here/CNAB2Comparison.swift")
+sim_digest=$({
+    xcrun swiftc --version 2>&1
+    printf '%s\n' "$sim_sdk" "$sim_target"
+    shasum -a 256 "$sim_here/sim" "${sim_sources[@]}" "$sim_bridge"/*
+    find "$sim_vendor/vkFFT" "$sim_vendor/metal-cpp" -type f \( -name '*.h' -o -name '*.hpp' \) -print0 | sort -z | xargs -0 shasum -a 256
+} | shasum -a 256)
+sim_binary="$sim_cache/cnab2-${sim_digest%% *}"
+if [[ ! -x "$sim_binary" ]]; then
+    printf '%s\n' 'Building native Swift/Metal CNAB2…' >&2
+    sim_build=$(mktemp -d "$sim_cache/compile-XXXXXX")
+    trap 'rm -rf -- "$sim_build"' EXIT
+    sim_flags=(-O3 -std=c++20 -isysroot "$sim_sdk" -target "$sim_target"
+               -I "$sim_bridge" -isystem "$sim_vendor/vkFFT" -isystem "$sim_vendor/metal-cpp")
+    xcrun clang++ "${sim_flags[@]}" -c "$sim_bridge/MTTVkFFTCore.cpp" -o "$sim_build/core.o" >&2
+    xcrun clang++ "${sim_flags[@]}" -fobjc-arc -c "$sim_bridge/MTTVkFFTBackend.mm" -o "$sim_build/backend.o" >&2
+    xcrun swiftc -swift-version 5 -O -whole-module-optimization -parse-as-library -sdk "$sim_sdk" -target "$sim_target" \
+        -module-cache-path "$sim_cache/modules" -import-objc-header "$sim_bridge/MTTFFT2DBackend.h" \
+        "${sim_sources[@]}" "$sim_build/core.o" "$sim_build/backend.o" -lc++ \
+        -framework Metal -framework Foundation -o "$sim_build/sim" >&2
+    mv -f "$sim_build/sim" "$sim_binary"
+    rm -rf -- "$sim_build"
+    trap - EXIT
+fi
+if [[ "${1:-}" == "--build-only" ]]; then
+    printf '%s\n' "$sim_binary"
+    exit 0
+fi
+exec "$sim_binary" "$@"

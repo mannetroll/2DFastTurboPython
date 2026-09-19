@@ -7,7 +7,7 @@
 namespace turbo::legacy {
 namespace {
 // CUDA implementation of the historical CNAB2 method specified by
-// tools/CNAB2.metal. All FFT work goes through the production FFT class.
+// FastTurboCNAB2Shaders.swift. All FFT work goes through the production FFT class.
 struct Parameters { int n,m,pitch; float argScale=0,c2=0,c3=0,divxz,dx=0; };
 __device__ int wave(int z,int n) { return z<n/2?z:z-n; }
 __global__ void prepare(const V2* input,V2* padded,Parameters p,bool initial) {

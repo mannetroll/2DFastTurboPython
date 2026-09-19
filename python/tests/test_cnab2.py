@@ -12,7 +12,7 @@ from fastturbo import Configuration, Engine, get_backend_info
 from fastturbo.engine import NativeError, NativeUI
 from fastturbo.main import config_from, parser
 
-pytestmark = pytest.mark.skipif(sys.platform != "linux", reason="CNAB2 is exposed by the Linux CUDA backend")
+pytestmark = pytest.mark.skipif(sys.platform not in ("linux", "darwin"), reason="CNAB2 requires Linux CUDA or macOS Metal")
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -32,9 +32,15 @@ def test_cnab2_defaults_and_cli():
 @pytest.mark.parametrize("n,start", [(128, "PAO"), (512, "KM3")])
 def test_cnab2_reference_parity_batching_and_snapshots(tmp_path, n, start):
     reference = tmp_path / "reference"
-    subprocess.run([str(ROOT / "build-linux/reference-linux/fastturbo_reference"),
-        str(n), "10000", "10", "1001", ".25", "cuda", "100", start, "CNAB2",
-        "--dump", str(reference), "--output", str(tmp_path / "reference.json")],
+    if sys.platform == "darwin":
+        command = [str(ROOT / "reference-macos/2DFastTurbo/tools/sim"),
+            str(n), "10000", "10", "1001", ".25", "metal", "100", start, "CNAB2",
+            "--state-out", str(reference), "--json", str(tmp_path / "reference.json")]
+    else:
+        command = [str(ROOT / "build-linux/reference-linux/fastturbo_reference"),
+            str(n), "10000", "10", "1001", ".25", "cuda", "100", start, "CNAB2",
+            "--dump", str(reference), "--output", str(tmp_path / "reference.json")]
+    subprocess.run(command,
         env={**os.environ, "SCIPYTURBO_SEED": "1"}, capture_output=True, text=True, check=True, timeout=60)
     expected = -np.fromfile(reference / "omega.c64", dtype="<c8").reshape(n, n//2)
     report = json.loads((tmp_path / "reference.json").read_text())

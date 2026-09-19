@@ -3,18 +3,20 @@ import Metal
 
 public enum Integrator: String, CaseIterable, Codable, Sendable, Identifiable {
     case imexRK3, ifHeunRK3, etdrk4
+    case cnab2 = "CNAB2"
     public var id: Self { self }
     public var title: String {
         switch self {
         case .imexRK3: return "IMEX RK3"
         case .ifHeunRK3: return "IF Heun RK3"
         case .etdrk4: return "ETD RK4"
+        case .cnab2: return "CNAB2"
         }
     }
     /// Transform count with the stress nonlinear formulation.
-    public var transformsPerStep: Int { self == .etdrk4 ? 16 : 12 }
+    public var transformsPerStep: Int { self == .cnab2 ? 5 : (self == .etdrk4 ? 16 : 12) }
     var shaderIndex: UInt32 {
-        switch self { case .imexRK3: return 0; case .ifHeunRK3: return 1; case .etdrk4: return 2 }
+        switch self { case .imexRK3: return 0; case .ifHeunRK3: return 1; case .etdrk4: return 2; case .cnab2: return 3 }
     }
 }
 
@@ -39,9 +41,17 @@ public struct FastTurboConfiguration: Equatable, Sendable {
     /// Overrides the CFL controller for convergence tests. Endpoint clipping still applies.
     public var fixedTimeStep: Float? = nil
     public var paddedResolution: Int { 3 * resolution / 2 }
-    public var viscosity: Float { Float(1 / reynolds) }
+    public var viscosity: Float { integrator == .cnab2 ? 1 / Float(reynolds) : Float(1 / reynolds) }
     public var transformsPerStep: Int {
-        (integrator == .etdrk4 ? 4 : 3) * (nonlinearFormulation == .stress ? 4 : 5)
+        integrator == .cnab2 ? 5 : (integrator == .etdrk4 ? 4 : 3) * (nonlinearFormulation == .stress ? 4 : 5)
+    }
+
+    func validateCNAB2() throws {
+        if integrator == .cnab2 && (resolution < 16 || resolution > 16384 || resolution & (resolution - 1) != 0
+            || !(1...5010).contains(seed) || nonlinearFormulation != .stress
+            || !Float(reynolds).isFinite || !(viscosity > 0) || !viscosity.isFinite) {
+            throw FastTurboError.invalidConfiguration("CNAB2 requires a power-of-two resolution, seed 1..5010, stress form and a representable positive viscosity.")
+        }
     }
     /// Empirical initial Reynolds number used by the palinstrophy controller.
     /// This is the Swift equivalent of `Re_from_N_K0(N, K0)` in palinstrophy.

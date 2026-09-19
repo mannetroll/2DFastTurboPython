@@ -28,7 +28,7 @@ enum BenchmarkCLI {
       --resolution N       Retained grid; nonlinear grid is 3N/2 (default 1024)
       --reynolds R         Viscosity is 1/R (default 50000)
       --k0 K --seed S       Pao initial spectrum (defaults 4, 2)
-      --integrator METHOD  imexRK3, ifHeunRK3, or etdrk4 (default \(defaults.integrator.rawValue))
+      --integrator METHOD  imexRK3, ifHeunRK3, etdrk4, or CNAB2 (default \(defaults.integrator.rawValue))
       --operator FORM      stress or advective (default \(defaults.nonlinearFormulation.rawValue))
       --cfl C              GPU Courant controller (default \(defaults.cfl))
       --fixed-dt DT        Fixed timestep for independent numerical validation
@@ -100,6 +100,7 @@ enum BenchmarkCLI {
         if let method = options["--integrator"] {
             guard let integrator = Integrator(rawValue: method) else { throw Failure(message: "Unknown integrator: \(method)") }
             configuration.integrator = integrator
+            if integrator == .cnab2, options["--cfl"] == nil { configuration.cfl = 0.25 }
         }
         if let name = options["--operator"] {
             guard let formulation = NonlinearFormulation(rawValue: name) else { throw Failure(message: "Unknown operator: \(name)") }

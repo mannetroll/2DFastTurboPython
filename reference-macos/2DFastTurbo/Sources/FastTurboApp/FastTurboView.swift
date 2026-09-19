@@ -55,7 +55,13 @@ struct FastTurboView: View {
         Binding(get: { model.configuration.integrator }, set: { method in
             var configuration = model.configuration
             configuration.integrator = method
-            if method != .etdrk4 { configuration.cfl = min(configuration.cfl, 1.5) }
+            if method == .cnab2 {
+                configuration.nonlinearFormulation = .stress
+                configuration.cfl = min(configuration.cfl, 0.25)
+            } else {
+                configuration.cfl = max(configuration.cfl, 1)
+                if method != .etdrk4 { configuration.cfl = min(configuration.cfl, 1.5) }
+            }
             model.configuration = configuration
         })
     }
@@ -249,13 +255,21 @@ struct FastTurboView: View {
                         ForEach([2, 4, 6, 8, 10, 12, 16, 20], id: \.self) { Text("\($0)").tag($0) }
                     }
                 }
+                compactChoice("Spectrum", labelWidth: 52) {
+                    Picker("Start spectrum", selection: $model.configuration.startSpectrum) {
+                        Text("PAO").tag(StartSpectrum.pao)
+                        Text("KM3 (k⁻³)").tag(StartSpectrum.km3)
+                    }
+                    .help("Initial energy spectrum. Changing it restarts the simulation.")
+                    .accessibilityIdentifier("start-spectrum")
+                }
                 compactChoice("Seed") {
                     HStack(spacing: 6) {
                         TextField("Seed", text: $seedText)
                             .font(.system(size: 11, design: .monospaced)).multilineTextAlignment(.trailing)
                             .textFieldStyle(.roundedBorder)
                             .onSubmit {
-                                if let seed = UInt64(seedText) { model.configuration.seed = seed }
+                                if let seed = UInt64(seedText), model.configuration.integrator != .cnab2 || (1...5010).contains(seed) { model.configuration.seed = seed }
                                 else { seedText = String(model.configuration.seed) }
                             }
                             .help(String(model.configuration.seed))
@@ -265,7 +279,9 @@ struct FastTurboView: View {
                 }
                 compactChoice("N") {
                     Picker("Resolution", selection: $model.configuration.resolution) {
-                        ForEach([128, 256, 512, 1024, 2048, 3072, 4096, 6144, 8192, 9216, 12288, 16384], id: \.self) { Text("\($0)").tag($0) }
+                        ForEach([128, 256, 512, 1024, 2048, 3072, 4096, 6144, 8192, 9216, 12288, 16384], id: \.self) { n in
+                            Text("\(n)").tag(n).disabled(model.configuration.integrator == .cnab2 && n & (n - 1) != 0)
+                        }
                     }
                 }
                 ReynoldsControls(controls: model.liveControls,
@@ -344,7 +360,10 @@ struct FastTurboView: View {
                     .tracking(0.5).foregroundStyle(TurboTheme.secondary)
                 compactChoice("Method") {
                     Picker("Integrator", selection: integratorSelection) {
-                        ForEach(Integrator.allCases, id: \.self) { Text($0.displayTitle).tag($0) }
+                        ForEach(Integrator.allCases, id: \.self) { method in
+                            Text(method.displayTitle).tag(method).disabled(method == .cnab2 &&
+                                (model.configuration.resolution & (model.configuration.resolution - 1) != 0 || !(1...5010).contains(model.configuration.seed)))
+                        }
                     }
                 }
                 compactChoice("Form") {
@@ -353,9 +372,11 @@ struct FastTurboView: View {
                         Text("Advective").tag(NonlinearFormulation.advective)
                     }
                     .help("Nonlinear form on the 3/2-padded grid.")
+                    .disabled(model.configuration.integrator == .cnab2)
                 }
                 compactChoice("CFL") {
                     CFLControls(controls: model.liveControls, setCFL: model.setCFL,
+                                minimum: model.configuration.integrator == .cnab2 ? 0.05 : 1,
                                 finishEditing: model.flushLiveParameters)
                 }
             }
@@ -400,10 +421,11 @@ struct FastTurboView: View {
         Rectangle().fill(TurboTheme.border).frame(width: 1, height: 26).padding(.horizontal, 5)
     }
 
-    private func compactChoice<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func compactChoice<Content: View>(_ title: String, labelWidth: CGFloat = 40,
+                                             @ViewBuilder content: () -> Content) -> some View {
         HStack(spacing: 6) {
             Text(title).font(.system(size: 10, design: .monospaced)).fixedSize()
-                .frame(width: 40, alignment: .leading)
+                .frame(width: labelWidth, alignment: .leading)
             content().labelsHidden().controlSize(.small).frame(maxWidth: .infinity)
         }
     }
@@ -472,6 +494,7 @@ private struct ReynoldsControls: View {
 private struct CFLControls: View {
     @ObservedObject var controls: LiveControlDisplay
     let setCFL: (Double) -> Void
+    let minimum: Double
     let finishEditing: () -> Void
 
     var body: some View {
@@ -481,7 +504,7 @@ private struct CFLControls: View {
                 .monospacedDigit()
                 .foregroundStyle(TurboTheme.accent)
             Slider(value: Binding(get: { Double(controls.values.cfl) }, set: setCFL),
-                   in: 1...3,
+                   in: minimum...3,
                    onEditingChanged: { if !$0 { finishEditing() } })
                 .controlSize(.mini)
                 .accessibilityLabel("CFL")

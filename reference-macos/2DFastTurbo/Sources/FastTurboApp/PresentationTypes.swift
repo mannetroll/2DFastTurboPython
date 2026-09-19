@@ -133,6 +133,7 @@ extension Integrator {
         case .imexRK3: return "IMEX RK3"
         case .ifHeunRK3: return "Integrating-factor RK3"
         case .etdrk4: return "ETD RK4"
+        case .cnab2: return "CNAB2"
         }
     }
 }

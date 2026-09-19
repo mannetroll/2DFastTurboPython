@@ -11,7 +11,8 @@ public final class FastTurboCore: @unchecked Sendable {
     private let executionQueueKey = DispatchSpecificKey<UInt8>()
     private let commandQueue: MTLCommandQueue
     private let pipelines: [String: MTLComputePipelineState]
-    private let paddedFFT: MTTVkFFTBackend
+    private let paddedFFT: MTTVkFFTBackend?
+    private var cnab2: FastTurboCNAB2?
     private let snapshotFFT: MTTVkFFTBackend
     private var inputFFT: MTTVkFFTBackend?
     private let omega: MTLBuffer
@@ -44,6 +45,7 @@ public final class FastTurboCore: @unchecked Sendable {
     public init(configuration: FastTurboConfiguration, device requestedDevice: MTLDevice? = nil,
                 vorticity: [Float]? = nil) throws {
         let n = configuration.resolution
+        try configuration.validateCNAB2()
         guard n >= 16, n <= 16384, n % 2 == 0 else {
             throw FastTurboError.invalidConfiguration("Resolution must be even, between 16 and 16384.")
         }
@@ -88,12 +90,13 @@ public final class FastTurboCore: @unchecked Sendable {
         let paddedComplexPitch = ((m / 2 + 1 + 7) / 8) * 8
         // Padded transforms only consume/retain |kx|, |ky| < N/2. Snapshot and input
         // transforms keep the unrestricted initializer and their full output.
-        paddedFFT = MTTVkFFTBackend(device: device, commandQueue: commandQueue, resolution: UInt(m),
+        let historical = configuration.integrator == .cnab2
+        paddedFFT = historical ? nil : MTTVkFFTBackend(device: device, commandQueue: commandQueue, resolution: UInt(m),
                                    realToComplex: true, retainedXCutoff: UInt(n / 2), retainedYCutoff: UInt(n / 2),
                                    complexRowStride: UInt(paddedComplexPitch))
         snapshotFFT = MTTVkFFTBackend(device: device, commandQueue: commandQueue, resolution: UInt(n), realToComplex: true)
-        guard paddedFFT.isAvailable, snapshotFFT.isAvailable else {
-            throw FastTurboError.metal(paddedFFT.lastErrorMessage ?? snapshotFFT.lastErrorMessage ?? "VkFFT unavailable.")
+        guard paddedFFT?.isAvailable ?? true, snapshotFFT.isAvailable else {
+            throw FastTurboError.metal(paddedFFT?.lastErrorMessage ?? snapshotFFT.lastErrorMessage ?? "VkFFT unavailable.")
         }
         var bytes = 0
         func allocate(_ length: Int, _ label: String) throws -> MTLBuffer {
@@ -109,11 +112,11 @@ public final class FastTurboCore: @unchecked Sendable {
         let stateCount = n * (n / 2 + 1)
         let stateBytes = stateCount * MemoryLayout<SIMD2<Float>>.stride
         omega = try allocate(stateBytes, "Canonical Hermitian vorticity spectrum")
-        correction = try allocate(stateBytes, "Compensated vorticity increment remainder")
+        correction = try allocate(historical ? 8 : stateBytes, "Compensated vorticity increment remainder")
         let paddedFields = configuration.nonlinearFormulation == .stress ? 2 : 4
-        padded = try allocate(paddedFields * m * paddedComplexPitch * 8, "Padded nonlinear R2C fields")
-        first = try allocate(stateBytes, "First / previous nonlinear term")
-        base = try allocate(configuration.integrator == .imexRK3 ? 8 : stateBytes, "Timestep initial spectrum")
+        padded = try allocate(historical ? 8 : paddedFields * m * paddedComplexPitch * 8, "Padded nonlinear R2C fields")
+        first = try allocate(historical ? 8 : stateBytes, "First / previous nonlinear term")
+        base = try allocate(historical || configuration.integrator == .imexRK3 ? 8 : stateBytes, "Timestep initial spectrum")
         second = try allocate(configuration.integrator == .etdrk4 ? stateBytes : 8, "ETD middle nonlinear sum")
         auxiliary = try allocate(configuration.integrator == .etdrk4 ? stateBytes : 8, "ETD first stage")
         let coefficientCount = configuration.integrator == .etdrk4 ? 6 : (configuration.integrator == .ifHeunRK3 ? 3 : 0)
@@ -168,6 +171,10 @@ public final class FastTurboCore: @unchecked Sendable {
             guard reynolds.isFinite, reynolds > 0, Float(1 / reynolds).isFinite else {
                 throw FastTurboError.invalidConfiguration("Reynolds number must be finite and positive.")
             }
+            if let cnab2 {
+                var c = configuration; c.reynolds = reynolds; try c.validateCNAB2()
+                cnab2.viscosity = c.viscosity
+            }
             activeReynolds = reynolds
         }
     }
@@ -177,7 +184,7 @@ public final class FastTurboCore: @unchecked Sendable {
     public func setReynolds(_ reynolds: Double) {
         executionQueue.async { [self] in
             guard reynolds.isFinite, reynolds > 0, Float(1 / reynolds).isFinite else { return }
-            activeReynolds = reynolds
+            try? setReynoldsSync(reynolds)
         }
     }
 
@@ -189,6 +196,7 @@ public final class FastTurboCore: @unchecked Sendable {
                 throw FastTurboError.invalidConfiguration("CFL must be finite and positive.")
             }
             activeCFL = cfl
+            cnab2?.cfl = cfl
         }
     }
 
@@ -302,6 +310,7 @@ public final class FastTurboCore: @unchecked Sendable {
     }
 
     private func encodeVelocity(_ command: MTLCommandBuffer, params: GPUParams) throws {
+        guard let paddedFFT else { throw FastTurboError.metal("Stage-based FFT unavailable in CNAB2.") }
         let scatter = try encoder("velocityToPadded", command)
         scatter.setBuffer(omega, offset: 0, index: 0)
         scatter.setBuffer(padded, offset: 0, index: 1)
@@ -325,6 +334,7 @@ public final class FastTurboCore: @unchecked Sendable {
     }
 
     private func encodeStep(_ command: MTLCommandBuffer, until: Double?) throws {
+        guard let paddedFFT else { throw FastTurboError.metal("Stage-based FFT unavailable in CNAB2.") }
         let stages = configuration.integrator == .etdrk4 ? 4 : 3
         for stage in 0..<stages {
             let p = params(stage: stage, until: until)
@@ -358,6 +368,14 @@ public final class FastTurboCore: @unchecked Sendable {
         }
         try requireHealthyState()
         if steps == 0 || (until.map { $0 <= readClockTime() } ?? false) { return statisticsOwned() }
+        if let cnab2 {
+            do {
+                try cnab2.advance(steps: steps, until: until)
+                lastGPUMilliseconds = cnab2.gpuMilliseconds
+                try cnab2.copySpectrum(omega)
+                return statisticsOwned()
+            } catch { throw invalidateState(error) }
+        }
         var pending = steps
         var milliseconds = 0.0
         // Bound host command-buffer storage even for a large headless request. This
@@ -408,6 +426,11 @@ public final class FastTurboCore: @unchecked Sendable {
         stats.step = state.steps
         stats.time = Double(state.timeHigh) + Double(state.timeLow)
         stats.timeStep = state.dt
+        if let cnab2 {
+            stats.step = cnab2.row.iteration
+            stats.time = cnab2.row.stateTime
+            stats.timeStep = cnab2.row.dt
+        }
         stats.energy = cachedEnergy
         stats.enstrophy = cachedEnstrophy
         stats.palinstrophy = cachedPalinstrophy
@@ -418,12 +441,13 @@ public final class FastTurboCore: @unchecked Sendable {
         stats.reynolds = activeReynolds
         stats.initialTurnoverTime = initialTurnoverTime
         stats.gpuMilliseconds = lastGPUMilliseconds
-        stats.allocatedBytes = allocatedBytes
+        stats.allocatedBytes = allocatedBytes + (cnab2?.allocatedBytes ?? 0)
         stats.isFinite = cachedFinite && state.valid != 0 && stats.time.isFinite && stats.timeStep.isFinite
         return stats
     }
 
     private func readClockTime() -> Double {
+        if let cnab2 { return cnab2.row.stateTime }
         let state = clock.contents().load(as: GPUClock.self)
         return Double(state.timeHigh) + Double(state.timeLow)
     }
@@ -498,6 +522,11 @@ public final class FastTurboCore: @unchecked Sendable {
 
     private func restoreStateOwned(vorticity: [Float]?) throws {
         let n = configuration.resolution
+        if configuration.integrator == .cnab2 {
+            var c = configuration; c.reynolds = activeReynolds; c.cfl = activeCFL
+            cnab2 = nil
+            cnab2 = try FastTurboCNAB2(configuration: c, device: device, queue: commandQueue)
+        }
         let pointer = omega.contents().bindMemory(to: SIMD2<Float>.self, capacity: n * (n / 2 + 1))
         if let vorticity {
             // Retain the existing C2C import transform and its normalization.
@@ -521,19 +550,25 @@ public final class FastTurboCore: @unchecked Sendable {
             setParams(params(), at: 2, encoder: project)
             dispatch(project, width: n / 2 + 1, height: n)
             try execute(command)
+            try cnab2?.copySpectrum(omega, importing: true)
         } else {
-            writePao(to: pointer)
-            if configuration.startSpectrum == .km3 { reshapeKM3(pointer) }
+            if let cnab2 { try cnab2.copySpectrum(omega) }
+            else {
+                writePao(to: pointer)
+                if configuration.startSpectrum == .km3 { reshapeKM3(pointer) }
+            }
         }
         clock.contents().storeBytes(of: GPUClock(), as: GPUClock.self)
         memset(correction.contents(), 0, correction.length)
         memset(first.contents(), 0, first.length)
         lastGPUMilliseconds = 0
         initialTurnoverTime = 0
-        let command = try command("Initial GPU CFL")
-        try encodeVelocity(command, params: params())
-        try encodeCFL(command, params: params())
-        try execute(command)
+        if cnab2 == nil {
+            let command = try command("Initial GPU CFL")
+            try encodeVelocity(command, params: params())
+            try encodeCFL(command, params: params())
+            try execute(command)
+        }
         let statistics = try inspectOwned()
         guard statistics.isFinite else { throw FastTurboError.nonFiniteState }
         if statistics.energy > 0, statistics.enstrophy > 0 {
