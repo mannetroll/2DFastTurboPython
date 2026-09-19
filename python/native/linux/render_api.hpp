@@ -20,4 +20,16 @@ public:
                            const std::filesystem::path&, int side) = 0;
 };
 using CreateRenderer = LinuxRenderer* (*)(uintptr_t parent, int device);
+// Optional standalone frontend. The existing embedded/PNG interface above is
+// unchanged; only the desktop host uses these methods on the GL owner thread.
+class LinuxDesktopRenderer : public LinuxRenderer {
+public:
+    virtual void openDesktop(const char* title, int width, int height) = 0;
+    virtual void* desktopDisplay() = 0;
+    virtual uintptr_t desktopWindow() = 0;
+    virtual unsigned renderTexture(const std::shared_ptr<Frame>&, const Display&,
+                                   int side, RenderTiming&) = 0;
+    virtual void presentDesktop() = 0;
+};
 }
+extern "C" turbo::LinuxDesktopRenderer* ft_gl_create_desktop(int device);

@@ -1,4 +1,31 @@
-# Python/native architecture
+# FastTurbo architecture
+
+## Native Linux desktop
+
+`native-linux` adds a standalone C++ Dear ImGui frontend over the same Linux
+`turbo_core` target used by `reference-linux` and native `2dbench`. It has no
+Python, Qt, PySide6 or GTK runtime. `reference-linux` remains the canonical
+headless validation executable; the Python/PySide6 application is preserved.
+
+The GUI compiles the existing shared, guarded native controller adaptation,
+with target-local additions for snapshot cadence and readiness with rendering
+disabled. There is no new solver or numerical controller implementation. Its
+independent worker keeps the existing batching, regulation, persistent VkFFT
+plans, CUDA streams and GPU frame ownership. The Python/Windows controller
+generation is unchanged.
+
+The existing Linux renderer supplies X11/GLX window/context ownership and its
+validated CUDA/OpenGL map/copy/unmap path. A small optional desktop interface
+renders the existing field/flow shaders into an OpenGL texture for ImGui.
+`native-linux/x11_imgui.cpp` handles X11 input and window-manager close events.
+On Wayland this uses XWayland. Snapshot production and field redraw cadence
+are configurable separately from the ImGui event loop. Input wakes presentation
+immediately; idle drawing follows field updates or 4 Hz telemetry, and active
+editing refreshes at up to 60 Hz. Neither drives solver steps. No normal-frame
+CPU readback is introduced. See
+[native Linux architecture and validation](native-linux/README.md).
+
+## Python/native application
 
 The application selects a native backend locally in `fastturbo.build`:
 macOS loads the existing `libfastturbo.dylib` (Metal/VkFFT), Windows loads

@@ -1,0 +1,36 @@
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Run button",
+    "Pause button settled",
+    "Pause remains stable",
+    "Single Step exactly one step",
+    "Reset reproduces seed and pixels",
+    "Velocity magnitude texture",
+    "Enstrophy texture",
+    "Three distinct field visualizations",
+    "Window resize larger",
+    "Window resize smaller",
+    "Visualization disabled",
+    "Solver advances without visualization",
+    "Pause without visualization",
+    "Visualization restored while paused",
+    "Close requested while solver is running"
+  ],
+  "distinct_fields": 3,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 1769472,
+    "draw_submit_seconds": 0.0025433489990973612,
+    "field_updates": 17,
+    "presentations": 43,
+    "upload_seconds": 0.0050874120024673175,
+    "uploads": 9
+  },
+  "visualization": true
+}

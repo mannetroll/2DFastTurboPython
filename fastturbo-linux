@@ -1,0 +1,11 @@
+#!/bin/sh
+# Convenience launcher; the installed/build executable is a native ELF binary.
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exe="$root/build-linux/fastturbo-linux"
+if [ ! -x "$exe" ]; then
+    echo "Build first: cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86" >&2
+    echo "             cmake --build build-linux -j2" >&2
+    exit 1
+fi
+exec "$exe" "$@"

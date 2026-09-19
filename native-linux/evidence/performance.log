@@ -1,0 +1,92 @@
+N=2048 run=1 headless
+  5.3909 ms/step; 185.50 steps/s
+N=2048 run=1 disabled
+  5.4501 ms/step; 183.48 steps/s
+N=2048 run=1 normal
+  5.5770 ms/step; 179.31 steps/s
+N=2048 run=2 disabled
+  5.4705 ms/step; 182.80 steps/s
+N=2048 run=2 normal
+  5.5814 ms/step; 179.17 steps/s
+N=2048 run=2 headless
+  5.4341 ms/step; 184.02 steps/s
+N=2048 run=3 normal
+  5.5864 ms/step; 179.01 steps/s
+N=2048 run=3 headless
+  5.4272 ms/step; 184.26 steps/s
+N=2048 run=3 disabled
+  5.4732 ms/step; 182.71 steps/s
+N=4096 run=1 headless
+  24.2526 ms/step; 41.23 steps/s
+N=4096 run=1 disabled
+  24.4142 ms/step; 40.96 steps/s
+N=4096 run=1 normal
+  25.0869 ms/step; 39.86 steps/s
+N=4096 run=2 disabled
+  24.4399 ms/step; 40.92 steps/s
+N=4096 run=2 normal
+  25.1196 ms/step; 39.81 steps/s
+N=4096 run=2 headless
+  24.2539 ms/step; 41.23 steps/s
+N=4096 run=3 normal
+  25.0826 ms/step; 39.87 steps/s
+N=4096 run=3 headless
+  24.2412 ms/step; 41.25 steps/s
+N=4096 run=3 disabled
+  24.4083 ms/step; 40.97 steps/s
+[
+  {
+    "n": 2048,
+    "mode": "headless",
+    "ms_per_step": 5.427159693181819,
+    "steps_per_s": 184.25844392533858,
+    "overhead_percent": 0.0,
+    "min_ms": 5.390860664870689,
+    "max_ms": 5.43406855573593
+  },
+  {
+    "n": 2048,
+    "mode": "disabled",
+    "ms_per_step": 5.4705030611350445,
+    "steps_per_s": 182.7985450011823,
+    "overhead_percent": 0.7986381533544584,
+    "min_ms": 5.450076142935122,
+    "max_ms": 5.4731984350430505
+  },
+  {
+    "n": 2048,
+    "mode": "normal",
+    "ms_per_step": 5.581444916294182,
+    "steps_per_s": 179.1650755310066,
+    "overhead_percent": 2.8428355131357774,
+    "min_ms": 5.576955469999423,
+    "max_ms": 5.586381766741105
+  },
+  {
+    "n": 4096,
+    "mode": "headless",
+    "ms_per_step": 24.252559341346153,
+    "steps_per_s": 41.23276170260447,
+    "overhead_percent": 0.0,
+    "min_ms": 24.24123579326923,
+    "max_ms": 24.25391398798077
+  },
+  {
+    "n": 4096,
+    "mode": "disabled",
+    "ms_per_step": 24.41415272115294,
+    "steps_per_s": 40.9598486345823,
+    "overhead_percent": 0.6662941322291838,
+    "min_ms": 24.40830267307949,
+    "max_ms": 24.43987124999799
+  },
+  {
+    "n": 4096,
+    "mode": "normal",
+    "ms_per_step": 25.086851245000616,
+    "steps_per_s": 39.86151909755048,
+    "overhead_percent": 3.4400159253796803,
+    "min_ms": 25.082593997499316,
+    "max_ms": 25.11955560500155
+  }
+]
