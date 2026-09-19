@@ -20,11 +20,15 @@ class Configuration:
     reynolds: float = 27898.36614974335
     k0: int = 4
     seed: int = 2
-    cfl: float = 3.0
+    cfl: float | None = None
     integrator: str = "etdrk4"
     operator: str = "stress"
     fixed_dt: float | None = None
     start_spectrum: str = "PAO"
+
+    def __post_init__(self):
+        if self.cfl is None:
+            object.__setattr__(self, "cfl", .25 if self.integrator == "CNAB2" else 3.0)
 
     @property
     def padded_resolution(self):

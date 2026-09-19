@@ -10,6 +10,7 @@ add_library(turbo_core STATIC
   "${CMAKE_CURRENT_LIST_DIR}/legacy_pao.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/legacy_cnab2.cu")
 target_include_directories(turbo_core PUBLIC "${FASTTURBO_WINDOWS}/src" "${CMAKE_CURRENT_LIST_DIR}")
+target_compile_definitions(turbo_core PUBLIC FASTTURBO_ENABLE_CNAB2=1)
 target_include_directories(turbo_core PRIVATE "${FASTTURBO_VKFFT}")
 target_compile_options(turbo_core PRIVATE
   $<$<COMPILE_LANGUAGE:CUDA>:--fmad=false>

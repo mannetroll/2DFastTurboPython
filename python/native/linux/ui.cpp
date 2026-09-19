@@ -174,17 +174,22 @@ char* ft_ui_call(void* handle,const char* input) {
                 h.options.paused=true;if(h.controller)h.controller->singleStep();
             }
             else if(op=="reset")h.resetLocked();
-            else if(op=="seed"){auto c=s.config;++c.seed;h.configureLocked(c);}
+            else if(op=="seed"){auto c=s.config;c.seed=c.integrator==Integrator::cnab2?c.seed%5010+1:c.seed+1;h.configureLocked(c);}
             else if(op=="visible"){h.visible=j.value("value",true);if(h.controller)h.controller->visible(h.visible);h.wake.notify_one();}
             else if(op=="dismiss"){h.error.clear();if(h.controller)h.controller->dismissError();}
             else if(op=="configure"){
-                auto c=configuration(j,s.config);
-                if(j.value("cap_cfl",false)&&c.integrator!=s.config.integrator&&c.integrator!=Integrator::etdrk4)c.cfl=std::min(c.cfl,1.5f);
+                auto request=j;
+                if(j.value("cap_cfl",false)&&j.value("integrator","")=="CNAB2")request["operator"]="stress";
+                auto c=configuration(request,s.config);
+                if(j.value("cap_cfl",false)&&c.integrator!=s.config.integrator){
+                    if(c.integrator==Integrator::cnab2)c.cfl=std::min(c.cfl,.25f);
+                    else {c.cfl=std::max(c.cfl,1.f);if(c.integrator!=Integrator::etdrk4)c.cfl=std::min(c.cfl,1.5f);}
+                }
                 h.configureLocked(c);
             } else if(op=="set"){
                 if(has(j,"regulated")){h.options.regulated=j.at("regulated").get<bool>();if(h.controller)h.controller->regulate(h.options.regulated);s=h.viewLocked();}
                 if(has(j,"cfl")||has(j,"log_reynolds")){
-                    float cfl=float(std::clamp(scalar(j,"cfl",s.config.cfl),1.,3.));
+                    float cfl=float(std::clamp(scalar(j,"cfl",s.config.cfl),s.config.integrator==Integrator::cnab2?.05:1.,3.));
                     double re=has(j,"log_reynolds")?std::pow(10.,std::clamp(scalar(j,"log_reynolds",0),3.,6.)):s.config.reynolds;
                     if(h.controller)h.controller->live(cfl,re);
                     h.options.config.cfl=cfl;if(!h.options.regulated)h.options.config.reynolds=re;

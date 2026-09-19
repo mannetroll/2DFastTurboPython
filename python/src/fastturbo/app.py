@@ -164,6 +164,8 @@ class MainWindow(QMainWindow):
     def __init__(self, *, config=None, regulated=False, canvas_size=640, restore=True):
         super().__init__()
         config = {"resolution": 2048, "k0": 10, **(config or {})}
+        if config.get("integrator") == "CNAB2":
+            config.setdefault("cfl", .25)
         if regulated or "reynolds" not in config:
             config["reynolds"] = Configuration.calibrated_reynolds(config["resolution"], config["k0"])
         self.native = NativeUI()
@@ -352,7 +354,10 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.flow)
         self._separator(layout)
         layout.addWidget(label("NUMERICS", "secondary"))
-        self.method = self._combo(layout, "Method", METHODS, lambda v: self.send("configure", integrator=v, cap_cfl=True))
+        supported = self.native.backend_info.get("integrators", ["imexRK3", "ifHeunRK3", "etdrk4"])
+        self.method = self._combo(layout, "Method", [choice for choice in METHODS if choice[1] in supported],
+                                  lambda v: self.send("configure", integrator=v, cap_cfl=True))
+        self.method.setToolTip("CNAB2: Crank–Nicolson / Adams–Bashforth 2. Uses the mem_cuda-compatible solver, stress form, and seed 1–5010.")
         self.method.setMinimumWidth(0)
         self.form = self._combo(layout, "Form", [("Stress", "stress"), ("Advective", "advective")], lambda v: self.send("configure", operator=v))
         self.cfl = FloatSlider("CFL", 1, 3, 3, lambda v: f"{v:.2f}")
@@ -511,6 +516,10 @@ class MainWindow(QMainWindow):
             value = int(self.seed.text())
             if not 0 <= value < 2**64:
                 raise ValueError()
+            if self.state["config"]["integrator"] == "CNAB2" and not 1 <= value <= 5010:
+                self.status.setText("CNAB2 requires a seed from 1 to 5010.")
+                self.status.show()
+                raise ValueError()
         except ValueError:
             self.seed.setText(self.state["config"]["seed"])
             return
@@ -521,6 +530,19 @@ class MainWindow(QMainWindow):
         state = self.native.call()
         self.state = state
         config = state["config"]
+        cnab2 = config["integrator"] == "CNAB2"
+        self.form.setEnabled(not cnab2)
+        self.form.setToolTip("CNAB2 uses stress form." if cnab2 else "Nonlinear formulation")
+        self.cfl.low = .05 if cnab2 else 1
+        for i in range(self.resolution.count()):
+            n = self.resolution.itemData(i)
+            self.resolution.model().item(i).setEnabled(not cnab2 or n & (n-1) == 0)
+        index = self.method.findData("CNAB2")
+        if index >= 0:
+            n = config["resolution"]
+            eligible = n & (n-1) == 0 and 1 <= int(config["seed"]) <= 5010
+            self.method.model().item(index).setEnabled(eligible)
+            self.method.setItemData(index, "Crank–Nicolson / Adams–Bashforth 2. Requires a power-of-two resolution and seed 1–5010.", Qt.ItemDataRole.ToolTipRole)
         for widget, value in [(self.k0, config["k0"]), (self.resolution, config["resolution"]),
                               (self.start_spectrum, config["start_spectrum"]),
                               (self.method, config["integrator"]), (self.form, config["operator"]),

@@ -118,12 +118,36 @@ try:
     check("cfl_maps_to_native", abs(s["config"]["cfl"] - 1.6) < 1e-6)
     check("re_maps_to_native", abs(s["effective_reynolds"] - 10**5.0001) < 1e-6)
     for title, method in METHODS:
+        if window.method.findData(method) < 0:
+            continue
         window.cfl.slider.setValue(10000)
         window.method.setCurrentIndex(window.method.findData(method))
         s = wait(lambda s: s["ready"] and s["settled"])
         check("method_"+method, s["config"]["integrator"] == method)
         if method != "etdrk4":
             check("rk3_cfl_cap_"+method, s["config"]["cfl"] <= 1.5)
+        if method == "CNAB2":
+            check("cnab2_default_cfl", s["config"]["cfl"] == .25)
+            check("cnab2_stress_form", s["config"]["operator"] == "stress" and not window.form.isEnabled())
+            check("cnab2_cfl_range", window.cfl.low == .05)
+            window.start_spectrum.setCurrentIndex(window.start_spectrum.findData("KM3"))
+            s = wait(lambda s: s["ready"] and s["settled"] and s["config"]["start_spectrum"] == "KM3")
+            window.native.call("export", fields=str(spectrum_file))
+            initial_cnab = spectrum_file.read_bytes()
+            window.step_action.trigger()
+            s = wait(lambda s: s["ready"] and s["settled"] and s["stats"]["steps"] == 1)
+            check("cnab2_single_step", s["stats"]["is_finite"] and s["frame"]["sequence"] == 1)
+            window.send("reset")
+            wait(lambda s: s["ready"] and s["settled"] and s["stats"]["steps"] == 0)
+            window.native.call("export", fields=str(spectrum_file))
+            check("cnab2_reset_reproducible", spectrum_file.read_bytes() == initial_cnab)
+            window.send("running", value=True)
+            wait(lambda s: s["stats"]["steps"] > 20 and s["presentations"] > 0)
+            pause()
+            window.start_spectrum.setCurrentIndex(window.start_spectrum.findData("PAO"))
+            wait(lambda s: s["ready"] and s["settled"] and s["config"]["start_spectrum"] == "PAO")
+    window.method.setCurrentIndex(window.method.findData("etdrk4"))
+    wait(lambda s: s["ready"] and s["settled"] and s["config"]["integrator"] == "etdrk4")
     for form in ["advective", "stress"]:
         window.form.setCurrentIndex(window.form.findData(form))
         s = wait(lambda s: s["ready"] and s["settled"])

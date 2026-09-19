@@ -92,6 +92,38 @@ def test_legacy_determinism_and_checkpoint_cadence(tmp_path):
     assert (tmp_path / "a/initial-omega.c64").read_bytes() != (tmp_path / "a/omega.c64").read_bytes()
 
 
+@pytest.mark.parametrize("n,seed,k0", [(32, 149, 7.5), (512, 1, 10)])
+@pytest.mark.parametrize("steps", [0, 7])
+@pytest.mark.parametrize("spectrum", ["PAO", "KM3"])
+def test_legacy_velocity_matches_real_fourier_sum(tmp_path, n, seed, k0, steps, spectrum):
+    run(n, 10000, k0, steps, .25, "cuda", 100, spectrum, "CNAB2", "--dump", tmp_path, seed=seed)
+    if steps == 0:
+        coefficients = np.fromfile(tmp_path / "initial-velocity.c64", dtype="<c8").reshape(2, n, n//2)
+        if spectrum == "KM3":
+            assert coefficients[0, n//2, 0] != 0  # Exercise the unpaired cutoff mode.
+    else:
+        omega = np.fromfile(tmp_path / "omega.c64", dtype="<c8").reshape(n, n//2).astype(np.complex128)
+        x = np.arange(n//2)[None, :]
+        y = (np.fft.fftfreq(n) * n)[:, None]
+        k2 = x*x + y*y
+        potential = np.divide(omega, k2, out=np.zeros_like(omega), where=k2 != 0)
+        coefficients = np.stack((-1j*y*potential, 1j*x*potential))
+
+    # Independent complex128 C2C inverse: retain the original kx=0 column,
+    # complete the omitted negative kx half, and take the real Fourier sum.
+    # Using irfft here would itself assume symmetry of the unpaired KM3 mode.
+    m = 3*n//2
+    full = np.zeros((2, m, m), dtype=np.complex128)
+    full[:, :n//2, :n//2] = coefficients[:, :n//2]
+    full[:, n:, :n//2] = coefficients[:, n//2:]
+    full[:, :, m//2+1:] = full[:, (-np.arange(m)) % m, 1:m//2][:, :, ::-1].conj()
+    expected = np.fft.ifft2(full).real * (m*m)
+    actual = np.fromfile(tmp_path / "velocity.f32", dtype="<f4").reshape(2, m, m)
+    errors = norms(actual, expected)
+    assert errors["relative_l2"] < 3e-6, errors
+    record(f"real-fourier-sum-{spectrum}-n{n}-seed{seed}-steps{steps}", errors)
+
+
 @pytest.mark.parametrize("n,method,form,warmup,start_spectrum", [
     (34, method, form, 0, "PAO") for method in ("imexRK3", "ifHeunRK3", "etdrk4")
     for form in ("stress", "advective")

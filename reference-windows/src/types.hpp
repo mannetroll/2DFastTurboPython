@@ -7,10 +7,14 @@
 #include <stdexcept>
 
 namespace turbo {
-enum class Integrator { imexRK3, ifHeunRK3, etdrk4 };
+enum class Integrator { imexRK3, ifHeunRK3, etdrk4, cnab2 };
 enum class Form { stress, advective };
 enum class StartSpectrum { pao, km3 };
-inline constexpr const char* methods[] = {"imexRK3", "ifHeunRK3", "etdrk4"};
+inline constexpr const char* methods[] = {"imexRK3", "ifHeunRK3", "etdrk4"
+#ifdef FASTTURBO_ENABLE_CNAB2
+    , "CNAB2"
+#endif
+};
 inline constexpr const char* forms[] = {"stress", "advective"};
 inline constexpr const char* startSpectra[] = {"PAO", "KM3"};
 inline double initialReynolds(int n, int k) {
@@ -28,9 +32,12 @@ struct Config {
     void validate() const {
         if (n < 16 || n > 16384 || n % 2 || k0 <= 0 || !(reynolds > 0) ||
             !std::isfinite(float(1/reynolds)) || !(cfl > 0) || !std::isfinite(cfl) ||
-            fixedDt < 0 || !std::isfinite(fixedDt) || int(integrator)<0 || int(integrator)>2 || int(form)<0 || int(form)>1 ||
+            fixedDt < 0 || !std::isfinite(fixedDt) || int(integrator)<0 || int(integrator)>=int(sizeof(methods)/sizeof(*methods)) || int(form)<0 || int(form)>1 ||
             int(startSpectrum)<0 || int(startSpectrum)>1)
             throw std::invalid_argument("Invalid resolution, Reynolds number, k0, CFL, fixed timestep, method or start spectrum.");
+        if(integrator==Integrator::cnab2&&((n&(n-1))||seed<1||seed>5010||form!=Form::stress||
+            !std::isfinite(float(reynolds))||!(float(1/float(reynolds))>0)))
+            throw std::invalid_argument("CNAB2 requires a power-of-two resolution, seed 1..5010, stress form and a representable positive viscosity.");
     }
     bool operator==(const Config&) const = default;
 };

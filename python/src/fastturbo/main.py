@@ -20,8 +20,8 @@ def parser():
     p.add_argument("--k0", type=int, default=10)
     p.add_argument("--seed", type=int, default=2)
     p.add_argument("--start-spectrum", choices=["PAO", "KM3"], default="PAO")
-    p.add_argument("--cfl", type=float, default=3)
-    p.add_argument("--integrator", choices=["imexRK3", "ifHeunRK3", "etdrk4"], default="etdrk4")
+    p.add_argument("--cfl", type=float, default=None, help="Default 3; CNAB2 default 0.25")
+    p.add_argument("--integrator", choices=["imexRK3", "ifHeunRK3", "etdrk4", "CNAB2"], default="etdrk4")
     p.add_argument("--operator", choices=["stress", "advective"], default="stress")
     p.add_argument("--fixed-dt", type=float)
     ends = p.add_mutually_exclusive_group()
@@ -57,7 +57,7 @@ def emit(result, output):
 
 def config_from(args):
     return Configuration(resolution=args.resolution, reynolds=args.reynolds if args.reynolds is not None else Configuration().reynolds,
-        k0=args.k0, seed=args.seed, cfl=args.cfl, integrator=args.integrator,
+        k0=args.k0, seed=args.seed, cfl=args.cfl if args.cfl is not None else (.25 if args.integrator == "CNAB2" else 3), integrator=args.integrator,
         operator=args.operator, fixed_dt=args.fixed_dt, start_spectrum=args.start_spectrum)
 
 

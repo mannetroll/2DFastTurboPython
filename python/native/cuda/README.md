@@ -22,8 +22,15 @@ There is therefore no Graph/non-Graph mode to preserve or compare.
 `core.cmake` now defines the shared Linux numerical build for both the Python
 backend and the standalone `reference-linux` validation/benchmark executable.
 The latter links no bridge, controller or renderer. The additional `legacy_*`
-files implement the historical PAO/CNAB2 compatibility method missing from the
-production CUDA API, with the historical LCG, compact spectrum and update cadence.
+files implement the historical PAO/CNAB2 compatibility method, with the
+historical LCG, compact spectrum and update cadence. The Linux build defines
+`FASTTURBO_ENABLE_CNAB2` to expose that same implementation through the common
+`Solver` API and GUI. Continuous batches preserve history and the fixed
+checkpoint cadence. A device-to-device conversion supplies the existing
+statistics/snapshot path with its positive-curl, unnormalized half spectrum;
+integration continues in the historical compact buffers. The N-grid snapshot
+takes the real part of each self-conjugate cutoff component after reconstructing
+velocity. No fields are transferred to Python during stepping or rendering.
 They reuse the existing `FFT` class. Production and historical solvers both
 support PAO (the unchanged default) and KM3 via `km3.hpp`. The Python API exposes
 `Configuration(start_spectrum="KM3")`; the shared JSON bridge carries the same

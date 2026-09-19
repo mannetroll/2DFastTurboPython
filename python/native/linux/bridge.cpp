@@ -46,6 +46,7 @@ char* ft_initialize(const char* resources) {
             {"physical_memory_bytes",uint64_t(sysconf(_SC_PHYS_PAGES))*sysconf(_SC_PAGESIZE)},
             {"compute_capability",std::to_string(prop.major)+"."+std::to_string(prop.minor)},
             {"cuda_runtime_version",runtime},{"cuda_driver_version",driver},
+            {"integrators",methods},
             {"capabilities",{{"headless",true},{"native_rendering",linuxRenderingBuilt()},
                 {"forcing",false},{"drag",false},{"vortex_injection",false}}}};
         if(!linuxRenderingBuilt())info["native_rendering_error"]="GPU rendering was not built. Install OpenGL/X11/libpng development files and rebuild, or use --headless.";

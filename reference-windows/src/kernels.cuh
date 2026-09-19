@@ -314,10 +314,18 @@ __global__ void prepareSnapshot(const V2 *omega , V2 *spectra ,
     spectra[i] = w;
     if (p.stage == 3) {
         int x = int(gid.x), y = wave(gid.y, p.n);
+        if(p.integrator==3&&gid.y==p.n/2)y=-int(p.n/2);
         float k2 = float(x * x + y * y);
         V2 iw = timesI(w);
         spectra[stride + i] = k2 > 0 ? iw * (float(y) / k2) : V2(0);
         spectra[2 * stride + i] = k2 > 0 ? iw * (-float(x) / k2) : V2(0);
+    }
+    // The application samples CNAB2 on the retained N grid. Its compact
+    // vertical cutoff is self-conjugate here: take the real part separately
+    // for vorticity and each velocity component, after reconstruction.
+    if(p.integrator==3&&gid.x==0&&gid.y==p.n/2){
+        spectra[i].y=0;
+        if(p.stage==3){spectra[stride+i].y=0;spectra[2*stride+i].y=0;}
     }
 }
 
@@ -356,4 +364,3 @@ __global__ void extractSnapshot(const float *padded , float *fields ,
         partials[p.groups + group] = make_float4(sums[0], squares[0], 0, 0);
     }
 }
-

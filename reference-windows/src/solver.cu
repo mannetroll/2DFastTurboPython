@@ -2,6 +2,9 @@
 #include "fft.hpp"
 #include "kernels.cuh"
 #include "km3.hpp"
+#ifdef FASTTURBO_ENABLE_CNAB2
+#include "legacy_cnab2.hpp"
+#endif
 #include <array>
 #include <numbers>
 #include <utility>
@@ -88,6 +91,9 @@ struct Solver::Impl {
     Stream queue;
     Events events;
     std::unique_ptr<FFT> paddedFFT,snapshotFFT,inputFFT;
+#ifdef FASTTURBO_ENABLE_CNAB2
+    std::unique_ptr<legacy::Solver> cnab;
+#endif
     Buffer omega,correction,padded,base,first,second,aux,coefficients,clock,cflPartials,statPartials,snapshotSpectra,snapshotPartials;
     std::array<std::shared_ptr<void>,3> slots;
     Readback readback;
@@ -101,11 +107,12 @@ struct Solver::Impl {
         return {uint(n),uint(m),uint(config.integrator),uint(stage),float(1/re),cfl,config.fixedDt,1/float(n*n),high,float(until.value_or(0)-double(high)),uint(until.has_value()),64,uint(config.form)};
     }
     explicit Impl(Config c):config(c),re(c.reynolds),cfl(c.cfl),n(c.n),m(c.m()),width(n/2+1),pitch(((m/2+1+7)/8)*8) {
+        bool historical=c.integrator==Integrator::cnab2;
         size_t stateBytes=size_t(n)*width*8;
         auto alloc=[&](size_t bytes){stats.allocatedBytes+=bytes;return Buffer(bytes);};
-        omega=alloc(stateBytes);correction=alloc(stateBytes);first=alloc(stateBytes);
-        padded=alloc(size_t(config.form==Form::stress?2:4)*m*pitch*8);
-        base=alloc(c.integrator==Integrator::imexRK3?8:stateBytes);
+        omega=alloc(stateBytes);correction=alloc(historical?8:stateBytes);first=alloc(historical?8:stateBytes);
+        padded=alloc(historical?8:size_t(config.form==Form::stress?2:4)*m*pitch*8);
+        base=alloc(historical||c.integrator==Integrator::imexRK3?8:stateBytes);
         second=alloc(c.integrator==Integrator::etdrk4?stateBytes:8);
         aux=alloc(c.integrator==Integrator::etdrk4?stateBytes:8);
         int nc=c.integrator==Integrator::etdrk4?6:c.integrator==Integrator::ifHeunRK3?3:0;
@@ -113,10 +120,10 @@ struct Solver::Impl {
         clock=alloc(sizeof(ClockState));cflPartials=alloc(64*sizeof(V2));statPartials=alloc(64*sizeof(float4));
         snapshotSpectra=alloc(3*stateBytes);snapshotPartials=alloc(128*sizeof(float4));
         for(auto& slot:slots){auto b=alloc(size_t(3)*n*n*4);slot=std::shared_ptr<void>(std::exchange(b.ptr,nullptr),[](void* p){cudaFree(p);});}
-        paddedFFT=std::make_unique<FFT>(m,true,pitch,n/2,queue.value);
+        if(!historical)paddedFFT=std::make_unique<FFT>(m,true,pitch,n/2,queue.value);
         snapshotFFT=std::make_unique<FFT>(n,true,width,0,queue.value);
-        paddedFFT->prepare(config.form==Form::stress?2:4);
-        if(config.form==Form::advective)paddedFFT->prepare(1);
+        if(paddedFFT){paddedFFT->prepare(config.form==Form::stress?2:4);
+            if(config.form==Form::advective)paddedFFT->prepare(1);}
         snapshotFFT->prepare(1);snapshotFFT->prepare(3);
     }
     ~Impl(){cudaStreamSynchronize(queue.value);}
@@ -141,6 +148,10 @@ struct Solver::Impl {
         commitStep<<<1,1,0,queue.value>>>(clock.as<ClockState>(),params(0,until));
     }
     void readClock() {
+#ifdef FASTTURBO_ENABLE_CNAB2
+        if(cnab){CUDA_CHECK(cudaGetLastError());CUDA_CHECK(cudaStreamSynchronize(queue.value));
+            auto r=cnab->initialRow();stats.time=r.stateTime;stats.step=r.iteration;stats.dt=float(r.dt);stats.reynolds=re;return;}
+#endif
         CUDA_CHECK(cudaGetLastError());
         auto& hostClock=readback.data->clock;
         CUDA_CHECK(cudaMemcpyAsync(&hostClock,clock.ptr,sizeof(hostClock),cudaMemcpyDeviceToHost,queue.value));
@@ -156,19 +167,44 @@ Solver::Solver(Config c,const std::vector<float>& field) {
 Solver::~Solver()=default;
 const Config& Solver::configuration() const{return impl->config;}
 cudaStream_t Solver::stream()const{return impl->queue.value;}
-Statistics Solver::statistics()const{impl->healthy();auto s=impl->stats;s.reynolds=impl->re;return s;}
-void Solver::setReynolds(double re){if(!(re>0)||!std::isfinite(re)||!std::isfinite(float(1/re)))throw std::invalid_argument("Re must be finite and positive.");impl->re=re;}
-void Solver::setCFL(float cfl){if(!(cfl>0)||!std::isfinite(cfl))throw std::invalid_argument("CFL must be finite and positive.");impl->cfl=cfl;}
+Statistics Solver::statistics()const{impl->healthy();auto s=impl->stats;s.reynolds=impl->re;
+#ifdef FASTTURBO_ENABLE_CNAB2
+    if(impl->cnab)s.allocatedBytes+=impl->cnab->allocatedBytes();
+#endif
+    return s;}
+void Solver::setReynolds(double re){if(!(re>0)||!std::isfinite(re)||!std::isfinite(float(1/re)))throw std::invalid_argument("Re must be finite and positive.");
+#ifdef FASTTURBO_ENABLE_CNAB2
+    if(impl->cnab)impl->cnab->setReynolds(re);
+#endif
+    impl->re=re;}
+void Solver::setCFL(float cfl){if(!(cfl>0)||!std::isfinite(cfl))throw std::invalid_argument("CFL must be finite and positive.");
+#ifdef FASTTURBO_ENABLE_CNAB2
+    if(impl->cnab)impl->cnab->setCFL(cfl);
+#endif
+    impl->cfl=cfl;}
 void Solver::reset(const std::vector<float>& field) {
     auto& s=*impl;
     if(!field.empty()&&(field.size()!=size_t(s.n)*s.n||!std::all_of(field.begin(),field.end(),[](float x){return std::isfinite(x);})))
         throw std::invalid_argument("Initial vorticity must contain exactly N² finite Float32 samples.");
     s.failed=false;
     try {
+#ifdef FASTTURBO_ENABLE_CNAB2
+        if(s.config.integrator==Integrator::cnab2){
+            legacy::Config c;c.n=s.n;c.steps=0;c.seed=int(s.config.seed);c.k0=s.config.k0;
+            c.reynolds=s.re;c.cfl=s.cfl;c.fixedDt=s.config.fixedDt;c.startSpectrum=s.config.startSpectrum;
+            s.cnab.reset();s.cnab=std::make_unique<legacy::Solver>(c);
+        }
+#endif
         if(field.empty()) {
+#ifdef FASTTURBO_ENABLE_CNAB2
+            if(s.cnab)s.cnab->copySpectrumTo(s.omega.as<Complex>(),s.width,-float(s.n*s.n));
+            else
+#endif
+            {
             auto values=nativeSpectrum(s.config);
             CUDA_CHECK(cudaMemcpyAsync(s.omega.ptr,values.data(),s.omega.bytes,cudaMemcpyHostToDevice,stream()));
             CUDA_CHECK(cudaStreamSynchronize(stream()));
+            }
         } else {
             std::vector<V2> values(field.size());for(size_t i=0;i<field.size();++i)values[i]=V2(field[i],0);
             Buffer input(values.size()*sizeof(V2));
@@ -177,13 +213,16 @@ void Solver::reset(const std::vector<float>& field) {
             s.inputFFT->transform(input.ptr,1,false);
             projectState<<<s.grid(s.width,s.n),dim3(16,16),0,stream()>>>(input.as<V2>(),s.omega.as<V2>(),s.params());
             CUDA_CHECK(cudaStreamSynchronize(stream()));
+#ifdef FASTTURBO_ENABLE_CNAB2
+            if(s.cnab)s.cnab->loadSpectrum(s.omega.as<Complex>(),s.width,-1.f/float(s.n*s.n));
+#endif
         }
         ClockState clock{};clock.valid=1;
         CUDA_CHECK(cudaMemcpyAsync(s.clock.ptr,&clock,sizeof(clock),cudaMemcpyHostToDevice,stream()));
         CUDA_CHECK(cudaMemsetAsync(s.correction.ptr,0,s.correction.bytes,stream()));
         CUDA_CHECK(cudaMemsetAsync(s.first.ptr,0,s.first.bytes,stream()));
         s.stats.gpuMilliseconds=0;s.stats.turnover=0;
-        s.velocity(s.params());s.select(s.params());s.readClock();
+        if(s.paddedFFT){s.velocity(s.params());s.select(s.params());}s.readClock();
         auto initial=inspect();
         if(initial.energy>0&&initial.enstrophy>0)s.stats.turnover=2*std::numbers::pi*std::sqrt(initial.energy/initial.enstrophy)/std::sqrt(2*initial.energy);
     }catch(...){s.failed=true;throw;}
@@ -193,6 +232,16 @@ Statistics Solver::advance(int steps,std::optional<double> until) {
     if(steps<0 || (until&&(!std::isfinite(*until)||*until<0||!std::isfinite(float(*until)))))throw std::invalid_argument("Invalid steps or endpoint.");
     s.healthy();if(steps==0||(until&&reached(s.stats.time,*until)))return statistics();
     try {
+#ifdef FASTTURBO_ENABLE_CNAB2
+        if(s.cnab){
+            CUDA_CHECK(cudaEventRecord(s.events.begin,s.cnab->stream()));
+            s.cnab->advanceSteps(steps,until);
+            CUDA_CHECK(cudaEventRecord(s.events.end,s.cnab->stream()));
+            s.cnab->copySpectrumTo(s.omega.as<Complex>(),s.width,-float(s.n*s.n));
+            float ms=0;CUDA_CHECK(cudaEventElapsedTime(&ms,s.events.begin,s.events.end));s.stats.gpuMilliseconds=ms;
+            s.readClock();return statistics();
+        }
+#endif
         float total=0;
         while(steps>0) {
             int count=std::min(steps,256);
@@ -218,7 +267,10 @@ Statistics Solver::inspect() {
         }
         if(!std::isfinite(s.stats.energy)||!std::isfinite(s.stats.enstrophy)||!std::isfinite(s.stats.palinstrophy))throw std::runtime_error("Non-finite spectral reduction.");
         double kmax=double(s.n/2-1);s.stats.metric=s.stats.enstrophy>0?s.stats.palinstrophy/(s.stats.enstrophy*2*kmax*kmax):0;
-        s.stats.fftBytes=s.paddedFFT->allocatedBytes()+s.snapshotFFT->allocatedBytes()+(s.inputFFT?s.inputFFT->allocatedBytes():0);
+        s.stats.fftBytes=(s.paddedFFT?s.paddedFFT->allocatedBytes():0)+s.snapshotFFT->allocatedBytes()+(s.inputFFT?s.inputFFT->allocatedBytes():0);
+#ifdef FASTTURBO_ENABLE_CNAB2
+        if(s.cnab)s.stats.fftBytes+=s.cnab->fftBytes();
+#endif
         return statistics();
     }catch(...){s.failed=true;throw;}
 }

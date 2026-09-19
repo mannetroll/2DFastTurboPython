@@ -73,16 +73,16 @@ Supported options:
 |---|---|
 | `--n` | Retained even grid size, 1024; padded size is `3*N/2` |
 | `--steps`, `--warmup` | 1000 timed steps, 100 untimed warmup steps |
-| `--seed` | Application PAO seed, full uint64 range; default 2 |
+| `--seed` | Application PAO seed, full uint64 range; default 2. CNAB2 uses historical seeds 1..5010 |
 | `--device` | CUDA device index after `CUDA_VISIBLE_DEVICES`, default 0 |
 | `--benchmark` | Validate, initialize, warm up, then benchmark; default mode |
 | `--validate` | Run validation only |
 | `--json`, `--output FILE` | JSON stdout and/or save JSON; identity also goes to stderr with `--json` |
 | `--batch` | Synchronous native batch size 1..256, default 8 |
 | `--reynolds` | Fixed Reynolds number, default 27898.36614974335; regulation off |
-| `--k0`, `--cfl` | Initial wavenumber 4, CFL 3 |
+| `--k0`, `--cfl` | Initial wavenumber 4, CFL 3 (CNAB2 default 0.25) |
 | `--start-spectrum` | `PAO` (default) or `KM3`, the cudaturbo k⁻³ shell redistribution |
-| `--integrator` | `imexRK3`, `ifHeunRK3`, or `etdrk4` (default) |
+| `--integrator` | `imexRK3`, `ifHeunRK3`, `etdrk4` (default), or `CNAB2` (stress form, power-of-two N) |
 | `--operator` | `stress` (default) or `advective` |
 | `--fixed-dt` | Optional positive float32 timestep |
 | `--initial FILE` | Optional N×N little-endian float32 physical vorticity |
@@ -155,6 +155,22 @@ RK3/ETDRK4 retains its existing exclusion of the Nyquist axes and positive curl;
 historical CNAB2 retains its compact layout and negative curl. Initialization is
 outside the timed region, and all FFTs and timesteps remain native CUDA work.
 
+For KM3/CNAB2, inverse-FFT padding splits the unpaired `(kx=0, kz=-N/2)`
+cutoff coefficient between conjugate `+/-N/2` modes, each with half amplitude.
+This preserves the real Fourier sum while satisfying the real FFT's Hermitian
+input requirement, matching `mem_cuda`'s observed reconstruction. The compact
+coefficients are retained; PAO's zero cutoff coefficient is unaffected. VkFFT
+remains the FFT backend. The CFL and CNAB controller use float32 arithmetic
+and the reference's evaluation order to reduce trajectory differences.
+
+The Python GUI and `--integrator CNAB2` use this same native implementation
+through the common application API. Batching and snapshots preserve the
+historical state and timestep schedule. Continuous application runs update
+the controller at step 1 and each 100 steps; positional mode additionally
+updates it at the terminal checkpoint. Application exports use positive curl,
+an N×N normalized spectrum and N×N display fields, while positional `--dump`
+retains the compact layout and padded velocity described below.
+
 `--dump` exports initial coefficients and final `omega.c64`, `history.c64`,
 `velocity.f32` using the macOS comparison runner's compact layouts:
 omega/history `[N,N/2]`, initial velocity `[2,N,N/2]`, physical velocity `[2,M,M]`.
@@ -218,7 +234,9 @@ python/.venv/bin/python -m pytest -q python/tests/test_numerics.py \
 These compare full spectra and physical fields with the Python/Linux native
 binding, including N1024/N2048 and the odd padded grid N34/M51. They compare the
 native legacy initializer with the original Python coefficient generator across
-multiple seeds without running a CPU FFT or CPU timesteps. They also inspect
+multiple seeds without running CPU timesteps. Separate PAO/KM3 checks compare
+the initial and evolved physical velocity against an independent complex128
+Fourier reconstruction, including the nonzero KM3 cutoff mode. They also inspect
 loaded process libraries and ensure altered parity evidence causes failure.
 
 Max absolute, max relative, RMS, and relative L2 errors are reported where

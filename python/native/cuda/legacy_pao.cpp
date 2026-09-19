@@ -9,6 +9,7 @@ void Config::validate() const {
     if(n<16 || n>16384 || (n&(n-1)) || steps<0 || update<1 || seed<1 || seed>5010 ||
        !(reynolds>0) || !(k0>0) || !(cfl>0) || int(startSpectrum)<0 || int(startSpectrum)>1 ||
        !std::isfinite(float(reynolds)) || !std::isfinite(float(k0)) || !std::isfinite(float(cfl)) ||
+       fixedDt<0 || !std::isfinite(fixedDt) ||
        !(float(1/float(reynolds))>0))
         throw std::invalid_argument("Legacy mode requires power-of-two N=16..16384, positive Re/K0/CFL, steps>=0, update>0, seed=1..5010.");
 }

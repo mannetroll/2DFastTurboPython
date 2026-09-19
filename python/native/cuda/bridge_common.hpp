@@ -75,7 +75,9 @@ Config configuration(const Json& j, Config c={}) {
     }
     c.reynolds=scalar(j,"reynolds",c.reynolds);
     c.cfl=float(scalar(j,"cfl",c.cfl));
+    auto previousIntegrator=c.integrator;
     c.integrator=Integrator(choice(j,"integrator",methods,int(c.integrator)));
+    if(c.integrator==Integrator::cnab2&&previousIntegrator!=c.integrator&&!has(j,"cfl"))c.cfl=.25f;
     c.form=Form(choice(j,"operator",forms,int(c.form)));
     c.startSpectrum=StartSpectrum(choice(j,"start_spectrum",startSpectra,int(c.startSpectrum)));
     if (j.contains("fixed_dt")) {

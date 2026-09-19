@@ -82,6 +82,7 @@ Options parse(int argc,char** argv) {
         throw std::invalid_argument(std::string("Invalid ")+key);
     };
     o.config.integrator=turbo::Integrator(choice("--integrator",turbo::methods,2));
+    if(o.config.integrator==turbo::Integrator::cnab2&&!values.contains("--cfl"))o.config.cfl=.25f;
     o.config.form=turbo::Form(choice("--operator",turbo::forms,0));
     o.config.startSpectrum=turbo::StartSpectrum(choice("--start-spectrum",turbo::startSpectra,0));
     auto path=[&](const char* key,std::filesystem::path& target){if(values.contains(key))target=values.at(key);};
@@ -205,7 +206,7 @@ int main(int argc,char** argv) {
                 "--validate (validation only) --json --output FILE --device INDEX\n"
                 "--n N --steps K --warmup K --seed UINT64 --batch 1..256\n"
                 "--reynolds R --k0 K --cfl C --fixed-dt DT\n"
-                "--integrator imexRK3|ifHeunRK3|etdrk4 --operator stress|advective\n"
+                "--integrator imexRK3|ifHeunRK3|etdrk4|CNAB2 --operator stress|advective (CNAB2: stress only)\n"
                 "--start-spectrum PAO|KM3 (default PAO)\n"
                 "--initial FILE --spectrum FILE --fields FILE --compare-spectrum FILE\n"
                 "--reference-root REPOSITORY (location of existing parity evidence)\n"
