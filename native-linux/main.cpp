@@ -20,7 +20,6 @@
 #include <filesystem>
 #include <functional>
 #include <cstdio>
-#include <sys/utsname.h>
 #include <X11/keysym.h>
 namespace ImStb {
 #include "imstb_textedit.h"
@@ -450,7 +449,7 @@ class Application {
         desktop::mark({45*scale,top+38.5f*scale},21*scale);
         auto* d=ImGui::GetWindowDrawList();d->PushClipRect({83*scale,top},{width-240*scale,top+77*scale},true);
         presentation::title({83*scale,top+12*scale},scale);
-        presentation::text({83*scale,top+53*scale},environment.c_str(),10,desktop::foreground,true);d->PopClipRect();
+        presentation::text({83*scale,top+53*scale},environment.c_str(),14,{1,1,1,1},true);d->PopClipRect();
         d->AddRectFilled({width-214*scale,top+25*scale},{width-106*scale,top+53*scale},IM_COL32(9,38,40,255),14*scale);
         d->AddCircleFilled({width-202*scale,top+39*scale},2.5f*scale,ImGui::GetColorU32(s.ready?presentation::accent:desktop::secondary));
         presentation::text({width-190*scale,top+34*scale},"CUDA / VkFFT",9,presentation::accent,true);
@@ -505,8 +504,19 @@ public:
         :args(a),renderer(r),platform(p),controller(std::make_unique<turbo::Controller>(a.solver,a.device)),
          edit(a.solver.config),display(a.solver.display),visualize(a.visualization),intervalMs(float(a.interval*1000)),gpu(prop.name),focused(a.focus){
         std::snprintf(seedText,sizeof(seedText),"%llu",static_cast<unsigned long long>(edit.seed));
-        struct utsname os{};uname(&os);int runtime=0;CUDA_CHECK(cudaRuntimeGetVersion(&runtime));
-        char summary[512];std::snprintf(summary,sizeof(summary),"%s · %.1f GiB · CUDA %d.%d · Linux %s",prop.name,double(prop.totalGlobalMem)/1073741824.,runtime/1000,(runtime%1000)/10,os.release);
+        std::string osName="Linux",osVersion,line;
+        std::ifstream release("/etc/os-release");
+        if(!release)release.open("/usr/lib/os-release");
+        while(std::getline(release,line)){
+            auto separator=line.find('=');if(separator==std::string::npos)continue;
+            auto key=line.substr(0,separator),value=line.substr(separator+1);
+            if(value.size()>=2&&(value.front()=='"'||value.front()=='\'')&&value.back()==value.front())value=value.substr(1,value.size()-2);
+            if(key=="NAME"&&!value.empty())osName=value;
+            else if(key=="VERSION_ID")osVersion=value;
+        }
+        if(!osVersion.empty())osName+=" "+osVersion;
+        int runtime=0;CUDA_CHECK(cudaRuntimeGetVersion(&runtime));
+        char summary[512];std::snprintf(summary,sizeof(summary),"%s · %.1f GiB · CUDA %d.%d · %s",prop.name,double(prop.totalGlobalMem)/1073741824.,runtime/1000,(runtime%1000)/10,osName.c_str());
         environment=summary;
         glRenderer=reinterpret_cast<const char*>(glGetString(GL_RENDERER));
         controller->visualizationInterval(a.interval);controller->visible(visualize);workerVisible=visualize;
