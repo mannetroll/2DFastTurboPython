@@ -18,7 +18,8 @@ target_include_directories(turbo_core PRIVATE ../reference-macos/2DFastTurbo/Thi
 target_compile_definitions(turbo_core PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN)
 target_compile_options(turbo_core PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--fmad=false> $<$<COMPILE_LANGUAGE:CXX>:/fp:strict> $<$<COMPILE_LANGUAGE:CXX>:/utf-8>)
 if(TURBO_DISTRIBUTION)
-target_link_libraries(turbo_core PUBLIC CUDA::cudart_static CUDA::cuda_driver CUDA::nvrtc_static CUDA::nvrtc_builtins_static CUDA::nvptxcompiler_static user32 ws2_32)
+# CUDA 13.4 static NVRTC imports RtlGetLastNtStatus from the Windows runtime.
+target_link_libraries(turbo_core PUBLIC CUDA::cudart_static CUDA::cuda_driver CUDA::nvrtc_static CUDA::nvrtc_builtins_static CUDA::nvptxcompiler_static user32 ws2_32 ntdll)
 else()
 target_link_libraries(turbo_core PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
 endif()
