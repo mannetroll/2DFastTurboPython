@@ -52,7 +52,7 @@ The numerical backend must remain usable with no display.
 
 Inspect the native CUDA/Linux code, Python application, reference implementations, scripts, evidence, `ARCHITECTURE.md`, and README before changing files.
 
-Open [GUI.png](GUI.png) in the repository root. This user-supplied screenshot is the primary visual specification for the application content: layout, proportions, control order/grouping, typography, colors, overlays, and bottom statistics. Follow its detailed visual requirements in [FASTTURBO_LINUX_IMGUI_WINDOWS_STYLE.md](FASTTURBO_LINUX_IMGUI_WINDOWS_STYLE.md).
+Open [GUI.png](../GUI.png) in the repository root. This user-supplied screenshot is the primary visual specification for the application content: layout, proportions, control order/grouping, typography, colors, overlays, and bottom statistics. Follow its detailed visual requirements in [FASTTURBO_LINUX_IMGUI_WINDOWS_STYLE.md](FASTTURBO_LINUX_IMGUI_WINDOWS_STYLE.md).
 
 Inspect the four layout implementations explicitly:
 

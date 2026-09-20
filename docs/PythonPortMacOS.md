@@ -1,3 +1,5 @@
+# Python port: macOS
+
 You are GPT-6 Astra running at xhigh reasoning effort inside Codex CLI on macOS.
 
 Work directly on the files in the current directory.
@@ -7,8 +9,7 @@ Do not stop after producing a plan.
 Do not merely describe the port.
 Inspect the existing Swift + Metal + VkFFT implementation completely, then implement, build, run, test, benchmark, profile, fix failures, and iterate until the Python port works.
 
-PRIMARY TASK
-============
+## PRIMARY TASK
 
 Port this existing macOS application:
 
@@ -61,6 +62,7 @@ Python must NOT execute the main numerical kernels.
 
 First inspect and understand the complete macOS implementation.
 
+```text
 2DFastTurboPython/
 ├── reference-macos/
 │   └── 2DFastTurbo/
@@ -69,10 +71,10 @@ First inspect and understand the complete macOS implementation.
 │       └── ThirdParty...
 │
 └── python/
+```
 
 
-TARGET MACHINE
-==============
+## TARGET MACHINE
 
 macOS on Apple Silicon.
 
@@ -82,8 +84,7 @@ Primary target:
 
 Use the existing macOS Swift project as the reference for deployment target, GPU assumptions, numerical defaults, and GUI behavior.
 
-REFERENCE-FIRST WORKFLOW
-========================
+## REFERENCE-FIRST WORKFLOW
 
 Before writing the Python version:
 
@@ -121,8 +122,7 @@ before major implementation.
 
 This document should describe the Swift reference sufficiently well that parity can be checked systematically.
 
-NUMERICAL MODEL
-===============
+## NUMERICAL MODEL
 
 Preserve the existing Swift solver exactly in mathematical meaning.
 
@@ -147,8 +147,7 @@ The Python GUI must report retained and padded sizes exactly as the Swift applic
 
 Do not reinterpret 1536 as the simulation resolution.
 
-METAL / VKFFT
-=============
+## METAL / VKFFT
 
 Retain Metal and VkFFT as the numerical execution backend.
 
@@ -189,8 +188,7 @@ The native core should remain responsible for:
 
 Python should control the native engine, not reimplement it.
 
-PYTHON NATIVE BRIDGE
-====================
+## PYTHON NATIVE BRIDGE
 
 Choose the thinnest robust binding mechanism.
 
@@ -228,8 +226,7 @@ Avoid per-kernel Python calls.
 
 One Python call should trigger substantial native GPU work.
 
-GPU RESIDENCY
-=============
+## GPU RESIDENCY
 
 The normal simulation timestep must remain GPU-resident.
 
@@ -246,8 +243,7 @@ The visualization path should use GPU-native resources.
 
 If the Python GUI cannot directly consume the native Metal texture without copies, create the thinnest native rendering bridge necessary rather than reading the field into Python.
 
-GUI
-===
+## GUI
 
 The Python application's GUI should reproduce the Swift application as closely as practical.
 
@@ -291,8 +287,7 @@ The final application should still look like a polished macOS scientific visuali
 
 Do not let it look like a generic Python utility.
 
-NATIVE VISUALIZATION
-====================
+## NATIVE VISUALIZATION
 
 Preserve the Swift app's visualization as closely as practical.
 
@@ -318,8 +313,7 @@ Do not fake turbulence structures.
 
 Do not apply image processing that changes physical topology.
 
-INTERACTION
-===========
+## INTERACTION
 
 Preserve direct flow interaction.
 
@@ -335,8 +329,7 @@ The actual field modification should remain native/GPU-side.
 
 Do not manipulate a Python-side field array.
 
-PERFORMANCE OBJECTIVE
-=====================
+## PERFORMANCE OBJECTIVE
 
 After functional parity is established, optimize:
 
@@ -369,8 +362,7 @@ The CFD solver itself should run at essentially the same native Metal/VkFFT spee
 
 Do not optimize Python microcode before checking native GPU scheduling and synchronization.
 
-PARITY TESTS
-============
+## PARITY TESTS
 
 Create tests that compare the Python port against the Swift reference.
 
@@ -417,8 +409,7 @@ Specifically test:
 12. GUI controls update the same engine parameters
 13. rendering does not alter solver state
 
-BUILD SYSTEM
-============
+## BUILD SYSTEM
 
 Create a clean Python project using:
 
@@ -446,8 +437,7 @@ Reuse existing Xcode/clang tooling where appropriate.
 
 Keep Metal shader compilation automated.
 
-PROJECT STRUCTURE
-=================
+## PROJECT STRUCTURE
 
 A possible structure:
 
@@ -483,8 +473,7 @@ Use another structure if it better fits the existing project.
 
 Do not duplicate large native assets unnecessarily.
 
-PACKAGING
-=========
+## PACKAGING
 
 Once the Python version is working, make it easy to run.
 
@@ -498,8 +487,7 @@ A packaged application should not require the user to manually launch a terminal
 
 However, do not compromise solver performance or delay the core port merely for packaging.
 
-WORKFLOW
-========
+## WORKFLOW
 
 Use this sequence:
 
@@ -522,8 +510,7 @@ Do not optimize before parity.
 
 Do not rewrite working native Metal/VkFFT code just because Python is now the host language.
 
-KEY DESIGN PRINCIPLE
-====================
+## KEY DESIGN PRINCIPLE
 
 The desired architecture is:
 
@@ -558,8 +545,7 @@ The Python layer should behave like a control plane.
 
 The native Metal/VkFFT engine should remain the data plane.
 
-FINAL SELF-REVIEW
-=================
+## FINAL SELF-REVIEW
 
 Before completion verify:
 
@@ -579,8 +565,7 @@ Before completion verify:
 14. Is the app stable under long runs?
 15. Does changing N safely rebuild GPU resources?
 
-FINAL RESPONSE
-==============
+## FINAL RESPONSE
 
 At completion report:
 

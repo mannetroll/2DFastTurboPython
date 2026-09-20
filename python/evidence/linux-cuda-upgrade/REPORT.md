@@ -12,7 +12,7 @@ No solver, GUI, test, tolerance or fallback code was changed.
 The inspected host is native Ubuntu 26.04.1 LTS, kernel 7.0.0-31-generic,
 x86_64, GNOME Wayland with XWayland, RTX 3090 (24 GiB, compute capability 8.6),
 and NVIDIA driver **595.91.07**. Branch: `LINUX`; initial commit: `8c7879e`;
-initial working tree: clean. `PythonPortLinux.txt` describes an earlier WSL host;
+initial working tree: clean. [PythonPortLinux.md](../../../docs/PythonPortLinux.md) describes an earlier WSL host;
 the user's verified native workstation instructions govern this upgrade.
 
 The project requires CUDAToolkit >=13.0 in `python/native/linux/CMakeLists.txt`.

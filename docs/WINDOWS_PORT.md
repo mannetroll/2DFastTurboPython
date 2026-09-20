@@ -101,7 +101,7 @@ cancellation were also exercised through Windows input paths. All six native
 method/form comparisons and the N1024/N2048 comparisons were bitwise equal.
 The 24 exported shader combinations agree with the independent pixel model
 within its two-byte channel tolerance. Full results and captures are in
-[`python/evidence/windows`](python/evidence/windows).
+[`python/evidence/windows`](../python/evidence/windows).
 
 ## Final performance and distributions
 

@@ -3,7 +3,7 @@
 Linux source builds select the shared CUDA/VkFFT engine. Both headless execution
 and the shared PySide6 GUI with native CUDA/OpenGL rendering pass on native
 Ubuntu 26.04.1 / RTX 3090. The earlier WSLg sharing limitation remains.
-See [LINUX_PORT.md](../LINUX_PORT.md) for separate native Ubuntu and WSL evidence.
+See [LINUX_PORT.md](../docs/LINUX_PORT.md) for separate native Ubuntu and WSL evidence.
 
 From this directory, `uv sync` builds the backend. Use
 `uv run 2dfastturbo --headless --resolution 1024 --reynolds 50000 --k0 4` without
@@ -40,7 +40,7 @@ powershell -ExecutionPolicy Bypass -File python/scripts/benchmark-windows.ps1
 Alternatively, from `python/`, use `uv sync --python 3.13` and `uv run 2dfastturbo`.
 The scripts use a project-local uv cache. The Windows DLL and native baseline are
 built together under `build/windows`; CUDA runtime DLLs and licenses are staged
-under `src/fastturbo/_native`. See `../WINDOWS_PORT.md` and `../GUI_PARITY.md`.
+under `src/fastturbo/_native`. See `../docs/WINDOWS_PORT.md` and `../docs/GUI_PARITY.md`.
 
 ```sh
 uv sync
@@ -116,7 +116,7 @@ forcing/drag, Streamfunction selector, mouse vortex painting, or preset system
 in that source. Qt typography, switch shapes, spacing and slider quantization
 are the remaining presentation differences.
 
-See `../PORT_REFERENCE.md`, `../ARCHITECTURE.md`, and `../PERFORMANCE.md` for the
+See `../docs/PORT_REFERENCE.md`, `../docs/ARCHITECTURE.md`, and `../docs/PERFORMANCE.md` for the
 complete control map, numerical conventions, measured overhead and evidence.
 
 Windows distributions are created with `scripts/package-windows.ps1` (portable
@@ -125,4 +125,4 @@ EXE folder and ZIP) or `uv build` (source archive and `py3-none-win_amd64` wheel
 `scripts/check_windows_wheel.py` validates isolated wheel loading. The portable
 folder includes Python and Qt. A wheel needs Python and the declared PySide6
 dependency. The default CUDA target is compute capability 8.6 or later; see
-`../WINDOWS_PORT.md` for other build targets and the hardware validation limits.
+`../docs/WINDOWS_PORT.md` for other build targets and the hardware validation limits.

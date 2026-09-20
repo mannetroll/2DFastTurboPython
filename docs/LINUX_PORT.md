@@ -3,7 +3,7 @@
 **Native Ubuntu now runs the shared application with GPU-resident OpenGL rendering.
 The earlier WSLg interoperability limitation remains; it has not been retested on
 WSL or claimed fixed.** The current checkout is on a different host environment
-from the one originally described in `PythonPortLinux.txt`.
+from the one originally described in [PythonPortLinux.md](PythonPortLinux.md).
 
 ## Current native Ubuntu validation
 
@@ -18,7 +18,7 @@ the earlier user-local CUDA 13.2 development setup. The actual tools are
 CUDA 13.3.1 / nvcc 13.3.73, GCC/G++ 15.2,
 CMake 4.4.3, Ninja 1.13.2 (Kitware build), uv 0.12.15, CPython 3.14.4 and PySide6
 6.11.2. Python's `>=3.13` policy is unchanged. The
-[toolkit upgrade report](python/evidence/linux-cuda-upgrade/REPORT.md) records
+[toolkit upgrade report](../python/evidence/linux-cuda-upgrade/REPORT.md) records
 package changes, exact build configuration, fresh tests, benchmarks and GUI/GPU
 verification. Measurements below remain the earlier CUDA 13.2 baseline.
 
@@ -26,7 +26,7 @@ A subsequent manual launch exposed a build-cache defect: changing a compiler
 path made CMake restart configuration after dropping the reference source path
 and other settings. The Linux builder now canonicalizes compiler paths and uses
 `cmake --fresh` when configuring. Removing `build/linux` also forces a rebuild
-even if staged native libraries remain. The [clean-build follow-up](python/evidence/linux-clean-build/REPORT.md)
+even if staged native libraries remain. The [clean-build follow-up](../python/evidence/linux-clean-build/REPORT.md)
 records the reproducer, clean launches, unchanged controller hashes, regression
 tests and measurements after the fix.
 
@@ -178,7 +178,7 @@ swap calls were much smaller. The measured bottleneck is native GPU work;
 rendering's largest measured host interval is CUDA/GL sharing and copy-stream
 waiting. No per-kernel profile or speculative solver optimization is claimed.
 
-Final timing records are in [`python/evidence/linux-native/final`](python/evidence/linux-native/final);
+Final timing records are in [`python/evidence/linux-native/final`](../python/evidence/linux-native/final);
 the parent evidence directory retains the first timing round and all validation.
 The table uses the final three-run medians, including the completed canvas styling.
 The headless checkpoint precedes GUI work and is recorded in
@@ -257,7 +257,7 @@ Both CUDA backends compile **the same unchanged** `solver.cu`, `kernels.cuh`,
 `python/native/cuda/bridge_common.hpp` shares configuration/diagnostic JSON and
 explicit export helpers with Windows. Linux excludes Win32, Direct3D and all
 window libraries from its numerical library. See
-[`python/native/cuda/README.md`](python/native/cuda/README.md).
+[`python/native/cuda/README.md`](../python/native/cuda/README.md).
 
 The binding remains version 1 of `python/native/fastturbo.h`: opaque C handles
 and owned JSON strings through ctypes. The common Python API remains
@@ -348,7 +348,7 @@ at N1024 and 0.622% higher at N2048. These are measured configuration-matched
 comparisons across different toolchains/dates, not an interleaved OS experiment.
 No major regression was observed and no speculative numerical optimization was
 made. Full wall/simulated times, dt, steps, GPU identity, versions and turnover
-rates are recorded in [`python/evidence/linux`](python/evidence/linux).
+rates are recorded in [`python/evidence/linux`](../python/evidence/linux).
 
 Native GPU event intervals occupy 94.18% and 96.14% of the representative
 headless wall times. A later operation profile measured batch8 11.58094 ms,

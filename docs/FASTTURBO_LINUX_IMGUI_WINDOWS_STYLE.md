@@ -14,7 +14,7 @@ Read this document together with [FASTTURBO_NATIVE_UBUNTU_IMGUI.md](FASTTURBO_NA
 
 ## Primary goal
 
-Open [GUI.png](GUI.png) in the repository root before editing. This user-supplied screenshot is the primary visual specification for the application content. Reproduce its layout, proportions, control grouping, spacing, colors, typography, and overlays as closely as possible.
+Open [GUI.png](../GUI.png) in the repository root before editing. This user-supplied screenshot is the primary visual specification for the application content. Reproduce its layout, proportions, control grouping, spacing, colors, typography, and overlays as closely as possible.
 
 Inspect all four layout implementations and available screenshots/evidence before editing:
 

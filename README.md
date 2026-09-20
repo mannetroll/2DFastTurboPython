@@ -86,7 +86,7 @@ on Linux. The macOS canvas supports EDR highlights; PNG exports use SDR sRGB.
 Linux headless and GUI execution are validated on native Ubuntu 26.04.1 / RTX 3090,
 with Qt xcb and an embedded GLX surface through Xwayland. The earlier WSLg CUDA
 graphics-sharing limitation remains; native Wayland embedding is not supported.
-See [LINUX_PORT.md](LINUX_PORT.md) for setup and validation details.
+See [LINUX_PORT.md](docs/LINUX_PORT.md) for setup and validation details.
 
 For a native Linux GPU-server executable with no Python or desktop dependencies,
 see [reference-linux](reference-linux/README.md). It shares the CUDA/VkFFT core,
@@ -163,7 +163,7 @@ powershell -ExecutionPolicy Bypass -File python/scripts/run-windows.ps1
 
 The portable Windows ZIP is generated under `python/dist/` by
 `python/scripts/package-windows.ps1`; it includes Python, Qt and native runtimes.
-See the [Windows port report](WINDOWS_PORT.md), [GUI parity matrix](GUI_PARITY.md)
+See the [Windows port report](docs/WINDOWS_PORT.md), [GUI parity matrix](docs/GUI_PARITY.md)
 and [Windows validation evidence](python/evidence/windows/validation.json).
 Set `CUDA_PATH` if the Windows toolkit is installed outside the default
 CUDA 13.0 directory.
@@ -193,7 +193,7 @@ bash python/scripts/run-linux.sh --headless --resolution 1024 --reynolds 50000 \
 ```
 
 Linux PNG export currently requires the renderer and an X11/Xwayland display.
-See the [Linux port report](LINUX_PORT.md) for environment setup, renderer options
+See the [Linux port report](docs/LINUX_PORT.md) for environment setup, renderer options
 and the H100 build target; H100 execution has not been validated.
 
 macOS validation, starting from the repository root, builds the Swift reference
@@ -233,8 +233,8 @@ Build each platform's wheel on that platform. Linux builds currently link to
 system CUDA/graphics libraries; a locally built Linux wheel is not a validated
 portable PyPI distribution.
 
-[Reference contract](PORT_REFERENCE.md) · [Architecture](ARCHITECTURE.md) ·
-[Measured performance and validation](PERFORMANCE.md) · [Python API](python/README.md)
+[Reference contract](docs/PORT_REFERENCE.md) · [Architecture](docs/ARCHITECTURE.md) ·
+[Measured performance and validation](docs/PERFORMANCE.md) · [Python API](python/README.md)
 
 Recorded validation and performance results are dated below; they describe the
 tested revisions and hardware, rather than a fresh run on every platform.
@@ -264,6 +264,6 @@ headless operation, unlike the Python-versus-native comparisons above. The store
 Windows trajectory matched within the existing 3 ppm diagnostic tolerance;
 Linux spectra matched its independently invoked native reference byte-for-byte.
 
-See [PERFORMANCE.md](PERFORMANCE.md) for workload definitions, raw evidence and
+See [PERFORMANCE.md](docs/PERFORMANCE.md) for workload definitions, raw evidence and
 measurement limits. Different dates, drivers and toolchains prevent these figures
 from isolating an operating-system performance difference.

@@ -1,3 +1,5 @@
+# Python port: Linux
+
 You are GPT-6 Astra running at xhigh reasoning effort inside Codex CLI on
 a VERIFIED Linux development environment.
 
@@ -14,9 +16,7 @@ Inspect the existing repository first, then implement, build, test, run,
 benchmark, profile, fix failures, and iterate until the existing Python
 application runs correctly on Linux.
 
-======================================================================
-VERIFIED DEVELOPMENT ENVIRONMENT
-======================================================================
+## VERIFIED DEVELOPMENT ENVIRONMENT
 
 Operating system:
 
@@ -83,9 +83,7 @@ WSL uses the Windows NVIDIA driver.
 You may inspect the environment to confirm assumptions, but do not waste
 development time reconfiguring an already working toolchain.
 
-======================================================================
-EXISTING REPOSITORY
-======================================================================
+## EXISTING REPOSITORY
 
 The repository already contains:
 
@@ -95,8 +93,8 @@ The repository already contains:
     GUI_PARITY.md
     WINDOWS_PORT.md
 
-    PythonPortMacOS.txt
-    PythonPortWindows.txt
+    docs/PythonPortMacOS.md
+    docs/PythonPortWindows.md
 
     python/
 
@@ -130,9 +128,7 @@ Linux:
 The Linux backend must also support completely headless execution for
 future AWS/H100 use.
 
-======================================================================
-PRIMARY OBJECTIVE
-======================================================================
+## PRIMARY OBJECTIVE
 
 Extend the existing Python application to Linux without creating a third
 independent solver.
@@ -177,9 +173,7 @@ Native Metal/CUDA/VkFFT is the:
     compute layer
     data plane
 
-======================================================================
-AUTHORITATIVE SOURCES
-======================================================================
+## AUTHORITATIVE SOURCES
 
 Do not guess behavior that already exists in source code.
 
@@ -202,8 +196,8 @@ Also inspect:
     PORT_REFERENCE.md
     GUI_PARITY.md
     WINDOWS_PORT.md
-    PythonPortMacOS.txt
-    PythonPortWindows.txt
+    docs/PythonPortMacOS.md
+    docs/PythonPortWindows.md
     python/DEVELOPMENT.md
     python/README.md
 
@@ -223,9 +217,7 @@ The existing Python application is authoritative for:
 
 Do not independently reinterpret these.
 
-======================================================================
-FIRST PHASE — INSPECT, DO NOT REWRITE
-======================================================================
+## FIRST PHASE — INSPECT, DO NOT REWRITE
 
 Before significant modifications, understand:
 
@@ -260,9 +252,7 @@ from:
 
 Do not start by copying the entire Windows project into a Linux directory.
 
-======================================================================
-TARGET NATIVE ARCHITECTURE
-======================================================================
+## TARGET NATIVE ARCHITECTURE
 
 Evolve the implementation toward a structure conceptually like:
 
@@ -311,9 +301,7 @@ unless a specific platform difference genuinely requires otherwise.
 
 Do not maintain diverging copies of important CUDA numerical kernels.
 
-======================================================================
-COMMON CUDA ENGINE
-======================================================================
+## COMMON CUDA ENGINE
 
 Refactor/reuse the working Windows CUDA/VkFFT solver so its compute layer
 is platform-neutral.
@@ -345,9 +333,7 @@ Those belong in the Windows platform/render layer.
 Likewise, Linux rendering dependencies must not leak into the numerical
 CUDA core.
 
-======================================================================
-NUMERICAL PARITY
-======================================================================
+## NUMERICAL PARITY
 
 Do not redesign the numerical solver.
 
@@ -394,9 +380,7 @@ with exactly the same meaning as macOS and Windows.
 
 Do not reinterpret the padded workspace as retained resolution.
 
-======================================================================
-VKFFT
-======================================================================
+## VKFFT
 
 Use the VkFFT CUDA backend.
 
@@ -427,9 +411,7 @@ Preserve:
 
 where already validated.
 
-======================================================================
-CUDA GRAPHS
-======================================================================
+## CUDA GRAPHS
 
 If the Windows implementation uses CUDA Graphs, preserve them on Linux
 where supported.
@@ -442,9 +424,7 @@ without measured evidence that this is necessary.
 The native solver should be capable of executing substantial numbers of
 timesteps without Python intervention.
 
-======================================================================
-GPU RESIDENCY
-======================================================================
+## GPU RESIDENCY
 
 The normal timestep must remain entirely GPU-resident.
 
@@ -464,9 +444,7 @@ independently.
 
 Only small diagnostics should normally cross to Python.
 
-======================================================================
-PYTHON API
-======================================================================
+## PYTHON API
 
 The existing Python API is authoritative.
 
@@ -504,9 +482,7 @@ Do NOT create complete duplicate files such as:
 
 unless a tiny platform adapter genuinely requires one.
 
-======================================================================
-FIRST HARD MILESTONE — HEADLESS LINUX CUDA
-======================================================================
+## FIRST HARD MILESTONE — HEADLESS LINUX CUDA
 
 Before doing ANY Linux GUI or rendering work, achieve:
 
@@ -561,9 +537,7 @@ until this gate passes.
 Once this milestone passes, checkpoint the working headless Linux backend
 before beginning GUI integration.
 
-======================================================================
-HEADLESS MODE
-======================================================================
+## HEADLESS MODE
 
 Headless Linux execution is a first-class requirement.
 
@@ -597,9 +571,7 @@ Provide a straightforward command such as:
 
 or an equivalent command consistent with the existing CLI.
 
-======================================================================
-HEADLESS PERFORMANCE BASELINE
-======================================================================
+## HEADLESS PERFORMANCE BASELINE
 
 On the WSL RTX 3090 establish at minimum:
 
@@ -653,9 +625,7 @@ Potential causes include:
 
 Distinguish real compute regression from GUI/rendering overhead.
 
-======================================================================
-GUI — SECOND PHASE ONLY
-======================================================================
+## GUI — SECOND PHASE ONLY
 
 After the headless milestone passes, make the existing PySide6 GUI work
 under Linux.
@@ -687,9 +657,7 @@ Every control must actually reach the Linux CUDA backend.
 
 Do not declare GUI parity while controls silently do nothing.
 
-======================================================================
-WSLG GUI TARGET
-======================================================================
+## WSLG GUI TARGET
 
 The first interactive Linux target is:
 
@@ -715,9 +683,7 @@ For example:
 
 or the existing project equivalent.
 
-======================================================================
-LINUX RENDERING
-======================================================================
+## LINUX RENDERING
 
 Do NOT bring Windows Direct3D rendering directly into Linux.
 
@@ -764,9 +730,7 @@ That is explicitly unacceptable.
 
 The simulation field should remain GPU-resident.
 
-======================================================================
-RENDERING ABSTRACTION
-======================================================================
+## RENDERING ABSTRACTION
 
 Do not over-abstract rendering.
 
@@ -793,9 +757,7 @@ Preserve:
 
 Do not change numerical state merely for visualization convenience.
 
-======================================================================
-GUI / SOLVER DECOUPLING
-======================================================================
+## GUI / SOLVER DECOUPLING
 
 The native simulation engine must not depend on Python driving every
 timestep.
@@ -820,9 +782,7 @@ Use a clean threading model.
 
 Do not make unsafe Qt calls from worker threads.
 
-======================================================================
-INTERACTIVE PERFORMANCE
-======================================================================
+## INTERACTIVE PERFORMANCE
 
 After the GUI works, measure:
 
@@ -852,9 +812,7 @@ not remote-display latency.
 
 Do not artificially couple simulation advancement to display refresh.
 
-======================================================================
-H100 / AWS PORTABILITY
-======================================================================
+## H100 / AWS PORTABILITY
 
 The local development GPU is:
 
@@ -903,9 +861,7 @@ The intended AWS architecture is:
 The headless Linux path should transfer to AWS with minimal platform
 changes.
 
-======================================================================
-BUILD SYSTEM
-======================================================================
+## BUILD SYSTEM
 
 The existing Python
 
@@ -997,9 +953,7 @@ development environment.
 
 Do not hard-code user-specific absolute repository paths.
 
-======================================================================
-PYTHON VERSION
-======================================================================
+## PYTHON VERSION
 
 uv currently selects:
 
@@ -1015,9 +969,7 @@ a demonstrated native-extension incompatibility requires it.
 If Python 3.14 exposes an actual compatibility issue, diagnose the specific
 dependency or extension problem before changing versions.
 
-======================================================================
-LINUX CUDA ARCHITECTURES
-======================================================================
+## LINUX CUDA ARCHITECTURES
 
 For local development:
 
@@ -1047,9 +999,7 @@ Document it.
 Do not silently generate only PTX for the local RTX 3090 if native sm_86
 code can be built.
 
-======================================================================
-TESTS AND CORRECTNESS GATE
-======================================================================
+## TESTS AND CORRECTNESS GATE
 
 Preserve all existing tests.
 
@@ -1103,9 +1053,7 @@ The correctness gate is authoritative.
 
 Do not weaken tests to accept a port or optimization.
 
-======================================================================
-WINDOWS / LINUX NUMERICAL COMPARISON
-======================================================================
+## WINDOWS / LINUX NUMERICAL COMPARISON
 
 Because both platforms use CUDA/VkFFT, establish a deterministic comparison
 between:
@@ -1152,9 +1100,7 @@ If differences occur, determine whether they result from:
 
 Do not dismiss unexplained large differences as platform variation.
 
-======================================================================
-PERFORMANCE REGRESSION PROCEDURE
-======================================================================
+## PERFORMANCE REGRESSION PROCEDURE
 
 Do not accept a major performance regression merely because Linux works.
 
@@ -1214,9 +1160,7 @@ Also report where available:
     ms/step
     R_turnover
 
-======================================================================
-HEADLESS VS INTERACTIVE BENCHMARKS
-======================================================================
+## HEADLESS VS INTERACTIVE BENCHMARKS
 
 Maintain separate performance measurements for:
 
@@ -1254,9 +1198,7 @@ The simulation should not be artificially limited to:
 
 The numerical engine may perform many timesteps between rendered frames.
 
-======================================================================
-GUI PARITY
-======================================================================
+## GUI PARITY
 
 The existing Python application is authoritative for the GUI.
 
@@ -1305,9 +1247,7 @@ Do not invent controls merely because they appear in this list.
 
 Do not silently omit existing controls.
 
-======================================================================
-LINUX GPU RENDERING
-======================================================================
+## LINUX GPU RENDERING
 
 Only after the headless hard milestone passes:
 
@@ -1350,9 +1290,7 @@ Measure whether rendering causes CUDA synchronization.
 
 Use double/triple buffering if appropriate and measured useful.
 
-======================================================================
-AWS / H100 HEADLESS TARGET
-======================================================================
+## AWS / H100 HEADLESS TARGET
 
 The Linux implementation is not WSL-specific.
 
@@ -1389,9 +1327,7 @@ Do not create an AWS-specific numerical solver.
 
 Do not claim H100 performance until it is actually run there.
 
-======================================================================
-DOCUMENTATION
-======================================================================
+## DOCUMENTATION
 
 Update:
 
@@ -1433,9 +1369,7 @@ PERFORMANCE.md should contain only actually measured performance.
 
 Do not put hypothetical H100 results into measured-result tables.
 
-======================================================================
-REFERENCE DIRECTORIES
-======================================================================
+## REFERENCE DIRECTORIES
 
 Treat:
 
@@ -1458,9 +1392,7 @@ Document its origin where useful.
 Do not leave multiple diverging copies of important numerical kernels if
 they can cleanly be shared.
 
-======================================================================
-PACKAGING
-======================================================================
+## PACKAGING
 
 Packaging is secondary.
 
@@ -1486,9 +1418,7 @@ Do not bundle or install NVIDIA kernel drivers.
 
 Do not require a desktop environment for headless mode.
 
-======================================================================
-WORKFLOW
-======================================================================
+## WORKFLOW
 
 Execute the work in this order:
 
@@ -1555,9 +1485,7 @@ Do not skip directly to GUI work before the headless gate passes.
 
 Do not stop after the first successful build.
 
-======================================================================
-SUCCESS CRITERIA
-======================================================================
+## SUCCESS CRITERIA
 
 The task is complete only when:
 
@@ -1599,9 +1527,7 @@ Do not claim completion simply because:
 Completion means the full correctness, parity, performance, GUI and headless
 requirements above have been demonstrated.
 
-======================================================================
-FINAL SELF-REVIEW
-======================================================================
+## FINAL SELF-REVIEW
 
 Before finishing, inspect the implementation critically.
 
@@ -1628,9 +1554,7 @@ Answer internally:
 
 Fix important findings before declaring completion.
 
-======================================================================
-FINAL RESPONSE
-======================================================================
+## FINAL RESPONSE
 
 When finished, give a concise engineering report containing:
 

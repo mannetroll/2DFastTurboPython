@@ -1,3 +1,5 @@
+# Python port: Windows
+
 You are GPT-6 Astra running at xhigh reasoning effort inside Codex CLI on Windows 10 Pro.
 
 Work directly on the files in the current repository.
@@ -7,8 +9,7 @@ Do not stop after producing a plan.
 Do not rewrite working code unnecessarily.
 Inspect the existing implementation first, then implement, build, test, run, compare, fix failures, and iterate until the Windows Python backend works.
 
-PRIMARY TASK
-============
+## PRIMARY TASK
 
 This repository already contains:
 
@@ -63,8 +64,7 @@ Python is the control/UI layer.
 
 The native GPU engine remains the compute layer.
 
-SOURCE AUTHORITY
-================
+## SOURCE AUTHORITY
 
 Use these sources in this priority:
 
@@ -88,8 +88,7 @@ Existing architecture documentation:
 
 Do not infer behavior when the source code already defines it.
 
-FIRST PHASE — INSPECT
-=====================
+## FIRST PHASE — INSPECT
 
 Before modifying code, inspect the repository thoroughly.
 
@@ -115,8 +114,7 @@ Determine the smallest clean interface that allows both native backends to satis
 
 Do not make large changes before understanding this.
 
-PLATFORM GOAL
-=============
+## PLATFORM GOAL
 
 From Python, usage should be conceptually platform-neutral.
 
@@ -144,8 +142,7 @@ branches.
 
 Platform selection should be localized.
 
-COMMON PYTHON APPLICATION
-=========================
+## COMMON PYTHON APPLICATION
 
 Preserve one shared Python application for:
 
@@ -172,8 +169,7 @@ Do not duplicate the entire Python GUI into a Windows version.
 
 There should be ONE Python GUI codebase.
 
-NATIVE BACKEND INTERFACE
-========================
+## NATIVE BACKEND INTERFACE
 
 Create or refine a stable backend-neutral interface.
 
@@ -214,8 +210,7 @@ Use opaque native handles where appropriate.
 
 Do not leak C++/CUDA internals into Python.
 
-WINDOWS BACKEND
-===============
+## WINDOWS BACKEND
 
 Use the native Windows implementation in:
 
@@ -247,8 +242,7 @@ Do not copy code blindly if a cleaner reuse approach is possible.
 
 Do not change numerical behavior merely to make binding easier.
 
-NUMERICAL PARITY
-================
+## NUMERICAL PARITY
 
 The Windows Python-backed solver must preserve the native Windows solver's numerical behavior.
 
@@ -277,8 +271,7 @@ Do not reinterpret N.
 
 The Python GUI must report this consistently with the macOS version.
 
-NATIVE BINDING
-==============
+## NATIVE BINDING
 
 Use the thinnest robust Windows Python binding.
 
@@ -302,8 +295,7 @@ while macOS uses:
 
 Keep the Python-facing API identical.
 
-CUDA TOOLCHAIN
-==============
+## CUDA TOOLCHAIN
 
 This Windows machine has a verified native CUDA environment.
 
@@ -324,8 +316,7 @@ Do not unnecessarily upgrade or reconfigure the CUDA toolchain.
 
 Use Release builds for performance comparisons.
 
-WINDOWS RENDERING
-=================
+## WINDOWS RENDERING
 
 Do not move visualization through Python arrays.
 
@@ -359,8 +350,7 @@ Platform-specific render hosting is acceptable.
 
 Duplicating the full GUI is not.
 
-MACOS MUST NOT REGRESS
-======================
+## MACOS MUST NOT REGRESS
 
 The current Python/macOS implementation already works.
 
@@ -372,8 +362,7 @@ Keep platform code separated such that Windows-only includes/libraries are never
 
 Likewise, macOS frameworks must not be required on Windows.
 
-BUILD SYSTEM
-============
+## BUILD SYSTEM
 
 The Python project currently contains:
 
@@ -413,8 +402,7 @@ Create/update useful PowerShell scripts if appropriate:
 
 Do not remove working macOS scripts.
 
-GUI PARITY
-==========
+## GUI PARITY
 
 The current Python GUI is authoritative.
 
@@ -446,8 +434,7 @@ with columns:
 
 Do not claim completion while controls silently do nothing.
 
-VISUAL PARITY
-=============
+## VISUAL PARITY
 
 Aim for the same Python GUI appearance on both systems.
 
@@ -464,8 +451,7 @@ Small platform font/rendering differences are acceptable.
 
 Do not alter physics to make images look identical.
 
-PERFORMANCE
-===========
+## PERFORMANCE
 
 The Windows Python version must preserve native performance as closely as practical.
 
@@ -519,8 +505,7 @@ Likely causes to investigate:
 
 Do not accept a major performance regression simply because the port works.
 
-THREADING / GIL
-===============
+## THREADING / GIL
 
 Ensure the GPU simulation can execute without the Python GUI blocking it.
 
@@ -534,8 +519,7 @@ Use a clean threading model.
 
 Avoid uncontrolled cross-thread calls into Qt.
 
-TESTS
-=====
+## TESTS
 
 Preserve existing tests.
 
@@ -570,8 +554,7 @@ Do not require bitwise identity if asynchronous FP32 GPU execution makes that un
 
 Require tight numerical agreement.
 
-REFERENCE DIRECTORIES
-=====================
+## REFERENCE DIRECTORIES
 
 Treat:
 
@@ -588,8 +571,7 @@ Prefer implementing/refactoring under:
 
 If some native source should genuinely be shared, copy/adapt it deliberately into python/native/ and document its origin.
 
-DOCUMENTATION
-=============
+## DOCUMENTATION
 
 Update:
 
@@ -623,8 +605,7 @@ summarizing:
 - limitations
 - performance results
 
-PACKAGING
-=========
+## PACKAGING
 
 Do not make packaging the first priority.
 
@@ -662,8 +643,7 @@ It may require:
 
 Do not compromise solver performance just to achieve packaging.
 
-WORKFLOW
-========
+## WORKFLOW
 
 Use this sequence:
 
@@ -687,8 +667,7 @@ Use this sequence:
 
 Do not start by rewriting architecture that already works.
 
-OPTIMIZATION RULE
-=================
+## OPTIMIZATION RULE
 
 For every performance change:
 
@@ -706,8 +685,7 @@ Do not combine speculative optimizations.
 
 Do not optimize Python syntax while the real bottleneck is native synchronization.
 
-SUCCESS CRITERIA
-================
+## SUCCESS CRITERIA
 
 The task is complete when:
 
@@ -722,8 +700,7 @@ The task is complete when:
 9. Python overhead is measured and acceptably small.
 10. Build/run instructions are reproducible.
 
-FINAL RESPONSE
-==============
+## FINAL RESPONSE
 
 When finished, give a concise engineering report containing:
 

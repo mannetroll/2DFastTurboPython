@@ -1,12 +1,12 @@
 # Measured performance and parity
 
 After fixing CMake compiler-cache invalidation, two clean GUI launches rebuilt
-all native targets. The [clean-build report](python/evidence/linux-clean-build/REPORT.md)
+all native targets. The [clean-build report](../python/evidence/linux-clean-build/REPORT.md)
 records 51 passing tests and fresh headless/GUI medians of 719.831/664.224 steps/s
 at N1024 and 184.014/166.163 steps/s at N2048, with unchanged parity checks.
 
 The later system CUDA 13.3.1 installation was rebuilt and revalidated on the
-same native Ubuntu RTX 3090 host. Its [upgrade report and fresh benchmarks](python/evidence/linux-cuda-upgrade/REPORT.md)
+same native Ubuntu RTX 3090 host. Its [upgrade report and fresh benchmarks](../python/evidence/linux-cuda-upgrade/REPORT.md)
 record headless/GUI medians of 720.219/669.005 steps/s at N1024 and
 183.411/165.086 steps/s at N2048. The CUDA 13.2 measurements below remain the
 earlier baseline.
@@ -40,7 +40,7 @@ tests passed, 12 Windows-only skips; native CTest passed; 52 GUI assertions and
 24 independent pixel comparisons passed. WSLg and H100 execution remain separate
 limitations; native Ubuntu GUI results do not establish WSLg support.
 
-Final raw timing records and comparison: [`python/evidence/linux-native/final`](python/evidence/linux-native/final).
+Final raw timing records and comparison: [`python/evidence/linux-native/final`](../python/evidence/linux-native/final).
 The parent directory retains the first round and validation/profiling evidence.
 Build/run details: [LINUX_PORT.md](LINUX_PORT.md).
 
@@ -75,7 +75,7 @@ retains two failing GUI/render tests. **No interactive R_turbo or GUI-overhead
 measurement exists:** the tested GPU-backed WSLg contexts reject CUDA sharing.
 No H100 measurement is claimed. Exact commands, raw timing/diagnostic JSON,
 profile summaries and interop evidence are in
-[`python/evidence/linux`](python/evidence/linux) and [LINUX_PORT.md](LINUX_PORT.md).
+[`python/evidence/linux`](../python/evidence/linux) and [LINUX_PORT.md](LINUX_PORT.md).
 
 ## Windows CUDA/VkFFT, 2026-09-14
 
@@ -128,9 +128,9 @@ spectra match the native executable exactly.
 
 Reproduce with `python/scripts/benchmark-windows.ps1`. Compact evidence, raw run
 records, binary hashes, GUI captures and runtime audits are in
-[`python/evidence/windows`](python/evidence/windows), including
-[performance.json](python/evidence/windows/performance.json) and
-[validation.json](python/evidence/windows/validation.json).
+[`python/evidence/windows`](../python/evidence/windows), including
+[performance.json](../python/evidence/windows/performance.json) and
+[validation.json](../python/evidence/windows/validation.json).
 
 ## Preserved macOS measurements
 

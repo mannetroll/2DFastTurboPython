@@ -1,4 +1,0 @@
-Token usage: total=339994 input=267671 (+ 10066688 cached) output=72323 (reasoning 18 788)
-To continue this session, run:
-  codex resume 01a09ffb-2f3f-7ea3-bdbe-539e8f7e4452
-Or run codex resume and select Do PythonPort.txt.

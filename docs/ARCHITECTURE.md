@@ -23,7 +23,7 @@ are configurable separately from the ImGui event loop. Input wakes presentation
 immediately; idle drawing follows field updates or 4 Hz telemetry, and active
 editing refreshes at up to 60 Hz. Neither drives solver steps. No normal-frame
 CPU readback is introduced. See
-[native Linux architecture and validation](native-linux/README.md).
+[native Linux architecture and validation](../native-linux/README.md).
 
 ## Python/native application
 
@@ -51,11 +51,11 @@ The native `2dbench` target links that same core and CUDA loader. Its C++ host
 runs each grid size in an isolated child process, performs the Python benchmark's
 warmup/reset and synchronized timing sequence, and formats text or JSON reports.
 Neither Linux executable needs Python; `2dbench` also needs no source checkout
-or recorded reference fixtures at runtime. See [native benchmark](reference-linux/2dbench.md).
+or recorded reference fixtures at runtime. See [native benchmark](../reference-linux/2dbench.md).
 The historical PAO/CNAB2 comparison method lives in `python/native/cuda/legacy_*`
 and reuses the same VkFFT wrapper; it preserves the distinct historical seed,
 curl sign, compact layout, and checkpoint controller. See
-[`reference-linux/README.md`](reference-linux/README.md).
+[`reference-linux/README.md`](../reference-linux/README.md).
 A native rendering thread embeds a GLX child under the shared Qt xcb canvas,
 using Xwayland on a Wayland desktop. CUDA copies completed immutable snapshots
 device-to-device into a persistent OpenGL texture buffer. Mapping/unmapping and
