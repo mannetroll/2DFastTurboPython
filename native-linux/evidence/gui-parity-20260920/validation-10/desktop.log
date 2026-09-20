@@ -1,0 +1,795 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Click Window
+PASS 2: Click Menu Minimize
+PASS 3: Minimized window
+PASS 4: Restore minimized window
+PASS 5: Window restored
+PASS 6: Minimize shortcut
+PASS 7: Ctrl+M minimizes
+PASS 8: Restore again
+PASS 9: Initial texture has more than 100 colors
+PASS 10: Click Run
+PASS 11: Run advances
+PASS 12: Click Pause
+PASS 13: Pause settles
+PASS 14: Remember paused step
+PASS 15: Pause remains stable
+PASS 16: Click Single Step
+PASS 17: Single Step exactly once
+PASS 18: Click Reset
+PASS 19: Reset reproduces seed and pixels
+PASS 20: Click Speed
+PASS 21: GPU field Speed
+PASS 22: Click Enstrophy
+PASS 23: GPU field Enstrophy
+PASS 24: Click Vorticity
+PASS 25: GPU field Vorticity
+PASS 26: Three distinct fields
+PASS 27: Remember palette pixels
+PASS 28: Click Inferno
+PASS 29: GPU palette Inferno
+PASS 30: Remember palette pixels
+PASS 31: Click Aurora
+PASS 32: GPU palette Aurora
+PASS 33: Remember palette pixels
+PASS 34: Click Glacier
+PASS 35: GPU palette Glacier
+PASS 36: Remember palette pixels
+PASS 37: Click Ember
+PASS 38: GPU palette Ember
+PASS 39: Adjust Sigma
+PASS 40: Sigma updates paused texture
+PASS 41: Click Color range
+PASS 42: Click Option Exposure
+PASS 43: Exposure mode selected
+PASS 44: Click Exposure
+PASS 45: Exposure updates paused texture
+PASS 46: Click Velocity direction
+PASS 47: Flow requests a velocity lease
+PASS 48: Click Velocity direction
+PASS 49: Remember generation for live edits
+PASS 50: Click CFL
+PASS 51: CFL edits live without reset
+PASS 52: Remember Reynolds
+PASS 53: Click Reynolds
+PASS 54: Reynolds edits live without reset
+PASS 55: Click Regulation
+PASS 56: Regulation enabled
+PASS 57: Click Regulation
+PASS 58: Regulation disabled
+PASS 59: Click Seed
+PASS 60: Select seed
+PASS 61: Type seed 3
+PASS 62: Type seed 1
+PASS 63: Type seed 4
+PASS 64: Typing does not reset
+PASS 65: Arrow stays in editor
+PASS 66: F stays in editor
+PASS 67: Remove typed F
+PASS 68: New seed shortcut stays in editor
+PASS 69: R stays in editor
+PASS 70: Space stays in editor
+PASS 71: Simulation shortcuts do not consume typing
+PASS 72: Select edited seed
+PASS 73: Replace seed
+PASS 74: Click Edit
+PASS 75: Click Undo
+PASS 76: Undo replacement insertion
+PASS 77: Click Edit
+PASS 78: Click Undo
+PASS 79: Undo replacement deletion
+PASS 80: Click Edit
+PASS 81: Click Redo
+PASS 82: Click Edit
+PASS 83: Click Redo
+PASS 84: Edit menu Redo
+PASS 85: Click Edit
+PASS 86: Click Select All
+PASS 87: Click Edit
+PASS 88: Click Copy
+PASS 89: Click Edit
+PASS 90: Click Cut
+PASS 91: Edit menu Cut
+PASS 92: Click Edit
+PASS 93: Click Paste
+PASS 94: Edit menu Paste
+PASS 95: Keyboard Select All
+PASS 96: Keyboard Copy
+PASS 97: Keyboard Cut
+PASS 98: Keyboard Cut clears selection
+PASS 99: Keyboard Undo
+PASS 100: Keyboard Undo restores cut
+PASS 101: Keyboard Redo
+PASS 102: Keyboard Redo reapplies cut
+PASS 103: Keyboard Paste
+PASS 104: Keyboard Paste restores text
+PASS 105: Click Edit
+PASS 106: Capture active Edit menu
+PASS 107: Dismiss Edit menu
+PASS 108: Commit seed
+PASS 109: Seed commits and resets
+PASS 110: Click New seed
+PASS 111: New seed button
+PASS 112: New seed shortcut
+PASS 113: Ctrl+Shift+R changes seed
+PASS 114: Click Simulation
+PASS 115: Click Menu New Initial Condition
+PASS 116: New initial condition menu
+PASS 117: Click k₀
+PASS 118: Click 6
+PASS 119: K0 resets
+PASS 120: Click N
+PASS 121: Click 256
+PASS 122: Resolution resets
+PASS 123: Click Start spectrum
+PASS 124: Click Option KM3 (k⁻³)
+PASS 125: KM3 spectrum
+PASS 126: Click Method
+PASS 127: Click Option IMEX RK3
+PASS 128: Integrator selection 0
+PASS 129: Click Method
+PASS 130: Click Option Integrating-factor RK3
+PASS 131: Integrator selection 1
+PASS 132: Click Method
+PASS 133: Click Option ETD RK4
+PASS 134: Integrator selection 2
+PASS 135: Click Method
+PASS 136: Click Option CNAB2
+PASS 137: Integrator selection 3
+PASS 138: CNAB2 constraints
+PASS 139: Click Method
+PASS 140: Click Option ETD RK4
+PASS 141: Restore ETDRK4
+PASS 142: Click Form
+PASS 143: Click Option Advective
+PASS 144: Form resets
+PASS 145: Click Update interval
+PASS 146: Interval changed
+PASS 147: Click Visualization
+PASS 148: Visualization disabled
+PASS 149: Click Simulation
+PASS 150: Click Menu Resume
+PASS 151: Solver runs with visualization disabled
+PASS 152: Click Simulation
+PASS 153: Click Menu Pause
+PASS 154: Pause menu
+PASS 155: Click View
+PASS 156: Click Menu Show Simulation
+PASS 157: Show Simulation restores current paused frame
+PASS 158: Click Simulation
+PASS 159: Click Menu Reset Flow
+PASS 160: Reset menu
+PASS 161: Click Simulation
+PASS 162: Click Menu Single Step
+PASS 163: Step menu
+PASS 164: Focus flow
+PASS 165: Space shortcut
+PASS 166: Space runs
+PASS 167: Space pauses
+PASS 168: Space pause settles
+PASS 169: Remember shortcut step
+PASS 170: Right shortcut
+PASS 171: Right exactly one step
+PASS 172: R shortcut
+PASS 173: R resets
+PASS 174: Remember numeric editor generation
+PASS 175: Ctrl-click numeric CFL editor
+PASS 176: Select numeric CFL
+PASS 177: Numeric CFL 1
+PASS 178: Decimal point
+PASS 179: Numeric CFL 2
+PASS 180: Click Edit
+PASS 181: Click Select All
+PASS 182: Click Edit
+PASS 183: Click Copy
+PASS 184: Click Edit
+PASS 185: Click Cut
+PASS 186: Click Edit
+PASS 187: Click Paste
+PASS 188: Commit numeric CFL
+PASS 189: Numeric Edit menu retains live semantics
+PASS 190: Click Seed
+PASS 191: Select seed for error
+PASS 192: Invalid seed
+PASS 193: Commit invalid seed
+PASS 194: Invalid edit is reported
+PASS 195: Click View
+PASS 196: Click Menu Dismiss Message
+PASS 197: Dismiss Message clears error
+PASS 198: Click File
+PASS 199: Click Menu About 2DFastTurbo
+PASS 200: About dialog evidence
+PASS 201: Click About OK
+PASS 202: Set snapshot filename
+PASS 203: Click File
+PASS 204: Click Menu Save Snapshot…
+PASS 205: Click Save PNG
+PASS 206: Snapshot exported
+PASS 207: Snapshot shortcut
+PASS 208: Click Save PNG
+PASS 209: Click Replace PNG
+PASS 210: Snapshot overwrite confirmed
+PASS 211: Click Snapshot
+PASS 212: Click Cancel PNG
+PASS 213: Snapshot cancel
+PASS 214: Click File
+PASS 215: Capture menu File
+PASS 216: Dismiss menu
+PASS 217: Click Edit
+PASS 218: Capture menu Edit
+PASS 219: Dismiss menu
+PASS 220: Click Simulation
+PASS 221: Capture menu Simulation
+PASS 222: Dismiss menu
+PASS 223: Click View
+PASS 224: Capture menu View
+PASS 225: Dismiss menu
+PASS 226: Click Window
+PASS 227: Capture menu Window
+PASS 228: Dismiss menu
+PASS 229: Keyboard menu navigation: Alt
+PASS 230: Open keyboard menu
+PASS 231: Keyboard navigates menu
+PASS 232: Next menu
+PASS 233: Close keyboard menu
+PASS 234: Leave menu bar
+PASS 235: Restore reference visual settings
+PASS 236: Reference field ready
+PASS 237: Click Run
+PASS 238: Evolve comparable reference field
+PASS 239: Click Pause
+PASS 240: Pause reference capture
+PASS 241: Resize 1280x720
+PASS 242: 1280x720 square and centered
+PASS 243: Wheel scroll inspector
+PASS 244: Inspector scroll reaches numerics and presentation
+PASS 245: Click Focus
+PASS 246: Header focus mode
+PASS 247: Click File
+PASS 248: Menus accessible in focus mode
+PASS 249: Dismiss focus menu
+PASS 250: Click View
+PASS 251: Click Menu Show Controls
+PASS 252: Show Controls restores inspector
+PASS 253: Focus flow for F
+PASS 254: F focus shortcut
+PASS 255: F hides controls
+PASS 256: F restores controls
+PASS 257: Resize 1920x1080
+PASS 258: 1920x1080 square and centered
+PASS 259: High DPI 1.5x
+PASS 260: High DPI square and centered
+PASS 261: Click View
+PASS 262: Click Menu Focus on Flow
+PASS 263: High DPI focus
+PASS 264: Click View
+PASS 265: Click Menu Show Controls
+PASS 266: Restore DPI
+PASS 267: Maximize
+PASS 268: Maximized layout
+PASS 269: Restore size
+PASS 270: Resize reference proportions
+PASS 271: Reference proportions
+PASS 272: Click Run
+PASS 273: Close while solver is running
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Click Window",
+    "Click Menu Minimize",
+    "Minimized window",
+    "Restore minimized window",
+    "Window restored",
+    "Minimize shortcut",
+    "Ctrl+M minimizes",
+    "Restore again",
+    "Initial texture has more than 100 colors",
+    "Click Run",
+    "Run advances",
+    "Click Pause",
+    "Pause settles",
+    "Remember paused step",
+    "Pause remains stable",
+    "Click Single Step",
+    "Single Step exactly once",
+    "Click Reset",
+    "Reset reproduces seed and pixels",
+    "Click Speed",
+    "GPU field Speed",
+    "Click Enstrophy",
+    "GPU field Enstrophy",
+    "Click Vorticity",
+    "GPU field Vorticity",
+    "Three distinct fields",
+    "Remember palette pixels",
+    "Click Inferno",
+    "GPU palette Inferno",
+    "Remember palette pixels",
+    "Click Aurora",
+    "GPU palette Aurora",
+    "Remember palette pixels",
+    "Click Glacier",
+    "GPU palette Glacier",
+    "Remember palette pixels",
+    "Click Ember",
+    "GPU palette Ember",
+    "Adjust Sigma",
+    "Sigma updates paused texture",
+    "Click Color range",
+    "Click Option Exposure",
+    "Exposure mode selected",
+    "Click Exposure",
+    "Exposure updates paused texture",
+    "Click Velocity direction",
+    "Flow requests a velocity lease",
+    "Click Velocity direction",
+    "Remember generation for live edits",
+    "Click CFL",
+    "CFL edits live without reset",
+    "Remember Reynolds",
+    "Click Reynolds",
+    "Reynolds edits live without reset",
+    "Click Regulation",
+    "Regulation enabled",
+    "Click Regulation",
+    "Regulation disabled",
+    "Click Seed",
+    "Select seed",
+    "Type seed 3",
+    "Type seed 1",
+    "Type seed 4",
+    "Typing does not reset",
+    "Arrow stays in editor",
+    "F stays in editor",
+    "Remove typed F",
+    "New seed shortcut stays in editor",
+    "R stays in editor",
+    "Space stays in editor",
+    "Simulation shortcuts do not consume typing",
+    "Select edited seed",
+    "Replace seed",
+    "Click Edit",
+    "Click Undo",
+    "Undo replacement insertion",
+    "Click Edit",
+    "Click Undo",
+    "Undo replacement deletion",
+    "Click Edit",
+    "Click Redo",
+    "Click Edit",
+    "Click Redo",
+    "Edit menu Redo",
+    "Click Edit",
+    "Click Select All",
+    "Click Edit",
+    "Click Copy",
+    "Click Edit",
+    "Click Cut",
+    "Edit menu Cut",
+    "Click Edit",
+    "Click Paste",
+    "Edit menu Paste",
+    "Keyboard Select All",
+    "Keyboard Copy",
+    "Keyboard Cut",
+    "Keyboard Cut clears selection",
+    "Keyboard Undo",
+    "Keyboard Undo restores cut",
+    "Keyboard Redo",
+    "Keyboard Redo reapplies cut",
+    "Keyboard Paste",
+    "Keyboard Paste restores text",
+    "Click Edit",
+    "Capture active Edit menu",
+    "Dismiss Edit menu",
+    "Commit seed",
+    "Seed commits and resets",
+    "Click New seed",
+    "New seed button",
+    "New seed shortcut",
+    "Ctrl+Shift+R changes seed",
+    "Click Simulation",
+    "Click Menu New Initial Condition",
+    "New initial condition menu",
+    "Click k₀",
+    "Click 6",
+    "K0 resets",
+    "Click N",
+    "Click 256",
+    "Resolution resets",
+    "Click Start spectrum",
+    "Click Option KM3 (k⁻³)",
+    "KM3 spectrum",
+    "Click Method",
+    "Click Option IMEX RK3",
+    "Integrator selection 0",
+    "Click Method",
+    "Click Option Integrating-factor RK3",
+    "Integrator selection 1",
+    "Click Method",
+    "Click Option ETD RK4",
+    "Integrator selection 2",
+    "Click Method",
+    "Click Option CNAB2",
+    "Integrator selection 3",
+    "CNAB2 constraints",
+    "Click Method",
+    "Click Option ETD RK4",
+    "Restore ETDRK4",
+    "Click Form",
+    "Click Option Advective",
+    "Form resets",
+    "Click Update interval",
+    "Interval changed",
+    "Click Visualization",
+    "Visualization disabled",
+    "Click Simulation",
+    "Click Menu Resume",
+    "Solver runs with visualization disabled",
+    "Click Simulation",
+    "Click Menu Pause",
+    "Pause menu",
+    "Click View",
+    "Click Menu Show Simulation",
+    "Show Simulation restores current paused frame",
+    "Click Simulation",
+    "Click Menu Reset Flow",
+    "Reset menu",
+    "Click Simulation",
+    "Click Menu Single Step",
+    "Step menu",
+    "Focus flow",
+    "Space shortcut",
+    "Space runs",
+    "Space pauses",
+    "Space pause settles",
+    "Remember shortcut step",
+    "Right shortcut",
+    "Right exactly one step",
+    "R shortcut",
+    "R resets",
+    "Remember numeric editor generation",
+    "Ctrl-click numeric CFL editor",
+    "Select numeric CFL",
+    "Numeric CFL 1",
+    "Decimal point",
+    "Numeric CFL 2",
+    "Click Edit",
+    "Click Select All",
+    "Click Edit",
+    "Click Copy",
+    "Click Edit",
+    "Click Cut",
+    "Click Edit",
+    "Click Paste",
+    "Commit numeric CFL",
+    "Numeric Edit menu retains live semantics",
+    "Click Seed",
+    "Select seed for error",
+    "Invalid seed",
+    "Commit invalid seed",
+    "Invalid edit is reported",
+    "Click View",
+    "Click Menu Dismiss Message",
+    "Dismiss Message clears error",
+    "Click File",
+    "Click Menu About 2DFastTurbo",
+    "About dialog evidence",
+    "Click About OK",
+    "Set snapshot filename",
+    "Click File",
+    "Click Menu Save Snapshot…",
+    "Click Save PNG",
+    "Snapshot exported",
+    "Snapshot shortcut",
+    "Click Save PNG",
+    "Click Replace PNG",
+    "Snapshot overwrite confirmed",
+    "Click Snapshot",
+    "Click Cancel PNG",
+    "Snapshot cancel",
+    "Click File",
+    "Capture menu File",
+    "Dismiss menu",
+    "Click Edit",
+    "Capture menu Edit",
+    "Dismiss menu",
+    "Click Simulation",
+    "Capture menu Simulation",
+    "Dismiss menu",
+    "Click View",
+    "Capture menu View",
+    "Dismiss menu",
+    "Click Window",
+    "Capture menu Window",
+    "Dismiss menu",
+    "Keyboard menu navigation: Alt",
+    "Open keyboard menu",
+    "Keyboard navigates menu",
+    "Next menu",
+    "Close keyboard menu",
+    "Leave menu bar",
+    "Restore reference visual settings",
+    "Reference field ready",
+    "Click Run",
+    "Evolve comparable reference field",
+    "Click Pause",
+    "Pause reference capture",
+    "Resize 1280x720",
+    "1280x720 square and centered",
+    "Wheel scroll inspector",
+    "Inspector scroll reaches numerics and presentation",
+    "Click Focus",
+    "Header focus mode",
+    "Click File",
+    "Menus accessible in focus mode",
+    "Dismiss focus menu",
+    "Click View",
+    "Click Menu Show Controls",
+    "Show Controls restores inspector",
+    "Focus flow for F",
+    "F focus shortcut",
+    "F hides controls",
+    "F restores controls",
+    "Resize 1920x1080",
+    "1920x1080 square and centered",
+    "High DPI 1.5x",
+    "High DPI square and centered",
+    "Click View",
+    "Click Menu Focus on Flow",
+    "High DPI focus",
+    "Click View",
+    "Click Menu Show Controls",
+    "Restore DPI",
+    "Maximize",
+    "Maximized layout",
+    "Restore size",
+    "Resize reference proportions",
+    "Reference proportions",
+    "Click Run",
+    "Close while solver is running"
+  ],
+  "distinct_fields": 3,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [
+    {
+      "focused": false,
+      "framebuffer": [
+        1280,
+        720
+      ],
+      "image": [
+        276.0,
+        132.0,
+        514.0,
+        514.0
+      ],
+      "inspector": [
+        1062.0,
+        98.0,
+        196.0,
+        548.0
+      ],
+      "name": "1280x720",
+      "scale": 1.0,
+      "scroll_max": 198.0,
+      "viewport": [
+        22.0,
+        132.0,
+        1022.0,
+        514.0
+      ]
+    },
+    {
+      "focused": true,
+      "framebuffer": [
+        1280,
+        720
+      ],
+      "image": [
+        352.0,
+        132.0,
+        576.0,
+        576.0
+      ],
+      "inspector": [
+        1062.0,
+        98.0,
+        196.0,
+        610.0
+      ],
+      "name": "1280x720-focus",
+      "scale": 1.0,
+      "scroll_max": 198.0,
+      "viewport": [
+        22.0,
+        132.0,
+        1236.0,
+        576.0
+      ]
+    },
+    {
+      "focused": false,
+      "framebuffer": [
+        1920,
+        1080
+      ],
+      "image": [
+        416.0,
+        132.0,
+        874.0,
+        874.0
+      ],
+      "inspector": [
+        1702.0,
+        98.0,
+        196.0,
+        908.0
+      ],
+      "name": "1920x1080",
+      "scale": 1.0,
+      "scroll_max": 0.0,
+      "viewport": [
+        22.0,
+        132.0,
+        1662.0,
+        874.0
+      ]
+    },
+    {
+      "focused": false,
+      "framebuffer": [
+        1920,
+        1080
+      ],
+      "image": [
+        414.0,
+        198.0,
+        770.0,
+        770.0
+      ],
+      "inspector": [
+        1593.0,
+        147.5,
+        294.0,
+        821.5
+      ],
+      "name": "1920x1080-dpi150",
+      "scale": 1.5,
+      "scroll_max": 300.0,
+      "viewport": [
+        33.0,
+        198.5,
+        1533.0,
+        770.5
+      ]
+    },
+    {
+      "focused": true,
+      "framebuffer": [
+        1920,
+        1080
+      ],
+      "image": [
+        528.0,
+        198.0,
+        863.0,
+        863.0
+      ],
+      "inspector": [
+        1593.0,
+        147.5,
+        294.0,
+        914.5
+      ],
+      "name": "1920x1080-dpi150-focus",
+      "scale": 1.5,
+      "scroll_max": 300.0,
+      "viewport": [
+        33.0,
+        198.5,
+        1854.0,
+        863.5
+      ]
+    },
+    {
+      "focused": false,
+      "framebuffer": [
+        1511,
+        981
+      ],
+      "image": [
+        261.0,
+        132.0,
+        775.0,
+        775.0
+      ],
+      "inspector": [
+        1293.0,
+        98.0,
+        196.0,
+        809.0
+      ],
+      "name": "maximized",
+      "scale": 1.0,
+      "scroll_max": 0.0,
+      "viewport": [
+        22.0,
+        132.0,
+        1253.0,
+        775.0
+      ]
+    },
+    {
+      "focused": false,
+      "framebuffer": [
+        940,
+        900
+      ],
+      "image": [
+        22.0,
+        138.0,
+        682.0,
+        682.0
+      ],
+      "inspector": [
+        722.0,
+        98.0,
+        196.0,
+        728.0
+      ],
+      "name": "reference-proportions",
+      "scale": 1.0,
+      "scroll_max": 18.0,
+      "viewport": [
+        22.0,
+        132.0,
+        682.0,
+        694.0
+      ]
+    }
+  ],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 1528430592,
+    "draw_submit_seconds": 0.0670497199989768,
+    "field_updates": 864,
+    "presentations": 1948,
+    "upload_seconds": 0.0745426039979975,
+    "uploads": 70
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "framebuffer": [
+      940.0,
+      900.0
+    ],
+    "image": [
+      22.0,
+      138.0,
+      682.0,
+      682.0
+    ],
+    "inspector": [
+      722.0,
+      98.0,
+      196.0,
+      728.0
+    ],
+    "inspector_scroll_max": 18.0,
+    "scale": 1.0,
+    "viewport": [
+      22.0,
+      132.0,
+      682.0,
+      694.0
+    ]
+  },
+  "visualization": true
+}

@@ -1,0 +1,276 @@
+[
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:11:20.349621+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:11:33.052846+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--capture",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/performance/n2048-native.png"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:11:45.881367+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:11:58.574205+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:12:11.272623+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:12:21.880309+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:12:34.605333+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:12:45.215511+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:12:57.943508+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:13:09.216305+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:13:22.471139+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--capture",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/performance/n4096-native.png"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:13:35.996287+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:13:49.249797+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:14:02.668379+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:14:13.943288+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:14:27.369959+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-19T22:14:38.650064+00:00"
+  },
+  {
+    "argv": [
+      "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-19T22:14:51.919852+00:00"
+  }
+]

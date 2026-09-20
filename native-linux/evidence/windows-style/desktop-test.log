@@ -1,0 +1,136 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+UI check 0: CUDA/VkFFT initialization and GPU texture
+UI check 1: Run button
+UI check 2: Pause button settled
+UI check 3: Pause remains stable
+UI check 4: Single Step exactly one step
+UI check 5: Reset reproduces seed and pixels
+UI check 6: Velocity magnitude texture
+UI check 7: Enstrophy texture
+UI check 8: Three distinct field visualizations
+UI check 9: Aurora
+UI check 10: Ember
+UI check 11: Glacier
+UI check 12: Inferno
+UI check 13: Exposure tested on velocity, matching existing shader semantics
+UI check 14: Exposure slider changes texture
+UI check 15: Sigma tested on vorticity
+UI check 16: Sigma slider changes texture
+UI check 17: Complete square domain
+UI check 18: Resize square-domain layout
+UI check 19: 1280 x 720 managed window layout
+UI check 20: 1920 x 1080 layout
+UI check 21: Large desktop resize
+Click option 200% at 2886, 407
+UI check 22: 200 percent DPI font and control scaling
+UI check 23: Settings drawer dismiss
+UI check 24: Compact sidebar at 200 percent
+Click option 100% at 1172, 654
+UI check 25: Restore 100 percent scaling
+UI check 26: Resolution input focus
+UI check 27: Resolution input via X11 keyboard
+UI check 28: Apply edited resolution
+UI check 29: N=256 reset and replacement GPU frame
+UI check 30: Visualization disabled
+UI check 31: Solver advances without visualization
+UI check 32: Pause without visualization
+UI check 33: Visualization restored while paused
+UI check 34: Settings close after editing
+UI check 35: About / diagnostics popup
+UI check 36: About dismiss
+UI check 37: Flow overlay uses velocity frame
+UI check 38: Flow overlay off restores field
+UI check 39: Close requested while solver is running
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Run button",
+    "Pause button settled",
+    "Pause remains stable",
+    "Single Step exactly one step",
+    "Reset reproduces seed and pixels",
+    "Velocity magnitude texture",
+    "Enstrophy texture",
+    "Three distinct field visualizations",
+    "Aurora",
+    "Ember",
+    "Glacier",
+    "Inferno",
+    "Exposure tested on velocity, matching existing shader semantics",
+    "Exposure slider changes texture",
+    "Sigma tested on vorticity",
+    "Sigma slider changes texture",
+    "Complete square domain",
+    "Resize square-domain layout",
+    "1280 x 720 managed window layout",
+    "1920 x 1080 layout",
+    "Large desktop resize",
+    "200 percent DPI font and control scaling",
+    "Settings drawer dismiss",
+    "Compact sidebar at 200 percent",
+    "Restore 100 percent scaling",
+    "Resolution input focus",
+    "Resolution input via X11 keyboard",
+    "Apply edited resolution",
+    "N=256 reset and replacement GPU frame",
+    "Visualization disabled",
+    "Solver advances without visualization",
+    "Pause without visualization",
+    "Visualization restored while paused",
+    "Settings close after editing",
+    "About / diagnostics popup",
+    "About dismiss",
+    "Flow overlay uses velocity frame",
+    "Flow overlay off restores field",
+    "Close requested while solver is running"
+  ],
+  "distinct_fields": 3,
+  "distinct_palettes": 4,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "large_layout_test": "Real GPU-backed X11 buffers, WM constraints bypassed for surfaces beyond the remote desktop; not a physical 4K monitor test.",
+  "layouts": [
+    {
+      "height": 720,
+      "scale": 1.0,
+      "viewport_fraction": 0.36,
+      "width": 1280
+    },
+    {
+      "height": 1080,
+      "scale": 1.0,
+      "viewport_fraction": 0.4225,
+      "width": 1920
+    },
+    {
+      "height": 2160,
+      "scale": 2.0,
+      "viewport_fraction": 0.4225,
+      "width": 3840
+    }
+  ],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 5505024,
+    "draw_submit_seconds": 0.011659506999421865,
+    "field_updates": 58,
+    "presentations": 146,
+    "upload_seconds": 0.005134969999289751,
+    "uploads": 13
+  },
+  "ui": {
+    "field_height": 576.0,
+    "field_width": 576.0,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "height": 720,
+    "scale": 1.0,
+    "texture_side": 576,
+    "view": "complete square domain",
+    "viewport_fraction": 0.36,
+    "width": 1280
+  },
+  "visualization": true
+}

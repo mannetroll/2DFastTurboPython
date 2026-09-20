@@ -1,0 +1,29 @@
+Sun Sep 20 00:19:25 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3090        Off |   00000000:01:00.0 Off |                  N/A |
+| 93%   84C    P2            332W /  370W |    4191MiB /  24576MiB |    100%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A           18388      G   /usr/bin/gnome-shell                     92MiB |
+|    0   N/A  N/A           21995    C+G   ...c/gnome-remote-desktop-daemon        260MiB |
+|    0   N/A  N/A           22060      G   /usr/bin/gnome-shell                    154MiB |
+|    0   N/A  N/A           22431    C+G   ...c/gnome-remote-desktop-daemon        357MiB |
+|    0   N/A  N/A           23382      G   /usr/bin/Xwayland                         6MiB |
+|    0   N/A  N/A           31897      G   ...nstallation/ubuntu12_32/steam          8MiB |
+|    0   N/A  N/A           32088      G   ./steamwebhelper                         26MiB |
+|    0   N/A  N/A           32114      G   ...on/ubuntu12_64/steamwebhelper         36MiB |
+|    0   N/A  N/A           33034    C+G   /usr/bin/ptyxis                          53MiB |
+|    0   N/A  N/A           85401    C+G   ...n/build-linux/fastturbo-linux       3016MiB |
++-----------------------------------------------------------------------------------------+

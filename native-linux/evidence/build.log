@@ -1,0 +1,10 @@
+[  7%] Built target cuda_platform
+[ 25%] Built target turbo_core
+[ 48%] Built target fastturbo_imgui
+[ 59%] Built target fastturbo_reference
+[ 66%] Built target 2dbench
+[ 77%] Built target fastturbo_desktop_controller
+[ 85%] Built target native_controller_tests
+[ 88%] Building CXX object native-linux/CMakeFiles/fastturbo-linux.dir/main.cpp.o
+[ 92%] Linking CXX executable ../fastturbo-linux
+[100%] Built target fastturbo-linux

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Linux-c++"
+	tests="13"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname="ubuntu"
+	time="143"
+	timestamp="2026-09-20T12:18:53"
+	>
+	<testcase name="reference_help" classname="reference_help" time="0.00778453" status="run">
+		<properties/>
+		<system-out>FastTurbo native Linux CUDA/VkFFT reference (no desktop or Python runtime)
+--benchmark (default; validates recorded Windows trajectory before timing)
+--validate (validation only) --json --output FILE --device INDEX
+--n N --steps K --warmup K --seed UINT64 --batch 1..256
+--reynolds R --k0 K --cfl C --fixed-dt DT
+--integrator imexRK3|ifHeunRK3|etdrk4|CNAB2 --operator stress|advective (CNAB2: stress only)
+--start-spectrum PAO|KM3 (default PAO)
+--initial FILE --spectrum FILE --fields FILE --compare-spectrum FILE
+--reference-root REPOSITORY (location of existing parity evidence)
+Defaults: N1024/M1536, 1000 timed steps, 100 warmup, seed=2, ETDRK4/stress, CFL=3.
+Legacy: SCIPYTURBO_SEED=1 fastturbo_reference N Re K0 Steps CFL cuda Update PAO|KM3 CNAB2
+        optional --device INDEX --output JSON --dump DIRECTORY
+</system-out>
+	</testcase>
+	<testcase name="reference_validation" classname="reference_validation" time="7.21765" status="run">
+		<properties/>
+		<system-out>CUDA/VkFFT: NVIDIA GeForce RTX 3090 (device 0)
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "device": 0,
+    "compute_capability": "8.6",
+    "architecture": "sm_86",
+    "vram_bytes": 25294995456,
+    "cuda_runtime": "13.3",
+    "cuda_driver": "13.2",
+    "backend": "CUDA + VkFFT",
+    "vkfft_version": 10304,
+    "precision": "float32",
+    "os": "Ubuntu 26.04.1 LTS / 7.0.0-31-generic",
+    "fft_configuration": "backend=1; unnormalized R2C/C2R; 3/2 padding; LUT for M&gt;=768; fmad=false"
+  },
+  "parity": {
+    "status": "PASS",
+    "cases": [
+      {
+        "max_abs": 0.0247344970703125,
+        "max_rel": 1.8721444895292742e-06,
+        "rms": 0.007140234276037776,
+        "samples": 12,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "N1024/M1536, 3832 ETDRK4/stress steps, seed2, Re50000, CFL3",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-win...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="reference_benchmark" classname="reference_benchmark" time="7.31825" status="run">
+		<properties/>
+		<system-out>CUDA/VkFFT: NVIDIA GeForce RTX 3090 (device 0)
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "device": 0,
+    "compute_capability": "8.6",
+    "architecture": "sm_86",
+    "vram_bytes": 25294995456,
+    "cuda_runtime": "13.3",
+    "cuda_driver": "13.2",
+    "backend": "CUDA + VkFFT",
+    "vkfft_version": 10304,
+    "precision": "float32",
+    "os": "Ubuntu 26.04.1 LTS / 7.0.0-31-generic",
+    "fft_configuration": "backend=1; unnormalized R2C/C2R; 3/2 padding; LUT for M&gt;=768; fmad=false"
+  },
+  "parity": {
+    "status": "PASS",
+    "cases": [
+      {
+        "max_abs": 0.0247344970703125,
+        "max_rel": 1.8721444895292742e-06,
+        "rms": 0.007140234276037776,
+        "samples": 12,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "N1024/M1536, 3832 ETDRK4/stress steps, seed2, Re50000, CFL3",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-win...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="reference_cli" classname="reference_cli" time="0.163462" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="bench_cli" classname="bench_cli" time="0.249455" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="bench_gpu" classname="bench_gpu" time="2.44294" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="native_gui_cli" classname="native_gui_cli" time="0.155342" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="native_controller" classname="native_controller" time="3.11433" status="run">
+		<properties/>
+		<system-out>PASS: all four methods match the direct solver; transport, hidden reset, frame leases, cadence, autonomous stepping
+</system-out>
+	</testcase>
+	<testcase name="native_gui_desktop" classname="native_gui_desktop" time="114.323" status="run">
+		<properties>
+			<property name="cmake_labels" value="gui"/>
+		</properties>
+		<system-out>FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Click Window
+PASS 2: Click Menu Minimize
+PASS 3: Minimized window
+PASS 4: Restore minimized window
+PASS 5: Window restored
+PASS 6: Minimize shortcut
+PASS 7: Ctrl+M minimizes
+PASS 8: Restore again
+PASS 9: Initial texture has more than 100 colors
+PASS 10: Click Run
+PASS 11: Run advances
+PASS 12: Click Pause
+PASS 13: Pause settles
+PASS 14: Remember paused step
+PASS 15: Pause remains stable
+PASS 16: Click Single Step
+PASS 17: Single Step exactly once
+PASS 18: Click Reset
+PASS 19: Reset reproduces seed and pixels
+PASS 20: Click Speed
+PASS 21: GPU field Speed
+PASS 22: Click Enstrophy
+PASS 23: GPU field Enstrophy
+PASS 24: Click Vorticity
+PASS 25: GPU field Vorticity
+PASS 26: Three distinct fields
+PASS 27: Remember palette pixels
+PASS 28: Click Inferno
+PASS 29: GPU palette Inferno
+PASS 30: Remember palette pixels
+PASS 31: Click Aurora
+PASS 32: GPU palette Aurora
+PASS 3...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="native_gui_close-menu" classname="native_gui_close-menu" time="2.33076" status="run">
+		<properties>
+			<property name="cmake_labels" value="gui"/>
+		</properties>
+		<system-out>FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Activate lifecycle test window
+PASS 2: Window activation settles
+PASS 3: Click File
+PASS 4: Close/quit lifecycle action
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Activate lifecycle test window",
+    "Window activation settles",
+    "Click File",
+    "Close/quit lifecycle action"
+  ],
+  "distinct_fields": 0,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 196608,
+    "draw_submit_seconds": 0.002171793999877991,
+    "field_updates": 19,
+    "presentations": 27,
+    "upload_seconds": 0.0006085760001042217,
+    "uploads": 1
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="native_gui_quit-menu" classname="native_gui_quit-menu" time="2.3126" status="run">
+		<properties>
+			<property name="cmake_labels" value="gui"/>
+		</properties>
+		<system-out>FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Activate lifecycle test window
+PASS 2: Window activation settles
+PASS 3: Click File
+PASS 4: Close/quit lifecycle action
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Activate lifecycle test window",
+    "Window activation settles",
+    "Click File",
+    "Close/quit lifecycle action"
+  ],
+  "distinct_fields": 0,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 196608,
+    "draw_submit_seconds": 0.002261050998185965,
+    "field_updates": 19,
+    "presentations": 26,
+    "upload_seconds": 0.000842563999867707,
+    "uploads": 1
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[w...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="native_gui_ctrl-w" classname="native_gui_ctrl-w" time="1.89946" status="run">
+		<properties>
+			<property name="cmake_labels" value="gui"/>
+		</properties>
+		<system-out>FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Activate lifecycle test window
+PASS 2: Window activation settles
+PASS 3: Close/quit lifecycle action
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Activate lifecycle test window",
+    "Window activation settles",
+    "Close/quit lifecycle action"
+  ],
+  "distinct_fields": 0,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 196608,
+    "draw_submit_seconds": 0.001396227999975963,
+    "field_updates": 15,
+    "presentations": 19,
+    "upload_seconds": 0.0006983839998611074,
+    "uploads": 1
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "framebuffer": [...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="native_gui_ctrl-q" classname="native_gui_ctrl-q" time="1.91034" status="run">
+		<properties>
+			<property name="cmake_labels" value="gui"/>
+		</properties>
+		<system-out>FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Activate lifecycle test window
+PASS 2: Window activation settles
+PASS 3: Close/quit lifecycle action
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Activate lifecycle test window",
+    "Window activation settles",
+    "Close/quit lifecycle action"
+  ],
+  "distinct_fields": 0,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 196608,
+    "draw_submit_seconds": 0.001654551999308751,
+    "field_updates": 15,
+    "presentations": 20,
+    "upload_seconds": 0.0005963630001133424,
+    "uploads": 1
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "framebuffer": [...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+</testsuite>

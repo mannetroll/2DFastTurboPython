@@ -1,0 +1,14 @@
+[
+  {
+    "argv": [
+      "./fastturbo-linux",
+      "--self-test",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/validation-8/desktop.json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 125.85442113876343,
+    "returncode": 1,
+    "display": ":0"
+  }
+]

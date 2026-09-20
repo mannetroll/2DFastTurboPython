@@ -1,0 +1,1482 @@
+Start testing: Sep 20 00:24 CEST
+----------------------------------------------------------
+1/9 Testing: reference_help
+1/9 Test: reference_help
+Command: "/home/tobbe/github/2DFastTurboPython/build-linux/reference-linux/fastturbo_reference" "--help"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"reference_help" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+FastTurbo native Linux CUDA/VkFFT reference (no desktop or Python runtime)
+--benchmark (default; validates recorded Windows trajectory before timing)
+--validate (validation only) --json --output FILE --device INDEX
+--n N --steps K --warmup K --seed UINT64 --batch 1..256
+--reynolds R --k0 K --cfl C --fixed-dt DT
+--integrator imexRK3|ifHeunRK3|etdrk4|CNAB2 --operator stress|advective (CNAB2: stress only)
+--start-spectrum PAO|KM3 (default PAO)
+--initial FILE --spectrum FILE --fields FILE --compare-spectrum FILE
+--reference-root REPOSITORY (location of existing parity evidence)
+Defaults: N1024/M1536, 1000 timed steps, 100 warmup, seed=2, ETDRK4/stress, CFL=3.
+Legacy: SCIPYTURBO_SEED=1 fastturbo_reference N Re K0 Steps CFL cuda Update PAO|KM3 CNAB2
+        optional --device INDEX --output JSON --dump DIRECTORY
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"reference_help" end time: Sep 20 00:24 CEST
+"reference_help" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/9 Testing: reference_validation
+2/9 Test: reference_validation
+Command: "/home/tobbe/github/2DFastTurboPython/build-linux/reference-linux/fastturbo_reference" "--validate" "--json"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"reference_validation" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+CUDA/VkFFT: NVIDIA GeForce RTX 3090 (device 0)
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "device": 0,
+    "compute_capability": "8.6",
+    "architecture": "sm_86",
+    "vram_bytes": 25294995456,
+    "cuda_runtime": "13.3",
+    "cuda_driver": "13.2",
+    "backend": "CUDA + VkFFT",
+    "vkfft_version": 10304,
+    "precision": "float32",
+    "os": "Ubuntu 26.04.1 LTS / 7.0.0-31-generic",
+    "fft_configuration": "backend=1; unnormalized R2C/C2R; 3/2 padding; LUT for M>=768; fmad=false"
+  },
+  "parity": {
+    "status": "PASS",
+    "cases": [
+      {
+        "max_abs": 0.0247344970703125,
+        "max_rel": 1.8721444895292742e-06,
+        "rms": 0.007140234276037776,
+        "samples": 12,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "N1024/M1536, 3832 ETDRK4/stress steps, seed2, Re50000, CFL3",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-windows/benchmarks/2026-09-13/headless-1.json",
+        "rtol": 3e-06,
+        "atol": 1e-09,
+        "differences": [
+          {
+            "phase": "initial_stats",
+            "field": "simulation_time",
+            "actual": 0.0,
+            "reference": 0.0,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "dt",
+            "actual": 0.0017286307411268353,
+            "reference": 0.0017286307411268353,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "energy",
+            "actual": 0.49005281696042163,
+            "reference": 0.4900528171932523,
+            "difference": -2.3283064365386963e-10
+          },
+          {
+            "phase": "initial_stats",
+            "field": "enstrophy",
+            "actual": 7.999999881332641,
+            "reference": 7.999999881332641,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "palinstrophy",
+            "actual": 255.9999939257744,
+            "reference": 255.9999939257744,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "initial_turnover_time",
+            "actual": 1.5707963384450374,
+            "reference": 1.5707963384450374,
+            "difference": 0.0
+          },
+          {
+            "phase": "stats",
+            "field": "simulation_time",
+            "actual": 6.329160938039422,
+            "reference": 6.329160005087033,
+            "difference": 9.329523891210556e-07
+          },
+          {
+            "phase": "stats",
+            "field": "dt",
+            "actual": 0.0015149107202887535,
+            "reference": 0.0015149106038734317,
+            "difference": 1.1641532182693481e-10
+          },
+          {
+            "phase": "stats",
+            "field": "energy",
+            "actual": 0.48823591667678556,
+            "reference": 0.4882359497592006,
+            "difference": -3.308241502963938e-08
+          },
+          {
+            "phase": "stats",
+            "field": "enstrophy",
+            "actual": 5.634088709950447,
+            "reference": 5.634088797494769,
+            "difference": -8.754432201385498e-08
+          },
+          {
+            "phase": "stats",
+            "field": "palinstrophy",
+            "actual": 13211.827880859375,
+            "reference": 13211.852615356445,
+            "difference": -0.0247344970703125
+          },
+          {
+            "phase": "stats",
+            "field": "initial_turnover_time",
+            "actual": 1.5707963384450374,
+            "reference": 1.5707963384450374,
+            "difference": 0.0
+          }
+        ],
+        "scope": "scalar trajectory; no stored Windows full-state fixture exists"
+      },
+      {
+        "max_abs": 4.829208819501218e-07,
+        "max_rel": 4.26856156924833e-08,
+        "rms": 3.242802027185171e-08,
+        "samples": 12288,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "all six production methods/forms: Fourier diffusion + full finite state + deterministic reset",
+        "reference": "analytic cosine decay (3 ppm; absolute float32 FFT noise <=1e-6)"
+      },
+      {
+        "max_abs": 0.0017700742187685137,
+        "max_rel": 2.3600345523831295e-05,
+        "rms": 0.000448272567465847,
+        "samples": 67,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "legacy N512/1001 PAO/CNAB2 seed1",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-macos/2DFastTurbo/tools/sim_512_1001_metal_macOS.txt",
+        "rtol": 1e-05,
+        "atol": 5e-10,
+        "printed_rounding_radius": true,
+        "differences": [
+          {
+            "checkpoint": "initial",
+            "field": "Energy",
+            "reference": 0.9968169,
+            "actual": 0.9968168977121208,
+            "difference": -2.2878792194092057e-09
+          },
+          {
+            "checkpoint": "initial",
+            "field": "CFLM",
+            "reference": 360.4001,
+            "actual": 360.4001159667969,
+            "difference": 1.5966796865996002e-05
+          },
+          {
+            "checkpoint": "initial",
+            "field": "CN",
+            "reference": 1.0,
+            "actual": 1.0,
+            "difference": 0.0
+          },
+          {
+            "checkpoint": "initial",
+            "field": "DT",
+            "reference": 0.0002208,
+            "actual": 0.00022080312191974372,
+            "difference": 3.121919743716544e-09
+          },
+          {
+            "checkpoint": "1",
+            "field": "CFLM",
+            "reference": 360.310913,
+            "actual": 360.31097412109375,
+            "difference": 6.11210937222495e-05
+          },
+          {
+            "checkpoint": "1",
+            "field": "CN",
+            "reference": 1.0000495,
+            "actual": 1.0000494718551636,
+            "difference": -2.8144836461407863e-08
+          },
+          {
+            "checkpoint": "1",
+            "field": "DT",
+            "reference": 0.00022081,
+            "actual": 0.00022081405040808022,
+            "difference": 4.050408080225228e-09
+          },
+          {
+            "checkpoint": "1",
+            "field": "T",
+            "reference": 0.0,
+            "actual": 0.0,
+            "difference": 0.0
+          },
+          {
+            "checkpoint": "1",
+            "field": "TAU_L",
+            "reference": 1.040688,
+            "actual": 1.0406877144901228,
+            "difference": -2.855098772958087e-07
+          },
+          {
+            "checkpoint": "100",
+            "field": "CFLM",
+            "reference": 352.239807,
+            "actual": 352.2398681640625,
+            "difference": 6.116406251521767e-05
+          },
+          {
+            "checkpoint": "100",
+            "field": "CN",
+            "reference": 1.00462324,
+            "actual": 1.0046231746673584,
+            "difference": -6.533264151897811e-08
+          },
+          {
+            "checkpoint": "100",
+            "field": "DT",
+            "reference": 0.00022183,
+            "actual": 0.00022183491091709584,
+            "difference": 4.910917095831031e-09
+          },
+          {
+            "checkpoint": "100",
+            "field": "T",
+            "reference": 0.0218605822,
+            "actual": 0.021860580061911605,
+            "difference": -2.138088393832671e-09
+          },
+          {
+            "checkpoint": "100",
+            "field": "TAU_L",
+            "reference": 1.042829,
+            "actual": 1.0428290522722639,
+            "difference": 5.227226385073891e-08
+          },
+          {
+            "checkpoint": "200",
+            "field": "CFLM",
+            "reference": 345.400146,
+            "actual": 345.4001159667969,
+            "difference": -3.0033203131552e-05
+          },
+          {
+            "checkpoint": "200",
+            "field": "CN",
+            "reference": 1.0077149,
+            "actual": 1.0077149868011475,
+            "difference": 8.680114738091049e-08
+          },
+          {
+            "checkpoint": "200",
+            "field": "DT",
+            "reference": 0.00022355,
+            "actual": 0.00022354636166710407,
+            "difference": -3.6383328959473885e-09
+          },
+          {
+            "checkpoint": "200",
+            "field": "T",
+            "reference": 0.0440430561,
+            "actual": 0.044043050293112174,
+            "difference": -5.806887824755247e-09
+          },
+          {
+            "checkpoint": "200",
+            "field": "TAU_L",
+            "reference": 1.045742,
+            "actual": 1.0457423669305699,
+            "difference": 3.669305699283143e-07
+          },
+          {
+            "checkpoint": "300",
+            "field": "CFLM",
+            "reference": 340.466949,
+            "actual": 340.46673583984375,
+            "difference": -0.00021316015624961437
+          },
+          {
+            "checkpoint": "300",
+            "field": "CN",
+            "reference": 1.00911131,
+            "actual": 1.0091114044189453,
+            "difference": 9.441894532891126e-08
+          },
+          {
+            "checkpoint": "300",
+            "field": "DT",
+            "reference": 0.00022558,
+            "actual": 0.00022558317868970335,
+            "difference": 3.178689703353622e-09
+          },
+          {
+            "checkpoint": "300",
+            "field": "T",
+            "reference": 0.0663959829,
+            "actual": 0.06639597500907257,
+            "difference": -7.890927425369121e-09
+          },
+          {
+            "checkpoint": "300",
+            "field": "TAU_L",
+            "reference": 1.049348,
+            "actual": 1.0493478266687482,
+            "difference": -1.7333125179597175e-07
+          },
+          {
+            "checkpoint": "400",
+            "field": "CFLM",
+            "reference": 335.745728,
+            "actual": 335.74554443359375,
+            "difference": -0.00018356640623551357
+          },
+          {
+            "checkpoint": "400",
+            "field": "CN",
+            "reference": 1.01013719,
+            "actual": 1.0101373195648193,
+            "difference": 1.2956481931780672e-07
+          },
+          {
+            "checkpoint": "400",
+            "field": "DT",
+            "reference": 0.00022787,
+            "actual": 0.00022786998306401074,
+            "difference": -1.6935989259224057e-11
+          },
+          {
+            "checkpoint": "400",
+            "field": "T",
+            "reference": 0.0889522643,
+            "actual": 0.08895225606102031,
+            "difference": -8.238979692931636e-09
+          },
+          {
+            "checkpoint": "400",
+            "field": "TAU_L",
+            "reference": 1.053556,
+            "actual": 1.0535550200127122,
+            "difference": -9.799872877636062e-07
+          },
+          {
+            "checkpoint": "500",
+            "field": "CFLM",
+            "reference": 329.63736,
+            "actual": 329.6374816894531,
+            "difference": 0.00012168945312396318
+          },
+          {
+            "checkpoint": "500",
+            "field": "CN",
+            "reference": 1.01188325,
+            "actual": 1.0118831396102905,
+            "difference": -1.103897093734929e-07
+          },
+          {
+            "checkpoint": "500",
+            "field": "DT",
+            "reference": 0.00023058,
+            "actual": 0.00023057778889779001,
+            "difference": -2.2111022099900474e-09
+          },
+          {
+            "checkpoint": "500",
+            "field": "T",
+            "reference": 0.1117369738,
+            "actual": 0.11173696756304707,
+            "difference": -6.236952926341743e-09
+          },
+          {
+            "checkpoint": "500",
+            "field": "TAU_L",
+            "reference": 1.058259,
+            "actual": 1.0582576264829084,
+            "difference": -1.3735170916184813e-06
+          },
+          {
+            "checkpoint": "600",
+            "field": "CFLM",
+            "reference": 321.496399,
+            "actual": 321.4966125488281,
+            "difference": 0.000213548828128296
+          },
+          {
+            "checkpoint": "600",
+            "field": "CN",
+            "reference": 1.01469727,
+            "actual": 1.0146971940994263,
+            "difference": -7.590057382600435e-08
+          },
+          {
+            "checkpoint": "600",
+            "field": "DT",
+            "reference": 0.00023397,
+            "actual": 0.0002339666389161721,
+            "difference": -3.361083827924105e-09
+          },
+          {
+            "checkpoint": "600",
+            "field": "T",
+            "reference": 0.1347920457,
+            "actual": 0.1347920386469923,
+            "difference": -7.05300770564854e-09
+          },
+          {
+            "checkpoint": "600",
+            "field": "TAU_L",
+            "reference": 1.063356,
+            "actual": 1.0633550699001888,
+            "difference": -9.30099811169427e-07
+          },
+          {
+            "checkpoint": "700",
+            "field": "CFLM",
+            "reference": 320.166077,
+            "actual": 320.16497802734375,
+            "difference": -0.0010989726562229407
+          },
+          {
+            "checkpoint": "700",
+            "field": "CN",
+            "reference": 1.01246668,
+            "actual": 1.012467384338379,
+            "difference": 7.043383789540059e-07
+          },
+          {
+            "checkpoint": "700",
+            "field": "DT",
+            "reference": 0.00023688,
+            "actual": 0.00023688358487561345,
+            "difference": 3.5848756134557094e-09
+          },
+          {
+            "checkpoint": "700",
+            "field": "T",
+            "reference": 0.1581853231,
+            "actual": 0.15818531368859112,
+            "difference": -9.411408874449023e-09
+          },
+          {
+            "checkpoint": "700",
+            "field": "TAU_L",
+            "reference": 1.068765,
+            "actual": 1.0687635438046075,
+            "difference": -1.4561953924907556e-06
+          },
+          {
+            "checkpoint": "800",
+            "field": "CFLM",
+            "reference": 323.068787,
+            "actual": 323.06707763671875,
+            "difference": -0.0017093632812361648
+          },
+          {
+            "checkpoint": "800",
+            "field": "CN",
+            "reference": 1.00796508,
+            "actual": 1.0079660415649414,
+            "difference": 9.615649414485006e-07
+          },
+          {
+            "checkpoint": "800",
+            "field": "DT",
+            "reference": 0.00023877,
+            "actual": 0.00023877060448285192,
+            "difference": 6.044828519300664e-10
+          },
+          {
+            "checkpoint": "800",
+            "field": "T",
+            "reference": 0.1818707514,
+            "actual": 0.18187075523019303,
+            "difference": 3.83019302385712e-09
+          },
+          {
+            "checkpoint": "800",
+            "field": "TAU_L",
+            "reference": 1.074391,
+            "actual": 1.0743899685508347,
+            "difference": -1.0314491654117575e-06
+          },
+          {
+            "checkpoint": "900",
+            "field": "CFLM",
+            "reference": 323.138611,
+            "actual": 323.13690185546875,
+            "difference": -0.001709144531275797
+          },
+          {
+            "checkpoint": "900",
+            "field": "CN",
+            "reference": 1.00627713,
+            "actual": 1.0062779188156128,
+            "difference": 7.888156128288415e-07
+          },
+          {
+            "checkpoint": "900",
+            "field": "DT",
+            "reference": 0.00024027,
+            "actual": 0.00024026958271861076,
+            "difference": -4.1728138923825125e-10
+          },
+          {
+            "checkpoint": "900",
+            "field": "T",
+            "reference": 0.2057458892,
+            "actual": 0.20574592865887098,
+            "difference": 3.94588709762278e-08
+          },
+          {
+            "checkpoint": "900",
+            "field": "TAU_L",
+            "reference": 1.080144,
+            "actual": 1.0801426119676112,
+            "difference": -1.3880323888049162e-06
+          },
+          {
+            "checkpoint": "1000",
+            "field": "CFLM",
+            "reference": 320.879272,
+            "actual": 320.87750244140625,
+            "difference": -0.0017695585937644864
+          },
+          {
+            "checkpoint": "1000",
+            "field": "CN",
+            "reference": 1.00643373,
+            "actual": 1.006434440612793,
+            "difference": 7.106127930534001e-07
+          },
+          {
+            "checkpoint": "1000",
+            "field": "DT",
+            "reference": 0.00024181,
+            "actual": 0.00024181557819247246,
+            "difference": 5.578192472467441e-09
+          },
+          {
+            "checkpoint": "1000",
+            "field": "T",
+            "reference": 0.2297712941,
+            "actual": 0.2297713879524963,
+            "difference": 9.385249630233794e-08
+          },
+          {
+            "checkpoint": "1000",
+            "field": "TAU_L",
+            "reference": 1.085964,
+            "actual": 1.0859625778360082,
+            "difference": -1.4221639916822681e-06
+          },
+          {
+            "checkpoint": "1001",
+            "field": "CFLM",
+            "reference": 320.857544,
+            "actual": 320.85577392578125,
+            "difference": -0.0017700742187685137
+          },
+          {
+            "checkpoint": "1001",
+            "field": "CN",
+            "reference": 1.00512797,
+            "actual": 1.0051285028457642,
+            "difference": 5.328457641784468e-07
+          },
+          {
+            "checkpoint": "1001",
+            "field": "DT",
+            "reference": 0.00024305,
+            "actual": 0.00024305573606397957,
+            "difference": 5.736063979567196e-09
+          },
+          {
+            "checkpoint": "1001",
+            "field": "T",
+            "reference": 0.2300115631,
+            "actual": 0.2300116575352149,
+            "difference": 9.44352148979366e-08
+          },
+          {
+            "checkpoint": "1001",
+            "field": "TAU_L",
+            "reference": 1.086023,
+            "actual": 1.086021181564815,
+            "difference": -1.8184351848749003e-06
+          },
+          {
+            "checkpoint": "final",
+            "field": "CN",
+            "reference": 1.005128,
+            "actual": 1.0051285028457642,
+            "difference": 5.028457641387263e-07
+          },
+          {
+            "checkpoint": "final",
+            "field": "DT",
+            "reference": 0.00024305488,
+            "actual": 0.00024305573606397957,
+            "difference": 8.560639795781796e-10
+          },
+          {
+            "checkpoint": "final",
+            "field": "T",
+            "reference": 0.23025338,
+            "actual": 0.23025347311340738,
+            "difference": 9.31134073733908e-08
+          }
+        ],
+        "scope": "scalar trajectory; no stored macOS full-state fixture exists"
+      }
+    ]
+  },
+  "mode": "validation"
+}
+<end of output>
+Test time =   7.29 sec
+----------------------------------------------------------
+Test Passed.
+"reference_validation" end time: Sep 20 00:24 CEST
+"reference_validation" time elapsed: 00:00:07
+----------------------------------------------------------
+
+3/9 Testing: reference_benchmark
+3/9 Test: reference_benchmark
+Command: "/home/tobbe/github/2DFastTurboPython/build-linux/reference-linux/fastturbo_reference" "--n" "32" "--steps" "7" "--warmup" "3" "--benchmark" "--json"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"reference_benchmark" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+CUDA/VkFFT: NVIDIA GeForce RTX 3090 (device 0)
+{
+  "schema_version": 1,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "device": 0,
+    "compute_capability": "8.6",
+    "architecture": "sm_86",
+    "vram_bytes": 25294995456,
+    "cuda_runtime": "13.3",
+    "cuda_driver": "13.2",
+    "backend": "CUDA + VkFFT",
+    "vkfft_version": 10304,
+    "precision": "float32",
+    "os": "Ubuntu 26.04.1 LTS / 7.0.0-31-generic",
+    "fft_configuration": "backend=1; unnormalized R2C/C2R; 3/2 padding; LUT for M>=768; fmad=false"
+  },
+  "parity": {
+    "status": "PASS",
+    "cases": [
+      {
+        "max_abs": 0.0247344970703125,
+        "max_rel": 1.8721444895292742e-06,
+        "rms": 0.007140234276037776,
+        "samples": 12,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "N1024/M1536, 3832 ETDRK4/stress steps, seed2, Re50000, CFL3",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-windows/benchmarks/2026-09-13/headless-1.json",
+        "rtol": 3e-06,
+        "atol": 1e-09,
+        "differences": [
+          {
+            "phase": "initial_stats",
+            "field": "simulation_time",
+            "actual": 0.0,
+            "reference": 0.0,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "dt",
+            "actual": 0.0017286307411268353,
+            "reference": 0.0017286307411268353,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "energy",
+            "actual": 0.49005281696042163,
+            "reference": 0.4900528171932523,
+            "difference": -2.3283064365386963e-10
+          },
+          {
+            "phase": "initial_stats",
+            "field": "enstrophy",
+            "actual": 7.999999881332641,
+            "reference": 7.999999881332641,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "palinstrophy",
+            "actual": 255.9999939257744,
+            "reference": 255.9999939257744,
+            "difference": 0.0
+          },
+          {
+            "phase": "initial_stats",
+            "field": "initial_turnover_time",
+            "actual": 1.5707963384450374,
+            "reference": 1.5707963384450374,
+            "difference": 0.0
+          },
+          {
+            "phase": "stats",
+            "field": "simulation_time",
+            "actual": 6.329160938039422,
+            "reference": 6.329160005087033,
+            "difference": 9.329523891210556e-07
+          },
+          {
+            "phase": "stats",
+            "field": "dt",
+            "actual": 0.0015149107202887535,
+            "reference": 0.0015149106038734317,
+            "difference": 1.1641532182693481e-10
+          },
+          {
+            "phase": "stats",
+            "field": "energy",
+            "actual": 0.48823591667678556,
+            "reference": 0.4882359497592006,
+            "difference": -3.308241502963938e-08
+          },
+          {
+            "phase": "stats",
+            "field": "enstrophy",
+            "actual": 5.634088709950447,
+            "reference": 5.634088797494769,
+            "difference": -8.754432201385498e-08
+          },
+          {
+            "phase": "stats",
+            "field": "palinstrophy",
+            "actual": 13211.827880859375,
+            "reference": 13211.852615356445,
+            "difference": -0.0247344970703125
+          },
+          {
+            "phase": "stats",
+            "field": "initial_turnover_time",
+            "actual": 1.5707963384450374,
+            "reference": 1.5707963384450374,
+            "difference": 0.0
+          }
+        ],
+        "scope": "scalar trajectory; no stored Windows full-state fixture exists"
+      },
+      {
+        "max_abs": 4.829208819501218e-07,
+        "max_rel": 4.26856156924833e-08,
+        "rms": 3.242802027185171e-08,
+        "samples": 12288,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "all six production methods/forms: Fourier diffusion + full finite state + deterministic reset",
+        "reference": "analytic cosine decay (3 ppm; absolute float32 FFT noise <=1e-6)"
+      },
+      {
+        "max_abs": 0.0017700742187685137,
+        "max_rel": 2.3600345523831295e-05,
+        "rms": 0.000448272567465847,
+        "samples": 67,
+        "relative_error_convention": "max over nonzero reference values; zeros tested with absolute tolerance",
+        "status": "PASS",
+        "case": "legacy N512/1001 PAO/CNAB2 seed1",
+        "reference": "/home/tobbe/github/2DFastTurboPython/reference-macos/2DFastTurbo/tools/sim_512_1001_metal_macOS.txt",
+        "rtol": 1e-05,
+        "atol": 5e-10,
+        "printed_rounding_radius": true,
+        "differences": [
+          {
+            "checkpoint": "initial",
+            "field": "Energy",
+            "reference": 0.9968169,
+            "actual": 0.9968168977121208,
+            "difference": -2.2878792194092057e-09
+          },
+          {
+            "checkpoint": "initial",
+            "field": "CFLM",
+            "reference": 360.4001,
+            "actual": 360.4001159667969,
+            "difference": 1.5966796865996002e-05
+          },
+          {
+            "checkpoint": "initial",
+            "field": "CN",
+            "reference": 1.0,
+            "actual": 1.0,
+            "difference": 0.0
+          },
+          {
+            "checkpoint": "initial",
+            "field": "DT",
+            "reference": 0.0002208,
+            "actual": 0.00022080312191974372,
+            "difference": 3.121919743716544e-09
+          },
+          {
+            "checkpoint": "1",
+            "field": "CFLM",
+            "reference": 360.310913,
+            "actual": 360.31097412109375,
+            "difference": 6.11210937222495e-05
+          },
+          {
+            "checkpoint": "1",
+            "field": "CN",
+            "reference": 1.0000495,
+            "actual": 1.0000494718551636,
+            "difference": -2.8144836461407863e-08
+          },
+          {
+            "checkpoint": "1",
+            "field": "DT",
+            "reference": 0.00022081,
+            "actual": 0.00022081405040808022,
+            "difference": 4.050408080225228e-09
+          },
+          {
+            "checkpoint": "1",
+            "field": "T",
+            "reference": 0.0,
+            "actual": 0.0,
+            "difference": 0.0
+          },
+          {
+            "checkpoint": "1",
+            "field": "TAU_L",
+            "reference": 1.040688,
+            "actual": 1.0406877144901228,
+            "difference": -2.855098772958087e-07
+          },
+          {
+            "checkpoint": "100",
+            "field": "CFLM",
+            "reference": 352.239807,
+            "actual": 352.2398681640625,
+            "difference": 6.116406251521767e-05
+          },
+          {
+            "checkpoint": "100",
+            "field": "CN",
+            "reference": 1.00462324,
+            "actual": 1.0046231746673584,
+            "difference": -6.533264151897811e-08
+          },
+          {
+            "checkpoint": "100",
+            "field": "DT",
+            "reference": 0.00022183,
+            "actual": 0.00022183491091709584,
+            "difference": 4.910917095831031e-09
+          },
+          {
+            "checkpoint": "100",
+            "field": "T",
+            "reference": 0.0218605822,
+            "actual": 0.021860580061911605,
+            "difference": -2.138088393832671e-09
+          },
+          {
+            "checkpoint": "100",
+            "field": "TAU_L",
+            "reference": 1.042829,
+            "actual": 1.0428290522722639,
+            "difference": 5.227226385073891e-08
+          },
+          {
+            "checkpoint": "200",
+            "field": "CFLM",
+            "reference": 345.400146,
+            "actual": 345.4001159667969,
+            "difference": -3.0033203131552e-05
+          },
+          {
+            "checkpoint": "200",
+            "field": "CN",
+            "reference": 1.0077149,
+            "actual": 1.0077149868011475,
+            "difference": 8.680114738091049e-08
+          },
+          {
+            "checkpoint": "200",
+            "field": "DT",
+            "reference": 0.00022355,
+            "actual": 0.00022354636166710407,
+            "difference": -3.6383328959473885e-09
+          },
+          {
+            "checkpoint": "200",
+            "field": "T",
+            "reference": 0.0440430561,
+            "actual": 0.044043050293112174,
+            "difference": -5.806887824755247e-09
+          },
+          {
+            "checkpoint": "200",
+            "field": "TAU_L",
+            "reference": 1.045742,
+            "actual": 1.0457423669305699,
+            "difference": 3.669305699283143e-07
+          },
+          {
+            "checkpoint": "300",
+            "field": "CFLM",
+            "reference": 340.466949,
+            "actual": 340.46673583984375,
+            "difference": -0.00021316015624961437
+          },
+          {
+            "checkpoint": "300",
+            "field": "CN",
+            "reference": 1.00911131,
+            "actual": 1.0091114044189453,
+            "difference": 9.441894532891126e-08
+          },
+          {
+            "checkpoint": "300",
+            "field": "DT",
+            "reference": 0.00022558,
+            "actual": 0.00022558317868970335,
+            "difference": 3.178689703353622e-09
+          },
+          {
+            "checkpoint": "300",
+            "field": "T",
+            "reference": 0.0663959829,
+            "actual": 0.06639597500907257,
+            "difference": -7.890927425369121e-09
+          },
+          {
+            "checkpoint": "300",
+            "field": "TAU_L",
+            "reference": 1.049348,
+            "actual": 1.0493478266687482,
+            "difference": -1.7333125179597175e-07
+          },
+          {
+            "checkpoint": "400",
+            "field": "CFLM",
+            "reference": 335.745728,
+            "actual": 335.74554443359375,
+            "difference": -0.00018356640623551357
+          },
+          {
+            "checkpoint": "400",
+            "field": "CN",
+            "reference": 1.01013719,
+            "actual": 1.0101373195648193,
+            "difference": 1.2956481931780672e-07
+          },
+          {
+            "checkpoint": "400",
+            "field": "DT",
+            "reference": 0.00022787,
+            "actual": 0.00022786998306401074,
+            "difference": -1.6935989259224057e-11
+          },
+          {
+            "checkpoint": "400",
+            "field": "T",
+            "reference": 0.0889522643,
+            "actual": 0.08895225606102031,
+            "difference": -8.238979692931636e-09
+          },
+          {
+            "checkpoint": "400",
+            "field": "TAU_L",
+            "reference": 1.053556,
+            "actual": 1.0535550200127122,
+            "difference": -9.799872877636062e-07
+          },
+          {
+            "checkpoint": "500",
+            "field": "CFLM",
+            "reference": 329.63736,
+            "actual": 329.6374816894531,
+            "difference": 0.00012168945312396318
+          },
+          {
+            "checkpoint": "500",
+            "field": "CN",
+            "reference": 1.01188325,
+            "actual": 1.0118831396102905,
+            "difference": -1.103897093734929e-07
+          },
+          {
+            "checkpoint": "500",
+            "field": "DT",
+            "reference": 0.00023058,
+            "actual": 0.00023057778889779001,
+            "difference": -2.2111022099900474e-09
+          },
+          {
+            "checkpoint": "500",
+            "field": "T",
+            "reference": 0.1117369738,
+            "actual": 0.11173696756304707,
+            "difference": -6.236952926341743e-09
+          },
+          {
+            "checkpoint": "500",
+            "field": "TAU_L",
+            "reference": 1.058259,
+            "actual": 1.0582576264829084,
+            "difference": -1.3735170916184813e-06
+          },
+          {
+            "checkpoint": "600",
+            "field": "CFLM",
+            "reference": 321.496399,
+            "actual": 321.4966125488281,
+            "difference": 0.000213548828128296
+          },
+          {
+            "checkpoint": "600",
+            "field": "CN",
+            "reference": 1.01469727,
+            "actual": 1.0146971940994263,
+            "difference": -7.590057382600435e-08
+          },
+          {
+            "checkpoint": "600",
+            "field": "DT",
+            "reference": 0.00023397,
+            "actual": 0.0002339666389161721,
+            "difference": -3.361083827924105e-09
+          },
+          {
+            "checkpoint": "600",
+            "field": "T",
+            "reference": 0.1347920457,
+            "actual": 0.1347920386469923,
+            "difference": -7.05300770564854e-09
+          },
+          {
+            "checkpoint": "600",
+            "field": "TAU_L",
+            "reference": 1.063356,
+            "actual": 1.0633550699001888,
+            "difference": -9.30099811169427e-07
+          },
+          {
+            "checkpoint": "700",
+            "field": "CFLM",
+            "reference": 320.166077,
+            "actual": 320.16497802734375,
+            "difference": -0.0010989726562229407
+          },
+          {
+            "checkpoint": "700",
+            "field": "CN",
+            "reference": 1.01246668,
+            "actual": 1.012467384338379,
+            "difference": 7.043383789540059e-07
+          },
+          {
+            "checkpoint": "700",
+            "field": "DT",
+            "reference": 0.00023688,
+            "actual": 0.00023688358487561345,
+            "difference": 3.5848756134557094e-09
+          },
+          {
+            "checkpoint": "700",
+            "field": "T",
+            "reference": 0.1581853231,
+            "actual": 0.15818531368859112,
+            "difference": -9.411408874449023e-09
+          },
+          {
+            "checkpoint": "700",
+            "field": "TAU_L",
+            "reference": 1.068765,
+            "actual": 1.0687635438046075,
+            "difference": -1.4561953924907556e-06
+          },
+          {
+            "checkpoint": "800",
+            "field": "CFLM",
+            "reference": 323.068787,
+            "actual": 323.06707763671875,
+            "difference": -0.0017093632812361648
+          },
+          {
+            "checkpoint": "800",
+            "field": "CN",
+            "reference": 1.00796508,
+            "actual": 1.0079660415649414,
+            "difference": 9.615649414485006e-07
+          },
+          {
+            "checkpoint": "800",
+            "field": "DT",
+            "reference": 0.00023877,
+            "actual": 0.00023877060448285192,
+            "difference": 6.044828519300664e-10
+          },
+          {
+            "checkpoint": "800",
+            "field": "T",
+            "reference": 0.1818707514,
+            "actual": 0.18187075523019303,
+            "difference": 3.83019302385712e-09
+          },
+          {
+            "checkpoint": "800",
+            "field": "TAU_L",
+            "reference": 1.074391,
+            "actual": 1.0743899685508347,
+            "difference": -1.0314491654117575e-06
+          },
+          {
+            "checkpoint": "900",
+            "field": "CFLM",
+            "reference": 323.138611,
+            "actual": 323.13690185546875,
+            "difference": -0.001709144531275797
+          },
+          {
+            "checkpoint": "900",
+            "field": "CN",
+            "reference": 1.00627713,
+            "actual": 1.0062779188156128,
+            "difference": 7.888156128288415e-07
+          },
+          {
+            "checkpoint": "900",
+            "field": "DT",
+            "reference": 0.00024027,
+            "actual": 0.00024026958271861076,
+            "difference": -4.1728138923825125e-10
+          },
+          {
+            "checkpoint": "900",
+            "field": "T",
+            "reference": 0.2057458892,
+            "actual": 0.20574592865887098,
+            "difference": 3.94588709762278e-08
+          },
+          {
+            "checkpoint": "900",
+            "field": "TAU_L",
+            "reference": 1.080144,
+            "actual": 1.0801426119676112,
+            "difference": -1.3880323888049162e-06
+          },
+          {
+            "checkpoint": "1000",
+            "field": "CFLM",
+            "reference": 320.879272,
+            "actual": 320.87750244140625,
+            "difference": -0.0017695585937644864
+          },
+          {
+            "checkpoint": "1000",
+            "field": "CN",
+            "reference": 1.00643373,
+            "actual": 1.006434440612793,
+            "difference": 7.106127930534001e-07
+          },
+          {
+            "checkpoint": "1000",
+            "field": "DT",
+            "reference": 0.00024181,
+            "actual": 0.00024181557819247246,
+            "difference": 5.578192472467441e-09
+          },
+          {
+            "checkpoint": "1000",
+            "field": "T",
+            "reference": 0.2297712941,
+            "actual": 0.2297713879524963,
+            "difference": 9.385249630233794e-08
+          },
+          {
+            "checkpoint": "1000",
+            "field": "TAU_L",
+            "reference": 1.085964,
+            "actual": 1.0859625778360082,
+            "difference": -1.4221639916822681e-06
+          },
+          {
+            "checkpoint": "1001",
+            "field": "CFLM",
+            "reference": 320.857544,
+            "actual": 320.85577392578125,
+            "difference": -0.0017700742187685137
+          },
+          {
+            "checkpoint": "1001",
+            "field": "CN",
+            "reference": 1.00512797,
+            "actual": 1.0051285028457642,
+            "difference": 5.328457641784468e-07
+          },
+          {
+            "checkpoint": "1001",
+            "field": "DT",
+            "reference": 0.00024305,
+            "actual": 0.00024305573606397957,
+            "difference": 5.736063979567196e-09
+          },
+          {
+            "checkpoint": "1001",
+            "field": "T",
+            "reference": 0.2300115631,
+            "actual": 0.2300116575352149,
+            "difference": 9.44352148979366e-08
+          },
+          {
+            "checkpoint": "1001",
+            "field": "TAU_L",
+            "reference": 1.086023,
+            "actual": 1.086021181564815,
+            "difference": -1.8184351848749003e-06
+          },
+          {
+            "checkpoint": "final",
+            "field": "CN",
+            "reference": 1.005128,
+            "actual": 1.0051285028457642,
+            "difference": 5.028457641387263e-07
+          },
+          {
+            "checkpoint": "final",
+            "field": "DT",
+            "reference": 0.00024305488,
+            "actual": 0.00024305573606397957,
+            "difference": 8.560639795781796e-10
+          },
+          {
+            "checkpoint": "final",
+            "field": "T",
+            "reference": 0.23025338,
+            "actual": 0.23025347311340738,
+            "difference": 9.31134073733908e-08
+          }
+        ],
+        "scope": "scalar trajectory; no stored macOS full-state fixture exists"
+      }
+    ]
+  },
+  "mode": "benchmark",
+  "n": 32,
+  "padded_n": 48,
+  "seed": 2,
+  "reynolds": 27898.36614974335,
+  "k0": 4,
+  "cfl": 3.0,
+  "integrator": "etdrk4",
+  "operator": "stress",
+  "start_spectrum": "PAO",
+  "fixed_dt": 0.0,
+  "batch": 8,
+  "warmup": 3,
+  "steps": 7,
+  "completed_timed_steps": 7,
+  "completed_total_steps": 10,
+  "initialization_ms": 123.468968,
+  "wall_seconds": 0.000525523,
+  "gpu_event_ms": 0.515999972820282,
+  "ms_per_step": 0.07507471428571429,
+  "gpu_ms_per_step": 0.07371428183146886,
+  "steps_per_second": 13320.064012421912,
+  "initial_stats": {
+    "steps": 0,
+    "simulation_time": 0.0,
+    "dt": 0.054022617638111115,
+    "energy": 0.4900527745485306,
+    "enstrophy": 7.999990224838257,
+    "palinstrophy": 255.9973602294922,
+    "initial_turnover_time": 1.570797286470036,
+    "allocated_bytes": 117288,
+    "vkfft_bytes": 0
+  },
+  "timed_initial_stats": {
+    "steps": 3,
+    "simulation_time": 0.16227048635482788,
+    "dt": 0.05421756953001022,
+    "energy": 0.48995542526245117,
+    "enstrophy": 7.9963929653167725,
+    "palinstrophy": 267.37814712524414,
+    "initial_turnover_time": 1.570797286470036,
+    "allocated_bytes": 117288,
+    "vkfft_bytes": 0
+  },
+  "stats": {
+    "steps": 10,
+    "simulation_time": 0.5464809872210026,
+    "dt": 0.05677590146660805,
+    "energy": 0.48972591757774353,
+    "enstrophy": 7.98559832572937,
+    "palinstrophy": 365.61300468444824,
+    "initial_turnover_time": 1.570797286470036,
+    "allocated_bytes": 117288,
+    "vkfft_bytes": 0
+  },
+  "spectrum_comparison": null
+}
+<end of output>
+Test time =   7.36 sec
+----------------------------------------------------------
+Test Passed.
+"reference_benchmark" end time: Sep 20 00:24 CEST
+"reference_benchmark" time elapsed: 00:00:07
+----------------------------------------------------------
+
+4/9 Testing: reference_cli
+4/9 Test: reference_cli
+Command: "/home/tobbe/.local/share/uv/tools/cmake/lib/python3.14/site-packages/cmake/data/bin/cmake" "-DEXE=/home/tobbe/github/2DFastTurboPython/build-linux/reference-linux/fastturbo_reference" "-P" "/home/tobbe/github/2DFastTurboPython/reference-linux/tests/cli.cmake"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"reference_cli" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.16 sec
+----------------------------------------------------------
+Test Passed.
+"reference_cli" end time: Sep 20 00:24 CEST
+"reference_cli" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/9 Testing: bench_cli
+5/9 Test: bench_cli
+Command: "/home/tobbe/.local/share/uv/tools/cmake/lib/python3.14/site-packages/cmake/data/bin/cmake" "-DEXE=/home/tobbe/github/2DFastTurboPython/build-linux/2dbench" "-P" "/home/tobbe/github/2DFastTurboPython/reference-linux/tests/bench_cli.cmake"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"bench_cli" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.24 sec
+----------------------------------------------------------
+Test Passed.
+"bench_cli" end time: Sep 20 00:24 CEST
+"bench_cli" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/9 Testing: bench_gpu
+6/9 Test: bench_gpu
+Command: "/home/tobbe/.local/share/uv/tools/cmake/lib/python3.14/site-packages/cmake/data/bin/cmake" "-DEXE=/home/tobbe/github/2DFastTurboPython/build-linux/2dbench" "-P" "/home/tobbe/github/2DFastTurboPython/reference-linux/tests/bench_gpu.cmake"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/reference-linux
+"bench_gpu" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   2.55 sec
+----------------------------------------------------------
+Test Passed.
+"bench_gpu" end time: Sep 20 00:24 CEST
+"bench_gpu" time elapsed: 00:00:02
+----------------------------------------------------------
+
+7/9 Testing: native_gui_cli
+7/9 Test: native_gui_cli
+Command: "/home/tobbe/.local/share/uv/tools/cmake/lib/python3.14/site-packages/cmake/data/bin/cmake" "-DEXE=/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux" "-P" "/home/tobbe/github/2DFastTurboPython/native-linux/tests/cli.cmake"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/native-linux
+"native_gui_cli" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"native_gui_cli" end time: Sep 20 00:24 CEST
+"native_gui_cli" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/9 Testing: native_controller
+8/9 Test: native_controller
+Command: "/home/tobbe/github/2DFastTurboPython/build-linux/native-linux/native_controller_tests"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/native-linux
+"native_controller" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+PASS: all four methods match the direct solver; transport, hidden reset, frame leases, cadence, autonomous stepping
+<end of output>
+Test time =   3.15 sec
+----------------------------------------------------------
+Test Passed.
+"native_controller" end time: Sep 20 00:24 CEST
+"native_controller" time elapsed: 00:00:03
+----------------------------------------------------------
+
+9/9 Testing: native_gui_desktop
+9/9 Test: native_gui_desktop
+Command: "/home/tobbe/github/2DFastTurboPython/build-linux/fastturbo-linux" "--self-test" "--output" "/home/tobbe/github/2DFastTurboPython/build-linux/native-linux/desktop-test.json"
+Directory: /home/tobbe/github/2DFastTurboPython/build-linux/native-linux
+"native_gui_desktop" start time: Sep 20 00:24 CEST
+Output:
+----------------------------------------------------------
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Run button",
+    "Pause button settled",
+    "Pause remains stable",
+    "Single Step exactly one step",
+    "Reset reproduces seed and pixels",
+    "Velocity magnitude texture",
+    "Enstrophy texture",
+    "Three distinct field visualizations",
+    "Window resize larger",
+    "Window resize smaller",
+    "Visualization disabled",
+    "Solver advances without visualization",
+    "Pause without visualization",
+    "Visualization restored while paused",
+    "Close requested while solver is running"
+  ],
+  "distinct_fields": 3,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 1769472,
+    "draw_submit_seconds": 0.0025433489990973612,
+    "field_updates": 17,
+    "presentations": 43,
+    "upload_seconds": 0.0050874120024673175,
+    "uploads": 9
+  },
+  "visualization": true
+}
+<end of output>
+Test time =   2.35 sec
+----------------------------------------------------------
+Test Passed.
+"native_gui_desktop" end time: Sep 20 00:24 CEST
+"native_gui_desktop" time elapsed: 00:00:02
+----------------------------------------------------------
+
+End testing: Sep 20 00:24 CEST
+
+gui =   2.35 sec*proc
+

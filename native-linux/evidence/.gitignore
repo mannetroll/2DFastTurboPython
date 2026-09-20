@@ -1,0 +1,2 @@
+# Keep this task's exact command output even with a global *.log ignore.
+!*.log

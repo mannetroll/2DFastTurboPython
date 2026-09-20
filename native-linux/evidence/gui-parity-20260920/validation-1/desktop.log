@@ -1,0 +1,68 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Initial texture has more than 100 colors
+PASS 2: Click Run
+PASS 3: Run advances
+PASS 4: Click Pause
+PASS 5: Pause settles
+PASS 6: Remember paused step
+PASS 7: Pause remains stable
+PASS 8: Click Single Step
+PASS 9: Single Step exactly once
+PASS 10: Click Reset
+PASS 11: Reset reproduces seed and pixels
+PASS 12: Click Speed
+PASS 13: GPU field Speed
+PASS 14: Click Enstrophy
+PASS 15: GPU field Enstrophy
+PASS 16: Click Vorticity
+PASS 17: GPU field Vorticity
+PASS 18: Three distinct fields
+PASS 19: Remember palette pixels
+PASS 20: Click Inferno
+PASS 21: GPU palette Inferno
+PASS 22: Remember palette pixels
+PASS 23: Click Aurora
+PASS 24: GPU palette Aurora
+PASS 25: Remember palette pixels
+PASS 26: Click Glacier
+PASS 27: GPU palette Glacier
+PASS 28: Remember palette pixels
+PASS 29: Click Ember
+PASS 30: GPU palette Ember
+PASS 31: Adjust Sigma
+PASS 32: Sigma updates paused texture
+PASS 33: Click Color range
+PASS 34: Choose exposure
+PASS 35: Confirm exposure
+PASS 36: Exposure mode selected
+PASS 37: Click Exposure
+PASS 38: Exposure updates paused texture
+PASS 39: Click Velocity direction
+PASS 40: Flow requests a velocity lease
+PASS 41: Click Velocity direction
+PASS 42: Remember generation for live edits
+PASS 43: Click CFL
+PASS 44: CFL edits live without reset
+PASS 45: Remember Reynolds
+PASS 46: Click Reynolds
+PASS 47: Reynolds edits live without reset
+PASS 48: Click Regulation
+PASS 49: Regulation enabled
+PASS 50: Click Regulation
+PASS 51: Regulation disabled
+PASS 52: Click Seed
+PASS 53: Select seed
+PASS 54: Type seed 3
+PASS 55: Type seed 1
+PASS 56: Type seed 4
+PASS 57: Typing does not reset
+PASS 58: Arrow stays in editor
+PASS 59: R stays in editor
+PASS 60: Space stays in editor
+PASS 61: Simulation shortcuts do not consume typing
+PASS 62: Select edited seed
+PASS 63: Replace seed
+PASS 64: Click Edit
+PASS 65: Click Undo
+fastturbo-linux: Self-test: menu Undo

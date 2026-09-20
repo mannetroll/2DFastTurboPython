@@ -1,0 +1,87 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+{
+  "backend": "CUDA / VkFFT",
+  "batches": 45,
+  "config": {
+    "batch": 8,
+    "cfl": 3,
+    "fixed_dt": null,
+    "integrator": "etdrk4",
+    "k0": 10,
+    "operator": "stress",
+    "padded_resolution": 3072,
+    "resolution": 2048,
+    "reynolds": 27898.36614974335,
+    "seed": 2,
+    "start_spectrum": "PAO",
+    "viscosity": 3.5844394005835056e-05
+  },
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "gpu_seconds": 2.0135982322692874,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "owned_solver_buffer_bytes": 428412456,
+    "vkfft_internal_bytes": 29632
+  },
+  "initial_source": "seeded-pao",
+  "initial_stats": {
+    "dt": 0.0008477209485135972,
+    "energy": 0.49840843537822366,
+    "enstrophy": 49.99999815225601,
+    "initial_turnover_time": 0.6283185423276767,
+    "is_finite": true,
+    "palinstrophy": 9999.99966430664,
+    "palinstrophy_metric": 9.555396968316635e-05,
+    "reynolds": 27898.36614974335,
+    "simulation_time": 0,
+    "steps": 0
+  },
+  "interval_ms": 100.0,
+  "milliseconds_per_step": 5.626819213889828,
+  "mode": "native-imgui",
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "presented_fps": 11.354352514326191,
+  "rendering": {
+    "device_copy_bytes": 855638016,
+    "draw_submit_seconds": 0.0006984240003475861,
+    "field_updates": 22,
+    "presentations": 23,
+    "upload_seconds": 0.025687061999633443,
+    "uploads": 17
+  },
+  "schema_version": 1,
+  "seconds": 2.025654917000338,
+  "simtime_per_s": 0.1415446196415309,
+  "snapshots": 21,
+  "solver": "FastTurbo native Linux CUDA/VkFFT",
+  "spectrum_normalization": "fourier-series",
+  "stats": {
+    "dt": 0.0007945444085635245,
+    "energy": 0.49738322816318026,
+    "enstrophy": 49.70593895429556,
+    "initial_turnover_time": 0.6283185423276767,
+    "is_finite": true,
+    "palinstrophy": 24949.220113277435,
+    "palinstrophy_metric": 0.00023981007746817805,
+    "reynolds": 27898.36614974335,
+    "simulation_time": 0.2867205547518097,
+    "steps": 360
+  },
+  "steps_per_s": 177.720300224236,
+  "timing": "existing Controller timed run, fixed batch 8; two-second warmup and reset excluded",
+  "turnovers_per_s": 0.22527525467760817,
+  "ui": {
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "height": 720,
+    "scale": 1.0,
+    "texture_side": 1004,
+    "view": "fill centered crop",
+    "viewport_fraction": 0.6275,
+    "width": 1280
+  },
+  "visualization": true,
+  "vorticity_convention": "omega = dx(v) - dy(u)",
+  "warmup_seconds": 2.0,
+  "warmup_steps": null
+}

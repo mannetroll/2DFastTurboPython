@@ -35,7 +35,8 @@ performance and the 4096/2048 timestep ratios.
 On Linux, build and run **native `2dbench` without Python or uv**:
 
 ```sh
-cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86
+cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CUDA_ARCHITECTURES=86 -DFASTTURBO_BUILD_NATIVE_GUI=OFF
 cmake --build build-linux --target 2dbench -j2
 ./build-linux/2dbench
 ```
@@ -44,6 +45,24 @@ It uses the same workload, options and JSON report as the Python command. Requir
 CMake 3.26+, a CUDA-compatible C++20 compiler, CUDA Toolkit 13.x and an NVIDIA GPU
 with a compatible driver. Use architecture `90` for H100 or `'86;90'` for both.
 See [native benchmark build, installation and timing](reference-linux/2dbench.md).
+
+A native **Dear ImGui Linux desktop**, with no Python or Qt runtime, is also
+available. It uses the same CUDA/VkFFT solver and the existing CUDA/OpenGL
+renderer:
+
+```sh
+cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CUDA_ARCHITECTURES=86 -DFASTTURBO_BUILD_NATIVE_GUI=ON
+cmake --build build-linux -j2
+./fastturbo-linux
+```
+
+The Linux frontend follows [GUI.png](GUI.png), with File/Edit/Simulation/View/Window
+menus, a centered square field, a compact scrolling right inspector, transport
+overlays, focus mode and DPI scaling. See [native Linux setup, controls and validation](native-linux/README.md).
+The presentation path is X11/GLX, through XWayland on Wayland desktops. For a
+compute-only build without GUI dependencies, set `-DFASTTURBO_BUILD_NATIVE_GUI=OFF`.
+The Python/PySide6 application and canonical `reference-linux` remain available.
 
 Validated platform and GPU configurations from the shared `main` branch:
 

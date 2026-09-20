@@ -1,0 +1,14 @@
+[
+  {
+    "n": 2048,
+    "before_ms_per_step": 5.403333262931114,
+    "after_ms_per_step": 5.397231491918061,
+    "change_percent": -0.1129260535328025
+  },
+  {
+    "n": 4096,
+    "before_ms_per_step": 24.08541776923392,
+    "after_ms_per_step": 24.153201593750193,
+    "change_percent": 0.2814309685873928
+  }
+]

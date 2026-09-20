@@ -30,12 +30,15 @@ GLuint program(const char* vertex,const char* fragment){
     }catch(...){glDeleteShader(v);if(f)glDeleteShader(f);if(p)glDeleteProgram(p);throw;}
     glDeleteShader(v);glDeleteShader(f);return p;
 }
-class Renderer final:public LinuxRenderer {
+class Renderer final:public LinuxDesktopRenderer {
     ::Display* x=nullptr;
     Window parent=0,window=0;
     Colormap colormap=0;
     GLXContext context=nullptr;
     GLuint fieldProgram=0,flowProgram=0,buffer=0,texture=0,vao=0,font=0;
+    GLuint desktopTarget=0,desktopPixels=0;
+    int desktopSide=0;
+    bool desktop=false;
     cudaGraphicsResource* interop=nullptr;
     cudaStream_t stream=nullptr;
     std::shared_ptr<Frame> uploaded;
@@ -47,6 +50,8 @@ class Renderer final:public LinuxRenderer {
         if(interop)cudaGraphicsUnregisterResource(interop);
         uploaded.reset();
         if(context){
+            if(desktopTarget)glDeleteFramebuffers(1,&desktopTarget);
+            if(desktopPixels)glDeleteTextures(1,&desktopPixels);
             glFinish();if(buffer)glDeleteBuffers(1,&buffer);if(texture)glDeleteTextures(1,&texture);
             if(vao)glDeleteVertexArrays(1,&vao);
             if(fieldProgram)glDeleteProgram(fieldProgram);
@@ -168,6 +173,12 @@ public:
     }
     ~Renderer() override{release();}
     CanvasInfo geometry() override{
+        if(desktop){
+            XWindowAttributes a{};
+            if(!XGetWindowAttributes(x,window,&a))throw std::runtime_error("The desktop window was destroyed.");
+            width=std::max(a.width,1);height=std::max(a.height,1);
+            return {width,height,a.map_state==IsViewable};
+        }
         if(!parent)return {width,height,false};
         XWindowAttributes a{};if(!XGetWindowAttributes(x,parent,&a))throw std::runtime_error("The canvas window was destroyed.");
         if(a.width!=width||a.height!=height){width=std::max(a.width,1);height=std::max(a.height,1);XResizeWindow(x,window,unsigned(width),unsigned(height));}
@@ -183,6 +194,39 @@ public:
             }
         }return 0;
     }
+    void openDesktop(const char* title,int w,int h) override{
+        if(parent||desktop)throw std::runtime_error("Renderer already has a host.");
+        desktop=true;width=std::max(w,1);height=std::max(h,1);
+        XSelectInput(x,window,StructureNotifyMask|PointerMotionMask|ButtonPressMask|
+                     ButtonReleaseMask|KeyPressMask|KeyReleaseMask|FocusChangeMask|LeaveWindowMask);
+        XStoreName(x,window,title);XResizeWindow(x,window,unsigned(width),unsigned(height));
+        XMapWindow(x,window);XFlush(x);
+    }
+    void* desktopDisplay() override{return x;}
+    uintptr_t desktopWindow() override{return window;}
+    unsigned renderTexture(const std::shared_ptr<Frame>& f,const Display& d,int side,RenderTiming& timing) override{
+        if(!f)throw std::runtime_error("No frame to render.");
+        side=std::clamp(side,1,4096);
+        if(!desktopTarget){glGenFramebuffers(1,&desktopTarget);glGenTextures(1,&desktopPixels);}
+        glBindTexture(GL_TEXTURE_2D,desktopPixels);
+        if(desktopSide!=side){
+            glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,side,side,0,GL_RGBA,GL_UNSIGNED_BYTE,nullptr);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+            desktopSide=side;
+        }
+        timing=upload(f);
+        double started=seconds();
+        glBindFramebuffer(GL_FRAMEBUFFER,desktopTarget);
+        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,desktopPixels,0);
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE)
+            throw std::runtime_error("Desktop framebuffer is incomplete.");
+        draw(*f,d,side);
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
+        timing.drawSeconds=seconds()-started;
+        return desktopPixels;
+    }
+    void presentDesktop() override{glXSwapBuffers(x,window);}
     RenderTiming present(const std::shared_ptr<Frame>& f,const Display& d,uint64_t seed,double time,bool running,double dpi) override{
         scale=dpi;RenderTiming t;double started=seconds();
         glBindFramebuffer(GL_FRAMEBUFFER,0);glClearColor(.035f,.047f,.075f,1);glClear(GL_COLOR_BUFFER_BIT);
@@ -210,3 +254,4 @@ public:
 }
 }
 extern "C" turbo::LinuxRenderer* ft_gl_create(uintptr_t parent,int device){return new turbo::Renderer(parent,device);}
+extern "C" turbo::LinuxDesktopRenderer* ft_gl_create_desktop(int device){return new turbo::Renderer(0,device);}

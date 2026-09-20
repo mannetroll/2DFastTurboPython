@@ -1,0 +1,54 @@
+{
+  "backend": "CUDA / VkFFT",
+  "checks": [
+    "CUDA/VkFFT initialization and GPU texture",
+    "Activate lifecycle test window",
+    "Window activation settles",
+    "Click File",
+    "Close/quit lifecycle action"
+  ],
+  "distinct_fields": 0,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "interval_ms": 100.0,
+  "layouts": [],
+  "opengl_renderer": "NVIDIA GeForce RTX 3090/PCIe/SSE2",
+  "passed": true,
+  "presentation": "X11 / GLX (XWayland on Wayland)",
+  "rendering": {
+    "device_copy_bytes": 196608,
+    "draw_submit_seconds": 0.0022363859998222324,
+    "field_updates": 19,
+    "presentations": 26,
+    "upload_seconds": 0.000774615999944217,
+    "uploads": 1
+  },
+  "ui": {
+    "focused": false,
+    "font": "/usr/share/fonts/truetype/ubuntu/Ubuntu[wdth,wght].ttf",
+    "framebuffer": [
+      1032.0,
+      900.0
+    ],
+    "image": [
+      62.0,
+      132.0,
+      694.0,
+      694.0
+    ],
+    "inspector": [
+      814.0,
+      98.0,
+      196.0,
+      728.0
+    ],
+    "inspector_scroll_max": 18.0,
+    "scale": 1.0,
+    "viewport": [
+      22.0,
+      132.0,
+      774.0,
+      694.0
+    ]
+  },
+  "visualization": true
+}

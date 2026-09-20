@@ -1,0 +1,14 @@
+...............................................ssssss................... [ 47%]
+.........................................ssssssssssss................... [ 95%]
+.......                                                                  [100%]
+=========================== short test summary info ============================
+SKIPPED [3] python/tests/test_cnab2_macos.py:37: Metal CNAB2
+SKIPPED [2] python/tests/test_cnab2_macos.py:74: Metal CNAB2
+SKIPPED [1] python/tests/test_cnab2_macos.py:101: Metal CNAB2
+SKIPPED [1] python/tests/test_windows.py:14: Windows backend
+SKIPPED [6] python/tests/test_windows.py:25: Windows backend
+SKIPPED [1] python/tests/test_windows.py:42: Windows backend
+SKIPPED [2] python/tests/test_windows.py:60: Windows backend
+SKIPPED [1] python/tests/test_windows.py:72: Windows backend
+SKIPPED [1] python/tests/test_windows.py:80: Windows backend
+133 passed, 18 skipped in 155.78s (0:02:35)

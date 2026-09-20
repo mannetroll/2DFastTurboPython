@@ -1,0 +1,276 @@
+[
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:33:49.027886+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:34:02.088864+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--capture",
+      "native-linux/evidence/gui-parity-20260920/before/performance/n2048-native.png"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:34:14.980621+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:34:28.221537+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:34:41.087990+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:34:51.657325+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:35:04.501986+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "2048",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:35:15.130458+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "2048",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:35:28.448404+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:35:39.735500+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:35:53.584239+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--capture",
+      "native-linux/evidence/gui-parity-20260920/before/performance/n4096-native.png"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:36:07.210357+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:36:21.054263+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:36:34.648304+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:36:45.900845+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:36:59.506922+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/2dbench",
+      "--sizes",
+      "4096",
+      "--seconds",
+      "10.0",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": null,
+    "timestamp": "2026-09-20T09:37:10.775706+00:00"
+  },
+  {
+    "argv": [
+      "/tmp/fastturbo-parity-before/fastturbo-linux",
+      "--resolution",
+      "4096",
+      "--benchmark-seconds",
+      "10.0",
+      "--interval-ms",
+      "100",
+      "--no-visualization"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "returncode": 0,
+    "display": ":0",
+    "timestamp": "2026-09-20T09:37:24.630023+00:00"
+  }
+]

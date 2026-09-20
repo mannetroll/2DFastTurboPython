@@ -1,0 +1,34 @@
+{
+  "reference-windows/src/solver.cu": {
+    "unchanged_from_HEAD": true,
+    "sha256": "bc2a6184f63bcedfd780e1b2b6c9b97ab180d8e1fac39f1810a394308486f677"
+  },
+  "reference-windows/src/kernels.cuh": {
+    "unchanged_from_HEAD": true,
+    "sha256": "401800b84d7eacc5ca1ef043e86c6cbd665e5722cc06cb2063d66af14276f3b8"
+  },
+  "reference-windows/src/fft.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "29f81f15323a33edaa8a0fcde4300bc2131a196a1b223d9d794470f455764e9c"
+  },
+  "reference-windows/src/controller.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "4227dc3295502faf5c4e3b657c5f1d7197ab317a33b4a029831ce82139bc23e2"
+  },
+  "python/native/cuda/controller.cmake": {
+    "unchanged_from_HEAD": true,
+    "sha256": "b53a4d0090551cfdf2bf93c91dc8d297e3fb0e96d360f532e6660b5774699acf"
+  },
+  "python/native/cuda/legacy_cnab2.cu": {
+    "unchanged_from_HEAD": true,
+    "sha256": "ead682434e69348e457f8a17d9172d3f531ebdb97d8c378b1beafffa01167f3e"
+  },
+  "python/native/cuda/legacy_pao.cpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "11c0db8e4f904f00e26b20240a1cf992bf218e2200ec54742ef57bccc9c652be"
+  },
+  "python/native/linux/render_shaders.hpp": {
+    "unchanged_from_HEAD": true,
+    "sha256": "5c8eea6ce6dca202a7983265479942041e7afdf8ae637c7069779c39885590e5"
+  }
+}

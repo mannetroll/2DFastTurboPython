@@ -1,0 +1,44 @@
+{
+  "os": "Ubuntu 26.04.1 LTS",
+  "display": {
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-0",
+    "XDG_SESSION_TYPE": "wayland",
+    "XDG_SESSION_DESKTOP": "ubuntu"
+  },
+  "sessions": [
+    {
+      "STATE": "active",
+      "TYPE": "wayland",
+      "REMOTE": "1",
+      "CLASS": "user",
+      "SERVICE": "gdm-password"
+    },
+    {
+      "STATE": "active",
+      "TYPE": "unspecified",
+      "REMOTE": "0",
+      "CLASS": "manager",
+      "SERVICE": "systemd-user"
+    },
+    {
+      "STATE": "active",
+      "TYPE": "wayland",
+      "REMOTE": "0",
+      "CLASS": "greeter",
+      "SERVICE": "gdm-launch-environment"
+    },
+    {
+      "STATE": "active",
+      "TYPE": "unspecified",
+      "REMOTE": "0",
+      "CLASS": "manager-early",
+      "SERVICE": "systemd-user"
+    }
+  ],
+  "packages": "libgl-dev:amd64\t1.7.0-3\nlibglx-dev:amd64\t1.7.0-3\nlibpng-dev:amd64\t1.6.57-1\nlibx11-dev:amd64\t2:1.8.13-1\nxwayland\t2:24.1.10-1\n",
+  "cmake": "cmake version 4.4.3",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "cuda": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Jun_09_02:43:40_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.73\nBuild cuda_13.3.r13.3/compiler.38244171_0\n",
+  "source_base": "25e1dfd2b78ce1ea1c2657b6a4f8c690b5ebf757"
+}

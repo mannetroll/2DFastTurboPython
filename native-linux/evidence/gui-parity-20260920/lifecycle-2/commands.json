@@ -1,0 +1,58 @@
+[
+  {
+    "argv": [
+      "./fastturbo-linux",
+      "--self-test",
+      "--test-exit",
+      "close-menu",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/lifecycle-2/close-menu.json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 2.335120677947998,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "./fastturbo-linux",
+      "--self-test",
+      "--test-exit",
+      "quit-menu",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/lifecycle-2/quit-menu.json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 2.3276429176330566,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "./fastturbo-linux",
+      "--self-test",
+      "--test-exit",
+      "ctrl-w",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/lifecycle-2/ctrl-w.json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 1.9008758068084717,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "./fastturbo-linux",
+      "--self-test",
+      "--test-exit",
+      "ctrl-q",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/lifecycle-2/ctrl-q.json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 1.8887672424316406,
+    "returncode": 0,
+    "display": ":0"
+  }
+]

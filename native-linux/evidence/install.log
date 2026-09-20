@@ -1,0 +1,7 @@
+-- Install configuration: "Release"
+-- Installing: /tmp/fastturbo-native-install/bin/fastturbo-linux
+-- Set non-toolchain portion of runtime path of "/tmp/fastturbo-native-install/bin/fastturbo-linux" to "/usr/local/cuda-13.3/lib64"
+-- Up-to-date: /tmp/fastturbo-native-install/share/licenses/fastturbo-linux/Dear-ImGui.txt
+-- Up-to-date: /tmp/fastturbo-native-install/share/licenses/fastturbo-linux/FastTurbo.txt
+-- Up-to-date: /tmp/fastturbo-native-install/share/licenses/fastturbo-linux/VkFFT-LICENSE.txt
+-- Up-to-date: /tmp/fastturbo-native-install/share/licenses/fastturbo-linux/json-LICENSE.txt
