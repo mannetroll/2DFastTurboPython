@@ -30,10 +30,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File reference-windows/scripts/pa
 ## Development build and launch
 
 Prerequisites: Windows 10 x64, an RTX 3090 with a CUDA 13 compatible NVIDIA
-driver, CUDA Toolkit 13.0 at its standard installation path, Visual Studio 2022
+driver, CUDA Toolkit 13.x, Visual Studio 2022
 C++ x64 tools with the Windows SDK, CMake 3.26+ and Ninja on PATH. Python/NumPy are
 needed only for numerical validation. VkFFT 1.3.4 comes from the vendored
 reference tree; the build does not download dependencies.
+
+Build and launch scripts require `CUDA_PATH` to point to the installed toolkit.
+There is no fallback toolkit path. CUDA 13.1 and 13.4 are also validated.
 
 From the repository root in PowerShell:
 

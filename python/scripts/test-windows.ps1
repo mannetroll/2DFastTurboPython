@@ -10,7 +10,11 @@ try {
     $savedPath = $env:PATH
     try {
         $env:PATH = (Join-Path $project 'src/fastturbo/_native') + ';' + $env:PATH
-        ctest --test-dir build/windows --output-on-failure
+        # The build discovers CMake through Visual Studio's developer environment;
+        # its tools need not be on the calling PowerShell session's PATH.
+        $ctestEntry = Select-String -LiteralPath build/windows/CMakeCache.txt -Pattern '^CMAKE_CTEST_COMMAND:INTERNAL=(.+)$'
+        if (-not $ctestEntry) { throw 'CTest path missing from the native build cache.' }
+        & $ctestEntry.Matches[0].Groups[1].Value --test-dir build/windows --output-on-failure
         if ($LASTEXITCODE) { throw 'Native lifecycle tests failed.' }
     } finally { $env:PATH = $savedPath }
     if ($AllResolutions) {

@@ -8,7 +8,8 @@ set "TURBO_COMPILER=%VCToolsInstallDir:\=/%bin/Hostx64/x64/cl.exe"
 rem cmd treats unquoted semicolons and commas as separators; transport lists with /.
 set "TURBO_ARCHITECTURES=%~7"
 set "TURBO_ARCHITECTURES=%TURBO_ARCHITECTURES:/=;%"
-cmake -S "%~3" -B "%~4" -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_CXX_COMPILER=%TURBO_COMPILER%" "-DCMAKE_CUDA_HOST_COMPILER=%TURBO_COMPILER%" "-DCMAKE_CUDA_COMPILER=%~2/bin/nvcc.exe" "-DFASTTURBO_WINDOWS=%~5" "-DFASTTURBO_MACOS=%~6" "-DCMAKE_CUDA_ARCHITECTURES=%TURBO_ARCHITECTURES%" "-DTURBO_DISTRIBUTION=%~8" "-DFASTTURBO_VKFFT=%~9"
+rem Start with a fresh cache so toolkit changes preserve all explicit build options.
+cmake --fresh -S "%~3" -B "%~4" -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_CXX_COMPILER=%TURBO_COMPILER%" "-DCMAKE_CUDA_HOST_COMPILER=%TURBO_COMPILER%" "-DCMAKE_CUDA_COMPILER=%~2/bin/nvcc.exe" "-DFASTTURBO_WINDOWS=%~5" "-DFASTTURBO_MACOS=%~6" "-DCMAKE_CUDA_ARCHITECTURES=%TURBO_ARCHITECTURES%" "-DTURBO_DISTRIBUTION=%~8" "-DFASTTURBO_VKFFT=%~9"
 if errorlevel 1 exit /b 1
 cmake --build "%~4" --parallel 4
 exit /b %errorlevel%

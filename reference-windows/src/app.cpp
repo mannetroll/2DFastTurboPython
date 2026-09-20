@@ -492,7 +492,9 @@ void App::prepareChecks() {
     once("restore_initial_configuration",[this]{controller->configure(testConfig);});
     wait("restored_configuration_ready",[this]{return view.ready&&view.settled&&view.config.n==testConfig.n&&view.config.seed==testConfig.seed;});
     once("regulation_toggle_on",[this]{if(!view.regulated)activate(Regulate);});
-    once("re_slider_disabled",[this,assertThat]{auto h=std::find_if(hits.begin(),hits.end(),[](auto h){return h.id==Re;});assertThat(h!=hits.end()&&!h->enabled,"Re slider must be disabled during regulation");});
+    // Timer ticks can precede the next frame permitted by the presentation clock.
+    // Wait for draw() to refresh the view and hit targets after the toggle.
+    wait("re_slider_disabled",[this,assertThat]{if(!view.regulated)return false;auto h=std::find_if(hits.begin(),hits.end(),[](auto h){return h.id==Re;});assertThat(h!=hits.end()&&!h->enabled,"Re slider must be disabled during regulation");return true;});
     once("reset_button",[this]{activate(Reset);});
     wait("reset_zero_time_and_throughput",[this,assertThat]{if(!view.ready||!view.settled)return false;assertThat(view.stats.step==0&&view.stats.time==0&&view.rate==0,"Reset did not clear clock and throughput");return true;});
     once("minimize",[this]{ShowWindow(hwnd,SW_MINIMIZE);testTime=nowSeconds();});

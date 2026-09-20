@@ -21,12 +21,12 @@ def build(project: Path, native: Path, force=False) -> Path:
     if not reference.is_dir():
         raise RuntimeError("Windows reference sources are missing; install a built wheel or use the full repository.")
     mac = reference.parent / "reference-macos/2DFastTurbo"
-    cuda = Path(os.environ.get("CUDA_PATH", "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0"))
+    cuda = Path(os.environ["CUDA_PATH"])
     vswhere = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft Visual Studio/Installer/vswhere.exe"
     vs = subprocess.check_output([str(vswhere), "-latest", "-products", "*", "-requires",
         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "-property", "installationPath"], text=True).strip()
     if not vs or not (cuda / "bin/nvcc.exe").is_file():
-        raise RuntimeError("Install the reference prerequisites: MSVC x64 C++ tools and CUDA Toolkit 13.0.")
+        raise RuntimeError("Install MSVC x64 C++ tools and set CUDA_PATH to an installed CUDA 13.x toolkit.")
     source = project / "native/windows"
     directory = project / "build/windows"
     directory.mkdir(parents=True, exist_ok=True)
