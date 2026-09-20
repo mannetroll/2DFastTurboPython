@@ -1,0 +1,6 @@
+{
+  "DISPLAY": ":0",
+  "WAYLAND_DISPLAY": "wayland-0",
+  "XDG_SESSION_TYPE": "wayland",
+  "XDG_CURRENT_DESKTOP": "ubuntu:GNOME"
+}

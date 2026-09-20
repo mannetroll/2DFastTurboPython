@@ -1,0 +1,26 @@
+{
+  "spectrum": {
+    "max_abs": 0.0,
+    "max_rel": 0.0,
+    "rms": 0.0,
+    "relative_l2": 0.0
+  },
+  "fields": {
+    "max_abs": 0.0,
+    "max_rel": 0.0,
+    "rms": 0.0,
+    "relative_l2": 0.0
+  },
+  "stats": {
+    "steps": 132,
+    "simulation_time": 0.07746132963802665,
+    "dt": 0.0005886424332857132,
+    "energy": 0.4900280108587491,
+    "enstrophy": 7.99920376049184,
+    "palinstrophy": 258.7346908056179,
+    "initial_turnover_time": 1.5707963607143838,
+    "allocated_bytes": 107253288,
+    "vkfft_bytes": 12736
+  },
+  "status": "PASS"
+}

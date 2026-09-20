@@ -75,6 +75,11 @@ if(BUILD_TESTING)
   if(FASTTURBO_NATIVE_GUI_TESTS)
     add_test(NAME native_gui_desktop COMMAND fastturbo-linux --self-test
       --output "${CMAKE_CURRENT_BINARY_DIR}/desktop-test.json")
-    set_tests_properties(native_gui_desktop PROPERTIES TIMEOUT 180 RESOURCE_LOCK cuda LABELS gui)
+    set_tests_properties(native_gui_desktop PROPERTIES TIMEOUT 300 RESOURCE_LOCK cuda LABELS gui)
+    foreach(action close-menu quit-menu ctrl-w ctrl-q)
+      add_test(NAME native_gui_${action} COMMAND fastturbo-linux --self-test --test-exit ${action}
+        --output "${CMAKE_CURRENT_BINARY_DIR}/${action}.json")
+      set_tests_properties(native_gui_${action} PROPERTIES TIMEOUT 60 RESOURCE_LOCK cuda LABELS gui)
+    endforeach()
   endif()
 endif()

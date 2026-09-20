@@ -1,0 +1,263 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Initial texture has more than 100 colors
+PASS 2: Click Run
+PASS 3: Run advances
+PASS 4: Click Pause
+PASS 5: Pause settles
+PASS 6: Remember paused step
+PASS 7: Pause remains stable
+PASS 8: Click Single Step
+PASS 9: Single Step exactly once
+PASS 10: Click Reset
+PASS 11: Reset reproduces seed and pixels
+PASS 12: Click Speed
+PASS 13: GPU field Speed
+PASS 14: Click Enstrophy
+PASS 15: GPU field Enstrophy
+PASS 16: Click Vorticity
+PASS 17: GPU field Vorticity
+PASS 18: Three distinct fields
+PASS 19: Remember palette pixels
+PASS 20: Click Inferno
+PASS 21: GPU palette Inferno
+PASS 22: Remember palette pixels
+PASS 23: Click Aurora
+PASS 24: GPU palette Aurora
+PASS 25: Remember palette pixels
+PASS 26: Click Glacier
+PASS 27: GPU palette Glacier
+PASS 28: Remember palette pixels
+PASS 29: Click Ember
+PASS 30: GPU palette Ember
+PASS 31: Adjust Sigma
+PASS 32: Sigma updates paused texture
+PASS 33: Click Color range
+PASS 34: Click Option Exposure
+PASS 35: Exposure mode selected
+PASS 36: Click Exposure
+PASS 37: Exposure updates paused texture
+PASS 38: Click Velocity direction
+PASS 39: Flow requests a velocity lease
+PASS 40: Click Velocity direction
+PASS 41: Remember generation for live edits
+PASS 42: Click CFL
+PASS 43: CFL edits live without reset
+PASS 44: Remember Reynolds
+PASS 45: Click Reynolds
+PASS 46: Reynolds edits live without reset
+PASS 47: Click Regulation
+PASS 48: Regulation enabled
+PASS 49: Click Regulation
+PASS 50: Regulation disabled
+PASS 51: Click Seed
+PASS 52: Select seed
+PASS 53: Type seed 3
+PASS 54: Type seed 1
+PASS 55: Type seed 4
+PASS 56: Typing does not reset
+PASS 57: Arrow stays in editor
+PASS 58: F stays in editor
+PASS 59: Remove typed F
+PASS 60: New seed shortcut stays in editor
+PASS 61: R stays in editor
+PASS 62: Space stays in editor
+PASS 63: Simulation shortcuts do not consume typing
+PASS 64: Select edited seed
+PASS 65: Replace seed
+PASS 66: Click Edit
+PASS 67: Click Undo
+PASS 68: Undo replacement insertion
+PASS 69: Click Edit
+PASS 70: Click Undo
+PASS 71: Undo replacement deletion
+PASS 72: Click Edit
+PASS 73: Click Redo
+PASS 74: Click Edit
+PASS 75: Click Redo
+PASS 76: Edit menu Redo
+PASS 77: Click Edit
+PASS 78: Click Select All
+PASS 79: Click Edit
+PASS 80: Click Copy
+PASS 81: Click Edit
+PASS 82: Click Cut
+PASS 83: Edit menu Cut
+PASS 84: Click Edit
+PASS 85: Click Paste
+PASS 86: Edit menu Paste
+PASS 87: Keyboard Select All
+PASS 88: Keyboard Copy
+PASS 89: Keyboard Cut
+PASS 90: Keyboard Cut clears selection
+PASS 91: Keyboard Undo
+PASS 92: Keyboard Undo restores cut
+PASS 93: Keyboard Redo
+PASS 94: Keyboard Redo reapplies cut
+PASS 95: Keyboard Paste
+PASS 96: Keyboard Paste restores text
+PASS 97: Click Edit
+PASS 98: Capture active Edit menu
+PASS 99: Dismiss Edit menu
+PASS 100: Commit seed
+PASS 101: Seed commits and resets
+PASS 102: Click New seed
+PASS 103: New seed button
+PASS 104: New seed shortcut
+PASS 105: Ctrl+Shift+R changes seed
+PASS 106: Click Simulation
+PASS 107: Click Menu New Initial Condition
+PASS 108: New initial condition menu
+PASS 109: Click k₀
+PASS 110: Click 6
+PASS 111: K0 resets
+PASS 112: Click N
+PASS 113: Click 256
+PASS 114: Resolution resets
+PASS 115: Click Start spectrum
+PASS 116: Click Option KM3 (k⁻³)
+PASS 117: KM3 spectrum
+PASS 118: Click Method
+PASS 119: Click Option IMEX RK3
+PASS 120: Integrator selection 0
+PASS 121: Click Method
+PASS 122: Click Option Integrating-factor RK3
+PASS 123: Integrator selection 1
+PASS 124: Click Method
+PASS 125: Click Option ETD RK4
+PASS 126: Integrator selection 2
+PASS 127: Click Method
+PASS 128: Click Option CNAB2
+PASS 129: Integrator selection 3
+PASS 130: CNAB2 constraints
+PASS 131: Click Method
+PASS 132: Click Option ETD RK4
+PASS 133: Restore ETDRK4
+PASS 134: Click Form
+PASS 135: Click Option Advective
+PASS 136: Form resets
+PASS 137: Click Update interval
+PASS 138: Interval changed
+PASS 139: Click Visualization
+PASS 140: Visualization disabled
+PASS 141: Click Simulation
+PASS 142: Click Menu Resume
+PASS 143: Solver runs with visualization disabled
+PASS 144: Click Simulation
+PASS 145: Click Menu Pause
+PASS 146: Pause menu
+PASS 147: Click View
+PASS 148: Click Menu Show Simulation
+PASS 149: Show Simulation restores current paused frame
+PASS 150: Click Simulation
+PASS 151: Click Menu Reset Flow
+PASS 152: Reset menu
+PASS 153: Click Simulation
+PASS 154: Click Menu Single Step
+PASS 155: Step menu
+PASS 156: Focus flow
+PASS 157: Space shortcut
+PASS 158: Space runs
+PASS 159: Space pauses
+PASS 160: Space pause settles
+PASS 161: Remember shortcut step
+PASS 162: Right shortcut
+PASS 163: Right exactly one step
+PASS 164: R shortcut
+PASS 165: R resets
+PASS 166: Remember numeric editor generation
+PASS 167: Ctrl-click numeric CFL editor
+PASS 168: Select numeric CFL
+PASS 169: Numeric CFL 1
+PASS 170: Decimal point
+PASS 171: Numeric CFL 2
+PASS 172: Click Edit
+PASS 173: Click Select All
+PASS 174: Click Edit
+PASS 175: Click Copy
+PASS 176: Click Edit
+PASS 177: Click Cut
+PASS 178: Click Edit
+PASS 179: Click Paste
+PASS 180: Commit numeric CFL
+PASS 181: Numeric Edit menu retains live semantics
+PASS 182: Click Seed
+PASS 183: Select seed for error
+PASS 184: Invalid seed
+PASS 185: Commit invalid seed
+PASS 186: Invalid edit is reported
+PASS 187: Click View
+PASS 188: Click Menu Dismiss Message
+PASS 189: Dismiss Message clears error
+PASS 190: Click File
+PASS 191: Click Menu About 2DFastTurbo
+PASS 192: About dialog evidence
+PASS 193: Click About OK
+PASS 194: Set snapshot filename
+PASS 195: Click File
+PASS 196: Click Menu Save Snapshot…
+PASS 197: Click Save PNG
+PASS 198: Snapshot exported
+PASS 199: Snapshot shortcut
+PASS 200: Click Save PNG
+PASS 201: Click Replace PNG
+PASS 202: Snapshot overwrite confirmed
+PASS 203: Click Snapshot
+PASS 204: Click Cancel PNG
+PASS 205: Snapshot cancel
+PASS 206: Click File
+PASS 207: Capture menu File
+PASS 208: Dismiss menu
+PASS 209: Click Edit
+PASS 210: Capture menu Edit
+PASS 211: Dismiss menu
+PASS 212: Click Simulation
+PASS 213: Capture menu Simulation
+PASS 214: Dismiss menu
+PASS 215: Click View
+PASS 216: Capture menu View
+PASS 217: Dismiss menu
+PASS 218: Click Window
+PASS 219: Capture menu Window
+PASS 220: Dismiss menu
+PASS 221: Keyboard menu navigation: Alt
+PASS 222: Open keyboard menu
+PASS 223: Keyboard navigates menu
+PASS 224: Next menu
+PASS 225: Close keyboard menu
+PASS 226: Leave menu bar
+PASS 227: Restore reference visual settings
+PASS 228: Reference field ready
+PASS 229: Click Run
+PASS 230: Evolve comparable reference field
+PASS 231: Click Pause
+PASS 232: Pause reference capture
+PASS 233: Resize 1280x720
+PASS 234: 1280x720 square and centered
+PASS 235: Wheel scroll inspector
+PASS 236: Inspector scroll reaches numerics and presentation
+PASS 237: Click Focus
+PASS 238: Header focus mode
+PASS 239: Click File
+PASS 240: Menus accessible in focus mode
+PASS 241: Dismiss focus menu
+PASS 242: Click View
+PASS 243: Click Menu Show Controls
+PASS 244: Show Controls restores inspector
+PASS 245: Focus flow for F
+PASS 246: F focus shortcut
+PASS 247: F hides controls
+PASS 248: F restores controls
+PASS 249: Resize 1920x1080
+PASS 250: 1920x1080 square and centered
+PASS 251: High DPI 1.5x
+PASS 252: High DPI square and centered
+PASS 253: Click View
+PASS 254: Click Menu Focus on Flow
+PASS 255: High DPI focus
+PASS 256: Click View
+PASS 257: Click Menu Show Controls
+PASS 258: Restore DPI
+PASS 259: Click Window
+PASS 260: Click Menu Minimize
+fastturbo-linux: Self-test timeout: Minimized window

@@ -1,0 +1,56 @@
+[
+  {
+    "n": 2048,
+    "mode": "headless",
+    "before_ms": 5.41633837987013,
+    "after_ms": 5.443658265760869,
+    "change_percent": 0.5043976940634742,
+    "before_overhead": 0.0,
+    "after_overhead": 0.0
+  },
+  {
+    "n": 2048,
+    "mode": "disabled",
+    "before_ms": 5.455353877173909,
+    "after_ms": 5.46581656058931,
+    "change_percent": 0.19178743764320938,
+    "before_overhead": 0.7203297609466475,
+    "after_overhead": 0.4070478664652821
+  },
+  {
+    "n": 2048,
+    "mode": "normal",
+    "before_ms": 5.593781087611597,
+    "after_ms": 5.574344750555661,
+    "change_percent": -0.3474633124092241,
+    "before_overhead": 3.276063925417483,
+    "after_overhead": 2.4007106694550195
+  },
+  {
+    "n": 4096,
+    "mode": "headless",
+    "before_ms": 24.188207978365384,
+    "after_ms": 24.274118841346155,
+    "change_percent": 0.35517663424100565,
+    "before_overhead": 0.0,
+    "after_overhead": 0.0
+  },
+  {
+    "n": 4096,
+    "mode": "disabled",
+    "before_ms": 24.382890500000087,
+    "after_ms": 24.32622079807673,
+    "change_percent": -0.23241584882381927,
+    "before_overhead": 0.8048654195831118,
+    "after_overhead": 0.21463995076858033
+  },
+  {
+    "n": 4096,
+    "mode": "normal",
+    "before_ms": 25.000515389999972,
+    "after_ms": 24.90613303921593,
+    "change_percent": -0.3775216203014464,
+    "before_overhead": 3.3582785974105134,
+    "after_overhead": 2.603654542521494
+  }
+]

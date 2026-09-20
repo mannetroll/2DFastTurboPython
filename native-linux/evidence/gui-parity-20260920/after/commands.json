@@ -1,0 +1,37 @@
+[
+  {
+    "argv": [
+      "python3",
+      "native-linux/scripts/compare.py",
+      "--runs",
+      "3",
+      "--seconds",
+      "10",
+      "--sizes",
+      "2048",
+      "4096",
+      "--output",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/after/performance"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 226.9711048603058,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "python",
+      "2dbench",
+      "--seconds",
+      "10",
+      "--json"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 40.72797966003418,
+    "returncode": 0,
+    "display": null
+  }
+]

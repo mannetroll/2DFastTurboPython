@@ -1,0 +1,315 @@
+Building native FastTurbo (shared CUDA + VkFFT, Linux)…
+-- The CXX compiler identification is GNU 15.2.0
+-- The CUDA compiler identification is NVIDIA 13.3.73 with host compiler GNU 15.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/x86_64-linux-gnu-g++-15 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda-13.3/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /usr/local/cuda-13.3/targets/x86_64-linux/include;/usr/local/cuda-13.3/targets/x86_64-linux/include/cccl (found suitable version "13.3.73", minimum required is "13.0")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Configuring done (3.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/tobbe/github/2DFastTurboPython/python/build/linux
+[1/19] Building CXX object CMakeFiles/cuda_platform.dir/cuda_loader.cpp.o
+[2/19] Building CUDA object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/solver.cu.o
+[3/19] Building CXX object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/python/native/cuda/legacy_pao.cpp.o
+[4/19] Building CUDA object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/python/native/cuda/legacy_cnab2.cu.o
+[5/19] Linking CXX static library libcuda_platform.a
+[6/19] Building CXX object CMakeFiles/fastturbo.dir/bridge.cpp.o
+[7/19] Building CXX object CMakeFiles/turbo_core.dir/home/tobbe/github/2DFastTurboPython/reference-windows/src/fft.cpp.o
+[8/19] Linking CXX static library libturbo_core.a
+[9/19] Building CXX object CMakeFiles/fastturbo.dir/adapted/controller.cpp.o
+[10/19] Building CXX object CMakeFiles/fastturbo_gl.dir/renderer.cpp.o
+[11/19] Building CXX object CMakeFiles/fastturbo.dir/ui.cpp.o
+In file included from /home/tobbe/github/2DFastTurboPython/python/native/linux/ui.cpp:4:
+/home/tobbe/github/2DFastTurboPython/python/native/linux/../cuda/bridge_common.hpp:23:6: warning: ‘void {anonymous}::deviceMetadata(Json&, int)’ defined but not used [-Wunused-function]
+   23 | void deviceMetadata(Json& info, int device) {
+      |      ^~~~~~~~~~~~~~
+/home/tobbe/github/2DFastTurboPython/python/native/linux/../cuda/bridge_common.hpp:15:5: warning: ‘int {anonymous}::requestedDevice()’ defined but not used [-Wunused-function]
+   15 | int requestedDevice() {
+      |     ^~~~~~~~~~~~~~~
+[12/19] Building CXX object CMakeFiles/core_tests.dir/core_tests.cpp.o
+[13/19] Building CUDA object CMakeFiles/device_test.dir/device_test.cu.o
+[14/19] Linking CXX shared library libfastturbo.so
+[15/19] Linking CXX shared library libfastturbo_gl.so
+[16/19] Linking CXX executable core_tests
+[17/19] Linking CUDA executable device_test
+[18/19] Building CXX object CMakeFiles/cuda_reference.dir/reference_cli.cpp.o
+[19/19] Linking CXX executable cuda_reference
+{
+  "schema_version": 1,
+  "hostname": "ubuntu",
+  "os": "Ubuntu 26.04.1 LTS",
+  "arch": "x86_64",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "device_index": 0,
+  "backend": "CUDA + VkFFT",
+  "compute_capability": "8.6",
+  "gpu_memory_bytes": 25294995456,
+  "physical_memory_bytes": 65459699712,
+  "unified_memory": null,
+  "recommended_working_set_bytes": null,
+  "cuda_runtime": "13.3",
+  "cuda_driver": "13.2",
+  "vkfft_version": "1.3.4",
+  "cuda_build_architectures": "native",
+  "native_directory": "/home/tobbe/github/2DFastTurboPython/python/src/fastturbo/_native",
+  "native_sha256": null,
+  "precision": "float32",
+  "git_commit": "be0487467eb1cd61482baa73b2f8f48a285a2a92",
+  "git_dirty": true,
+  "timestamp": "2026-09-20T10:28:40.342340+00:00",
+  "target_seconds": 10.0,
+  "warmup_steps": 8,
+  "timing": "synchronized wall time, including batch submission and final inspection; initialization/warmup/reset excluded",
+  "batch_steps": 8,
+  "results": [
+    {
+      "n": 2048,
+      "padded_n": 3072,
+      "status": "ok",
+      "steps": 1848,
+      "seconds": 10.032467800000177,
+      "ms_per_step": 5.428824567099663,
+      "steps_per_second": 184.20193683551793,
+      "initialization_seconds": 0.3806513330000598,
+      "native_report": {
+        "schema_version": 1,
+        "solver": "FastTurbo Python",
+        "mode": "headless",
+        "config": {
+          "resolution": 2048,
+          "reynolds": 27898.36614974335,
+          "k0": 10,
+          "seed": "2",
+          "cfl": 3.0,
+          "integrator": "etdrk4",
+          "operator": "stress",
+          "fixed_dt": null,
+          "start_spectrum": "PAO",
+          "padded_resolution": 3072,
+          "batch": 8
+        },
+        "initial_stats": {
+          "allocated_bytes": 428412456,
+          "dt": 0.0008477209485135972,
+          "energy": 0.49840843537822366,
+          "enstrophy": 49.99999815225601,
+          "gpu_milliseconds": 0.0,
+          "initial_turnover_time": 0.6283185423276767,
+          "is_finite": true,
+          "palinstrophy": 9999.99966430664,
+          "palinstrophy_ratio": 9.555396968316635e-05,
+          "reynolds": 27898.36614974335,
+          "simulation_time": 0.0,
+          "steps": 0
+        },
+        "stats": {
+          "allocated_bytes": 428412456,
+          "dt": 0.0008518973481841385,
+          "energy": 0.4934457099662257,
+          "enstrophy": 39.544217247050256,
+          "gpu_milliseconds": 41.99625778198242,
+          "initial_turnover_time": 0.6283185423276767,
+          "is_finite": true,
+          "palinstrophy": 161412.6541748047,
+          "palinstrophy_ratio": 0.001950173866753155,
+          "reynolds": 27898.36614974335,
+          "simulation_time": 1.4895266115781851,
+          "steps": 1848
+        },
+        "frame": {},
+        "seconds": 10.032467800000177,
+        "initialization_seconds": 0.3806513330000598,
+        "simtime_per_s": 0.14847060975148696,
+        "steps_per_s": 184.20193683551793,
+        "milliseconds_per_step": 5.428824567099663,
+        "turnovers_per_s": 0.23629831009198118,
+        "gpu_seconds": 10.019991279602042,
+        "gpu_ms_per_step": 5.422073203247858,
+        "batches": 231,
+        "snapshots": 0,
+        "snapshot_seconds": 0.0,
+        "snapshot_hz": 0,
+        "warmup_steps": 8,
+        "target_wall_seconds": 10.0,
+        "target_time": null,
+        "final_batch_seconds": 0.04204493499992168,
+        "final_inspection_seconds": 0.0002333460001864296,
+        "spectrum_normalization": "fourier-series",
+        "vorticity_convention": "omega = dx(v) - dy(u)",
+        "initial_source": "seeded-pao",
+        "initial_sha256": null,
+        "hardware": {
+          "abi_version": 1,
+          "available_memory_bytes": 23872602112,
+          "backend": "CUDA / VkFFT",
+          "capabilities": {
+            "drag": false,
+            "forcing": false,
+            "headless": true,
+            "native_rendering": true,
+            "vortex_injection": false
+          },
+          "compute_capability": "8.6",
+          "cuda_driver_version": 13020,
+          "cuda_runtime_version": 13030,
+          "defaults": {
+            "cfl": 3.0,
+            "fixed_dt": null,
+            "integrator": "etdrk4",
+            "k0": 4,
+            "operator": "stress",
+            "padded_resolution": 1536,
+            "resolution": 1024,
+            "reynolds": 27898.36614974335,
+            "seed": "2",
+            "start_spectrum": "PAO",
+            "viscosity": 3.5844394005835056e-05
+          },
+          "device_index": 0,
+          "gpu": "NVIDIA GeForce RTX 3090",
+          "gpu_memory_bytes": 25294995456,
+          "integrators": [
+            "imexRK3",
+            "ifHeunRK3",
+            "etdrk4",
+            "CNAB2"
+          ],
+          "os": "Linux",
+          "physical_memory_bytes": 65459699712,
+          "precision": "float32"
+        },
+        "timestamp": "2026-09-20T12:28:28+0200"
+      }
+    },
+    {
+      "n": 4096,
+      "padded_n": 6144,
+      "status": "ok",
+      "steps": 416,
+      "seconds": 10.108796751000227,
+      "ms_per_step": 24.299992189904394,
+      "steps_per_second": 41.15227660095534,
+      "initialization_seconds": 0.9487979040000027,
+      "native_report": {
+        "schema_version": 1,
+        "solver": "FastTurbo Python",
+        "mode": "headless",
+        "config": {
+          "resolution": 4096,
+          "reynolds": 27898.36614974335,
+          "k0": 10,
+          "seed": "2",
+          "cfl": 3.0,
+          "integrator": "etdrk4",
+          "operator": "stress",
+          "fixed_dt": null,
+          "start_spectrum": "PAO",
+          "padded_resolution": 6144,
+          "batch": 8
+        },
+        "initial_stats": {
+          "allocated_bytes": 1712459304,
+          "dt": 0.00040532558341510594,
+          "energy": 0.4984084237366915,
+          "enstrophy": 49.99999988079071,
+          "gpu_milliseconds": 0.0,
+          "initial_turnover_time": 0.6283185314669727,
+          "is_finite": true,
+          "palinstrophy": 9999.999969482422,
+          "palinstrophy_ratio": 2.3865158022724595e-05,
+          "reynolds": 27898.36614974335,
+          "simulation_time": 0.0,
+          "steps": 0
+        },
+        "stats": {
+          "allocated_bytes": 1712459304,
+          "dt": 0.00036403033300302923,
+          "energy": 0.49783744096795907,
+          "enstrophy": 49.87316581270858,
+          "gpu_milliseconds": 193.5281219482422,
+          "initial_turnover_time": 0.6283185314669727,
+          "is_finite": true,
+          "palinstrophy": 13615.877483359887,
+          "palinstrophy_ratio": 3.257714471101048e-05,
+          "reynolds": 27898.36614974335,
+          "simulation_time": 0.15948996672523208,
+          "steps": 416
+        },
+        "frame": {},
+        "seconds": 10.108796751000227,
+        "initialization_seconds": 0.9487979040000027,
+        "simtime_per_s": 0.015777344292677676,
+        "steps_per_s": 41.15227660095534,
+        "milliseconds_per_step": 24.299992189904394,
+        "turnovers_per_s": 0.025110423300489598,
+        "gpu_seconds": 10.105158828735352,
+        "gpu_ms_per_step": 24.29124718445998,
+        "batches": 52,
+        "snapshots": 0,
+        "snapshot_seconds": 0.0,
+        "snapshot_hz": 0,
+        "warmup_steps": 8,
+        "target_wall_seconds": 10.0,
+        "target_time": null,
+        "final_batch_seconds": 0.1935726629999408,
+        "final_inspection_seconds": 0.00025920500002030167,
+        "spectrum_normalization": "fourier-series",
+        "vorticity_convention": "omega = dx(v) - dy(u)",
+        "initial_source": "seeded-pao",
+        "initial_sha256": null,
+        "hardware": {
+          "abi_version": 1,
+          "available_memory_bytes": 23872602112,
+          "backend": "CUDA / VkFFT",
+          "capabilities": {
+            "drag": false,
+            "forcing": false,
+            "headless": true,
+            "native_rendering": true,
+            "vortex_injection": false
+          },
+          "compute_capability": "8.6",
+          "cuda_driver_version": 13020,
+          "cuda_runtime_version": 13030,
+          "defaults": {
+            "cfl": 3.0,
+            "fixed_dt": null,
+            "integrator": "etdrk4",
+            "k0": 4,
+            "operator": "stress",
+            "padded_resolution": 1536,
+            "resolution": 1024,
+            "reynolds": 27898.36614974335,
+            "seed": "2",
+            "start_spectrum": "PAO",
+            "viscosity": 3.5844394005835056e-05
+          },
+          "device_index": 0,
+          "gpu": "NVIDIA GeForce RTX 3090",
+          "gpu_memory_bytes": 25294995456,
+          "integrators": [
+            "imexRK3",
+            "ifHeunRK3",
+            "etdrk4",
+            "CNAB2"
+          ],
+          "os": "Linux",
+          "physical_memory_bytes": 65459699712,
+          "precision": "float32"
+        },
+        "timestamp": "2026-09-20T12:28:40+0200"
+      }
+    }
+  ],
+  "timestep_ratio_4096_2048": 4.476105626468348
+}

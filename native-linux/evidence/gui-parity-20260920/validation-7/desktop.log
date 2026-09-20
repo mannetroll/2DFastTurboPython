@@ -1,0 +1,90 @@
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Initial texture has more than 100 colors
+PASS 2: Click Run
+PASS 3: Run advances
+PASS 4: Click Pause
+PASS 5: Pause settles
+PASS 6: Remember paused step
+PASS 7: Pause remains stable
+PASS 8: Click Single Step
+PASS 9: Single Step exactly once
+PASS 10: Click Reset
+PASS 11: Reset reproduces seed and pixels
+PASS 12: Click Speed
+PASS 13: GPU field Speed
+PASS 14: Click Enstrophy
+PASS 15: GPU field Enstrophy
+PASS 16: Click Vorticity
+PASS 17: GPU field Vorticity
+PASS 18: Three distinct fields
+PASS 19: Remember palette pixels
+PASS 20: Click Inferno
+PASS 21: GPU palette Inferno
+PASS 22: Remember palette pixels
+PASS 23: Click Aurora
+PASS 24: GPU palette Aurora
+PASS 25: Remember palette pixels
+PASS 26: Click Glacier
+PASS 27: GPU palette Glacier
+PASS 28: Remember palette pixels
+PASS 29: Click Ember
+PASS 30: GPU palette Ember
+PASS 31: Adjust Sigma
+PASS 32: Sigma updates paused texture
+PASS 33: Click Color range
+PASS 34: Click Option Exposure
+PASS 35: Exposure mode selected
+PASS 36: Click Exposure
+PASS 37: Exposure updates paused texture
+PASS 38: Click Velocity direction
+PASS 39: Flow requests a velocity lease
+PASS 40: Click Velocity direction
+PASS 41: Remember generation for live edits
+PASS 42: Click CFL
+PASS 43: CFL edits live without reset
+PASS 44: Remember Reynolds
+PASS 45: Click Reynolds
+PASS 46: Reynolds edits live without reset
+PASS 47: Click Regulation
+PASS 48: Regulation enabled
+PASS 49: Click Regulation
+PASS 50: Regulation disabled
+PASS 51: Click Seed
+PASS 52: Select seed
+PASS 53: Type seed 3
+PASS 54: Type seed 1
+PASS 55: Type seed 4
+PASS 56: Typing does not reset
+PASS 57: Arrow stays in editor
+PASS 58: R stays in editor
+PASS 59: Space stays in editor
+PASS 60: Simulation shortcuts do not consume typing
+PASS 61: Select edited seed
+PASS 62: Replace seed
+PASS 63: Click Edit
+PASS 64: Click Undo
+PASS 65: Undo replacement insertion
+PASS 66: Click Edit
+PASS 67: Click Undo
+PASS 68: Undo replacement deletion
+PASS 69: Click Edit
+PASS 70: Click Redo
+PASS 71: Click Edit
+PASS 72: Click Redo
+PASS 73: Edit menu Redo
+PASS 74: Click Edit
+PASS 75: Click Select All
+PASS 76: Click Edit
+PASS 77: Click Copy
+PASS 78: Click Edit
+PASS 79: Click Cut
+PASS 80: Edit menu Cut
+PASS 81: Click Edit
+PASS 82: Click Paste
+PASS 83: Edit menu Paste
+PASS 84: Click Edit
+PASS 85: Capture active Edit menu
+PASS 86: Dismiss Edit menu
+PASS 87: Commit seed
+fastturbo-linux: Self-test timeout: Seed commits and resets

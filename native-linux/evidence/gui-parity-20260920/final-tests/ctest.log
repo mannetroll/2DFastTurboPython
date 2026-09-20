@@ -1,0 +1,42 @@
+Test project /home/tobbe/github/2DFastTurboPython/build-linux
+      Start  1: reference_help
+ 1/13 Test  #1: reference_help ...................   Passed    0.01 sec
+      Start  2: reference_validation
+ 2/13 Test  #2: reference_validation .............   Passed    7.35 sec
+      Start  3: reference_benchmark
+ 3/13 Test  #3: reference_benchmark ..............   Passed    7.31 sec
+      Start  4: reference_cli
+ 4/13 Test  #4: reference_cli ....................   Passed    0.17 sec
+      Start  5: bench_cli
+ 5/13 Test  #5: bench_cli ........................   Passed    0.25 sec
+      Start  6: bench_gpu
+ 6/13 Test  #6: bench_gpu ........................   Passed    2.50 sec
+      Start  7: native_gui_cli
+ 7/13 Test  #7: native_gui_cli ...................   Passed    0.15 sec
+      Start  8: native_controller
+ 8/13 Test  #8: native_controller ................   Passed    3.16 sec
+      Start  9: native_gui_desktop
+ 9/13 Test  #9: native_gui_desktop ...............   Passed  114.18 sec
+      Start 10: native_gui_close-menu
+10/13 Test #10: native_gui_close-menu ............   Passed    1.52 sec
+      Start 11: native_gui_quit-menu
+11/13 Test #11: native_gui_quit-menu .............   Passed    1.53 sec
+      Start 12: native_gui_ctrl-w
+12/13 Test #12: native_gui_ctrl-w ................***Timeout  60.09 sec
+FastTurbo: NVIDIA GeForce RTX 3090; CUDA / VkFFT; NVIDIA GeForce RTX 3090/PCIe/SSE2; X11/GLX
+PASS 0: CUDA/VkFFT initialization and GPU texture
+PASS 1: Close/quit lifecycle action
+
+      Start 13: native_gui_ctrl-q
+13/13 Test #13: native_gui_ctrl-q ................   Passed    1.09 sec
+
+92% tests passed, 1 tests failed out of 13
+
+Label Time Summary:
+gui    = 178.41 sec*proc (5 tests)
+
+Total Test time (real) = 199.32 sec
+
+The following tests FAILED:
+	 12 - native_gui_ctrl-w (Timeout)                       gui
+Errors while running CTest

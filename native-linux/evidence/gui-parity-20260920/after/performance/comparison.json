@@ -1,0 +1,188 @@
+{
+  "summary": [
+    {
+      "n": 2048,
+      "mode": "headless",
+      "ms_per_step": 5.462591109716158,
+      "steps_per_s": 183.0633082204026,
+      "overhead_percent": 0.0,
+      "min_ms": 5.443439002717391,
+      "max_ms": 5.479695829694323
+    },
+    {
+      "n": 2048,
+      "mode": "disabled",
+      "ms_per_step": 5.4758228586244835,
+      "steps_per_s": 182.62095502687575,
+      "overhead_percent": 0.24222477286999222,
+      "min_ms": 5.4726580993449945,
+      "max_ms": 5.497662582785137
+    },
+    {
+      "n": 2048,
+      "mode": "normal",
+      "ms_per_step": 5.591429931361652,
+      "steps_per_s": 178.84512768211962,
+      "overhead_percent": 2.358566091764258,
+      "min_ms": 5.557305238333407,
+      "max_ms": 5.6011224648437565
+    },
+    {
+      "n": 4096,
+      "mode": "headless",
+      "ms_per_step": 24.334468526442304,
+      "steps_per_s": 41.09397330430211,
+      "overhead_percent": 0.0,
+      "min_ms": 24.291721545673077,
+      "max_ms": 24.354657216346155
+    },
+    {
+      "n": 4096,
+      "mode": "disabled",
+      "ms_per_step": 24.476186165865844,
+      "steps_per_s": 40.85603832326567,
+      "overhead_percent": 0.582374089121962,
+      "min_ms": 24.44217522115366,
+      "max_ms": 24.51268861519637
+    },
+    {
+      "n": 4096,
+      "mode": "normal",
+      "ms_per_step": 25.039256672499732,
+      "steps_per_s": 39.93728779889405,
+      "overhead_percent": 2.8962545259272554,
+      "min_ms": 25.03472334749972,
+      "max_ms": 25.06177061250014
+    }
+  ],
+  "runs": [
+    {
+      "n": 2048,
+      "run": 1,
+      "mode": "headless",
+      "ms_per_step": 5.443439002717391,
+      "steps_per_s": 183.7073951780841
+    },
+    {
+      "n": 2048,
+      "run": 1,
+      "mode": "disabled",
+      "ms_per_step": 5.4758228586244835,
+      "steps_per_s": 182.62095502687575
+    },
+    {
+      "n": 2048,
+      "run": 1,
+      "mode": "normal",
+      "ms_per_step": 5.557305238333407,
+      "steps_per_s": 179.94332812640184
+    },
+    {
+      "n": 2048,
+      "run": 2,
+      "mode": "disabled",
+      "ms_per_step": 5.4726580993449945,
+      "steps_per_s": 182.7265620923198
+    },
+    {
+      "n": 2048,
+      "run": 2,
+      "mode": "normal",
+      "ms_per_step": 5.591429931361652,
+      "steps_per_s": 178.84512768211965
+    },
+    {
+      "n": 2048,
+      "run": 2,
+      "mode": "headless",
+      "ms_per_step": 5.462591109716158,
+      "steps_per_s": 183.0633082204026
+    },
+    {
+      "n": 2048,
+      "run": 3,
+      "mode": "normal",
+      "ms_per_step": 5.6011224648437565,
+      "steps_per_s": 178.53564286027353
+    },
+    {
+      "n": 2048,
+      "run": 3,
+      "mode": "headless",
+      "ms_per_step": 5.479695829694323,
+      "steps_per_s": 182.49188113344306
+    },
+    {
+      "n": 2048,
+      "run": 3,
+      "mode": "disabled",
+      "ms_per_step": 5.497662582785137,
+      "steps_per_s": 181.8954846613006
+    },
+    {
+      "n": 4096,
+      "run": 1,
+      "mode": "headless",
+      "ms_per_step": 24.354657216346155,
+      "steps_per_s": 41.05990862925504
+    },
+    {
+      "n": 4096,
+      "run": 1,
+      "mode": "disabled",
+      "ms_per_step": 24.44217522115366,
+      "steps_per_s": 40.912888928745694
+    },
+    {
+      "n": 4096,
+      "run": 1,
+      "mode": "normal",
+      "ms_per_step": 25.03472334749972,
+      "steps_per_s": 39.94451970246647
+    },
+    {
+      "n": 4096,
+      "run": 2,
+      "mode": "disabled",
+      "ms_per_step": 24.51268861519637,
+      "steps_per_s": 40.79519858870402
+    },
+    {
+      "n": 4096,
+      "run": 2,
+      "mode": "normal",
+      "ms_per_step": 25.06177061250014,
+      "steps_per_s": 39.90141061706258
+    },
+    {
+      "n": 4096,
+      "run": 2,
+      "mode": "headless",
+      "ms_per_step": 24.291721545673077,
+      "steps_per_s": 41.166287787376824
+    },
+    {
+      "n": 4096,
+      "run": 3,
+      "mode": "normal",
+      "ms_per_step": 25.039256672499732,
+      "steps_per_s": 39.93728779889405
+    },
+    {
+      "n": 4096,
+      "run": 3,
+      "mode": "headless",
+      "ms_per_step": 24.334468526442304,
+      "steps_per_s": 41.09397330430211
+    },
+    {
+      "n": 4096,
+      "run": 3,
+      "mode": "disabled",
+      "ms_per_step": 24.476186165865844,
+      "steps_per_s": 40.85603832326567
+    }
+  ],
+  "overhead_definition": "100 * (mode wall ms/step / headless wall ms/step - 1)",
+  "note": "Same production solver, ETDRK4/stress, PAO, seed 2, k0 10, Re 27898.36614974335, CFL 3, batch 8. Headless uses 8 warmup steps/reset; GUI uses existing controller's 2-second warmup/reset, periodic inspection. GUI wall time includes field extraction, unlike GPU event time. Rendering FPS is separate. Remote presentation is not a local-display rendering benchmark."
+}

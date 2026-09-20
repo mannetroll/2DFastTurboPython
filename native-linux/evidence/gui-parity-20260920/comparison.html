@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>FastTurbo GUI comparison</title>
+<style>
+body{margin:24px;background:#080b10;color:#e3e5e9;font:15px system-ui}h1{font-size:20px}select{background:#171e28;color:inherit;padding:8px;border:1px solid #344152;border-radius:5px}main{display:grid;grid-template-columns:1fr 1fr;gap:20px}img{width:100%;height:auto;object-fit:contain}figure{margin:18px 0}figcaption{margin:8px 0;color:#90a2b9}p{max-width:90em}a{color:#1cdecb}
+</style>
+<h1>Native Linux FastTurbo: direct screenshot comparison</h1>
+<p>Raw, unmodified captures. Linux includes an in-window menu bar; GUI.png includes macOS window chrome and excludes its global menus. Simulation states and backend memory totals differ. The report records framebuffer sizes and display limitations.</p>
+<select id="reference" aria-label="Reference screenshot">
+<option value="../../../GUI.png">Primary specification · GUI.png</option>
+<option value="../../../reference-windows/benchmarks/2026-09-15/windows-gui.png">Native Windows</option>
+<option value="../../../python/evidence/linux-clean-build/clean-gui.png">Python / PySide6 Linux</option>
+<option value="before/1280x720.png">Linux before · 1280×720</option>
+<option value="before/1920x1080-exact.png">Linux before · 1920×1080</option>
+</select>
+<select id="linux" aria-label="Linux screenshot">
+<option value="final-tests-2/gui/reference-proportions.png">Linux · reference proportions</option>
+<option value="final-tests-2/gui/reference-running.png">Linux · running</option>
+<option value="final-tests-2/gui/1280x720.png">Linux · 1280×720</option>
+<option value="final-tests-2/gui/1280x720-scrolled.png">Linux · inspector scrolled</option>
+<option value="final-tests-2/gui/1920x1080.png">Linux · 1920×1080</option>
+<option value="final-tests-2/gui/1280x720-focus.png">Linux · focus mode</option>
+<option value="final-tests-2/gui/1920x1080-dpi150.png">Linux · 150% DPI</option>
+<option value="final-tests-2/gui/1920x1080-dpi150-focus.png">Linux · 150% DPI, focus</option>
+<option value="final-tests-2/gui/menu-File.png">Linux · File menu</option>
+<option value="final-tests-2/gui/menu-edit-active.png">Linux · active Edit menu</option>
+<option value="final-tests-2/gui/menu-Simulation.png">Linux · Simulation menu</option>
+<option value="final-tests-2/gui/menu-View.png">Linux · View menu</option>
+<option value="final-tests-2/gui/menu-Window.png">Linux · Window menu</option>
+</select>
+<main><figure><figcaption>Reference</figcaption><img id="left" src="../../../GUI.png" alt="Reference application screenshot"></figure>
+<figure><figcaption>Native Linux / ImGui / CUDA</figcaption><img id="right" src="final-tests-2/gui/reference-proportions.png" alt="Refined native Linux application screenshot"></figure></main>
+<script>for(const [select,img] of [['reference','left'],['linux','right']])document.getElementById(select).onchange=e=>document.getElementById(img).src=e.target.value;</script>
+</html>

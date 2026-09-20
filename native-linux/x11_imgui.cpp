@@ -6,6 +6,7 @@
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
+#include <X11/Xresource.h>
 #include <array>
 #include <chrono>
 #include <clocale>
@@ -17,9 +18,10 @@
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
+#include <cstdlib>
 
 namespace {
-ImGuiKey key(KeySym k) {
+ImGuiKey imguiKey(KeySym k) {
     if(k>=XK_a&&k<=XK_z)return ImGuiKey(ImGuiKey_A+k-XK_a);
     if(k>=XK_A&&k<=XK_Z)return ImGuiKey(ImGuiKey_A+k-XK_A);
     if(k>=XK_0&&k<=XK_9)return ImGuiKey(ImGuiKey_0+k-XK_0);
@@ -50,6 +52,8 @@ struct X11ImGui::Impl {
     Display* x;
     Window window;
     Atom protocols,deleteWindow,clipboard,utf8,targets,property;
+    Atom windowState,hiddenState;
+    bool hidden=false;
     XIM im=nullptr;
     XIC ic=nullptr;
     std::string copied,pasted;
@@ -83,8 +87,11 @@ X11ImGui::X11ImGui(void* display,uintptr_t window):impl(std::make_unique<Impl>()
     p.deleteWindow=XInternAtom(p.x,"WM_DELETE_WINDOW",False);
     p.clipboard=XInternAtom(p.x,"CLIPBOARD",False);p.utf8=XInternAtom(p.x,"UTF8_STRING",False);
     p.targets=XInternAtom(p.x,"TARGETS",False);p.property=XInternAtom(p.x,"FASTTURBO_CLIPBOARD",False);
+    p.windowState=XInternAtom(p.x,"_NET_WM_STATE",False);p.hiddenState=XInternAtom(p.x,"_NET_WM_STATE_HIDDEN",False);
+    XWindowAttributes attributes{};XGetWindowAttributes(p.x,p.window,&attributes);
+    XSelectInput(p.x,p.window,attributes.your_event_mask|PropertyChangeMask);
     XSetWMProtocols(p.x,p.window,&p.deleteWindow,1);
-    XSizeHints hints{};hints.flags=PMinSize;hints.min_width=760;hints.min_height=680;
+    XSizeHints hints{};hints.flags=PMinSize;hints.min_width=760;hints.min_height=560;
     XSetWMNormalHints(p.x,p.window,&hints);
     XClassHint cls{};cls.res_name=const_cast<char*>("fastturbo-linux");cls.res_class=const_cast<char*>("FastTurbo");
     XSetClassHint(p.x,p.window,&cls);
@@ -143,6 +150,14 @@ bool X11ImGui::poll(){
         XEvent e{};XNextEvent(p.x,&e);
         if(e.type==ClientMessage&&e.xclient.message_type==p.protocols&&Atom(e.xclient.data.l[0])==p.deleteWindow)return false;
         if(e.type==SelectionRequest){p.selection(e.xselectionrequest);continue;}
+        if(e.type==PropertyNotify&&e.xproperty.atom==p.windowState){
+            Atom actual;int format;unsigned long count,left;unsigned char* data=nullptr;p.hidden=false;
+            if(XGetWindowProperty(p.x,p.window,p.windowState,0,64,False,XA_ATOM,&actual,&format,&count,&left,&data)==Success&&data&&format==32){
+                auto* atoms=reinterpret_cast<Atom*>(data);
+                p.hidden=std::find(atoms,atoms+count,p.hiddenState)!=atoms+count;
+            }
+            if(data)XFree(data);
+        }
         if(XFilterEvent(&e,p.window))continue;
         if(e.type==FocusIn){io.AddFocusEvent(true);if(p.ic)XSetICFocus(p.ic);}
         else if(e.type==FocusOut){io.AddFocusEvent(false);if(p.ic)XUnsetICFocus(p.ic);}
@@ -156,7 +171,7 @@ bool X11ImGui::poll(){
         }else if(e.type==KeyPress||e.type==KeyRelease){
             bool down=e.type==KeyPress;
             KeySym symbol=XkbKeycodeToKeysym(p.x,KeyCode(e.xkey.keycode),0,0);
-            auto k=key(symbol);if(k!=ImGuiKey_None)io.AddKeyEvent(k,down);
+            auto k=imguiKey(symbol);if(k!=ImGuiKey_None)io.AddKeyEvent(k,down);
             auto modifier=[&](ImGuiKey mod,unsigned mask,KeySym a,KeySym b){
                 io.AddKeyEvent(mod,symbol==a||symbol==b?down:bool(e.xkey.state&mask));
             };
@@ -197,17 +212,89 @@ void X11ImGui::wait(double seconds){
         // event. Let Xlib consume those, then keep waiting for the same deadline.
     }
 }
-void X11ImGui::click(float x,float y){
+void X11ImGui::click(float x,float y,bool control){
+    auto& p=*impl;
+    auto modifier=[&](int type){
+        XEvent e{};e.xkey.type=type;e.xkey.display=p.x;e.xkey.window=p.window;
+        e.xkey.root=DefaultRootWindow(p.x);e.xkey.same_screen=True;e.xkey.keycode=XKeysymToKeycode(p.x,XK_Control_L);
+        e.xkey.state=type==KeyRelease?ControlMask:0;
+        XSendEvent(p.x,p.window,False,type==KeyPress?KeyPressMask:KeyReleaseMask,&e);
+    };
+    if(control)modifier(KeyPress);
+    for(int type:{ButtonPress,ButtonRelease}){
+        XEvent e{};e.xbutton.type=type;e.xbutton.display=p.x;e.xbutton.window=p.window;
+        e.xbutton.root=DefaultRootWindow(p.x);e.xbutton.x=int(x);e.xbutton.y=int(y);
+        e.xbutton.button=Button1;e.xbutton.same_screen=True;e.xbutton.state=control?ControlMask:0;
+        XSendEvent(p.x,p.window,False,type==ButtonPress?ButtonPressMask:ButtonReleaseMask,&e);
+    }
+    if(control)modifier(KeyRelease);
+    XFlush(p.x);
+}
+void X11ImGui::resize(int w,int h,bool exact){
+    XSizeHints hints{};hints.flags=PMinSize;hints.min_width=exact?w:760;hints.min_height=exact?h:560;
+    XSetWMNormalHints(impl->x,impl->window,&hints);
+    XResizeWindow(impl->x,impl->window,unsigned(w),unsigned(h));XFlush(impl->x);
+}
+float X11ImGui::dpiScale() const {
+    // XWayland exposes desktop scaling through X resources, not physical mm.
+    auto& p=*impl;Atom type;int format;unsigned long count,remaining;unsigned char* data=nullptr;
+    float scale=1;
+    if(XGetWindowProperty(p.x,DefaultRootWindow(p.x),XA_RESOURCE_MANAGER,0,16384,False,XA_STRING,
+        &type,&format,&count,&remaining,&data)==Success&&data){
+        XrmInitialize();auto db=XrmGetStringDatabase(reinterpret_cast<char*>(data));
+        XrmValue value{};char* kind=nullptr;
+        if(db&&XrmGetResource(db,"Xft.dpi","Xft.Dpi",&kind,&value)&&value.addr){
+            char* end=nullptr;float dpi=std::strtof(value.addr,&end);
+            if(end!=value.addr&&std::isfinite(dpi))scale=std::clamp(dpi/96.f,1.f,3.f);
+        }
+        if(db)XrmDestroyDatabase(db);
+    }
+    if(data)XFree(data);
+    return scale;
+}
+void X11ImGui::minimize(){XIconifyWindow(impl->x,impl->window,DefaultScreen(impl->x));XFlush(impl->x);}
+bool X11ImGui::minimized() const{return impl->hidden;}
+void X11ImGui::show(){
+    auto& p=*impl;XMapRaised(p.x,p.window);
+    XEvent e{};e.xclient.type=ClientMessage;e.xclient.window=p.window;
+    e.xclient.message_type=XInternAtom(p.x,"_NET_ACTIVE_WINDOW",False);e.xclient.format=32;
+    e.xclient.data.l[0]=1;e.xclient.data.l[1]=CurrentTime;
+    XSendEvent(p.x,DefaultRootWindow(p.x),False,SubstructureRedirectMask|SubstructureNotifyMask,&e);XFlush(p.x);
+}
+void X11ImGui::maximize(bool enabled){
+    auto& p=*impl;XEvent e{};e.xclient.type=ClientMessage;e.xclient.window=p.window;
+    e.xclient.message_type=XInternAtom(p.x,"_NET_WM_STATE",False);e.xclient.format=32;
+    e.xclient.data.l[0]=enabled?1:0;
+    e.xclient.data.l[1]=long(XInternAtom(p.x,"_NET_WM_STATE_MAXIMIZED_VERT",False));
+    e.xclient.data.l[2]=long(XInternAtom(p.x,"_NET_WM_STATE_MAXIMIZED_HORZ",False));e.xclient.data.l[3]=1;
+    XSendEvent(p.x,DefaultRootWindow(p.x),False,SubstructureRedirectMask|SubstructureNotifyMask,&e);XFlush(p.x);
+}
+void X11ImGui::key(unsigned long symbol,unsigned modifiers){
+    auto& p=*impl;
+    auto send=[&](int type,KeySym symbol,unsigned state){
+        XEvent e{};e.xkey.type=type;e.xkey.display=p.x;e.xkey.window=p.window;
+        e.xkey.root=DefaultRootWindow(p.x);e.xkey.same_screen=True;
+        e.xkey.keycode=XKeysymToKeycode(p.x,symbol);e.xkey.state=state;
+        XSendEvent(p.x,p.window,False,type==KeyPress?KeyPressMask:KeyReleaseMask,&e);
+    };
+    unsigned state=0;
+    for(auto [mask,sym]:{std::pair{ControlMask,XK_Control_L},std::pair{ShiftMask,XK_Shift_L},std::pair{Mod1Mask,XK_Alt_L}})
+        if(modifiers&mask){send(KeyPress,sym,state);state|=mask;}
+    send(KeyPress,symbol,state);send(KeyRelease,symbol,state);
+    for(auto [mask,sym]:{std::pair{Mod1Mask,XK_Alt_L},std::pair{ShiftMask,XK_Shift_L},std::pair{ControlMask,XK_Control_L}})
+        if(modifiers&mask){send(KeyRelease,sym,state);state&=~mask;}
+    XFlush(p.x);
+}
+void X11ImGui::wheel(float x,float y,bool down){
     auto& p=*impl;
     for(int type:{ButtonPress,ButtonRelease}){
         XEvent e{};e.xbutton.type=type;e.xbutton.display=p.x;e.xbutton.window=p.window;
         e.xbutton.root=DefaultRootWindow(p.x);e.xbutton.x=int(x);e.xbutton.y=int(y);
-        e.xbutton.button=Button1;e.xbutton.same_screen=True;
+        e.xbutton.button=down?5:4;e.xbutton.same_screen=True;
         XSendEvent(p.x,p.window,False,type==ButtonPress?ButtonPressMask:ButtonReleaseMask,&e);
     }
     XFlush(p.x);
 }
-void X11ImGui::resize(int w,int h){XResizeWindow(impl->x,impl->window,unsigned(w),unsigned(h));XFlush(impl->x);}
 void X11ImGui::close(){
     auto& p=*impl;XEvent e{};e.xclient.type=ClientMessage;e.xclient.window=p.window;
     e.xclient.message_type=p.protocols;e.xclient.format=32;e.xclient.data.l[0]=long(p.deleteWindow);

@@ -1,0 +1,71 @@
+[
+  {
+    "argv": [
+      "ctest",
+      "--test-dir",
+      "build-linux",
+      "--output-on-failure",
+      "--output-junit",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/final-tests-2/ctest.xml"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 143.5174286365509,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "python/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-ra",
+      "python/tests",
+      "reference-linux/tests/test_reference.py",
+      "--junitxml=/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/final-tests-2/pytest.xml"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 156.0435242652893,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "ldd",
+      "build-linux/fastturbo-linux"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 0.00534367561340332,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "nvidia-smi"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 0.025056838989257812,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "xrandr",
+      "--current"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 0.0013239383697509766,
+    "returncode": 0,
+    "display": ":0"
+  },
+  {
+    "argv": [
+      "xrdb",
+      "-query"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 0.0009539127349853516,
+    "returncode": 0,
+    "display": ":0"
+  }
+]

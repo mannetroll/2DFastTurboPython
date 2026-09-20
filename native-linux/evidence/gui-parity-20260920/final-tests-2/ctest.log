@@ -1,0 +1,34 @@
+Test project /home/tobbe/github/2DFastTurboPython/build-linux
+      Start  1: reference_help
+ 1/13 Test  #1: reference_help ...................   Passed    0.01 sec
+      Start  2: reference_validation
+ 2/13 Test  #2: reference_validation .............   Passed    7.22 sec
+      Start  3: reference_benchmark
+ 3/13 Test  #3: reference_benchmark ..............   Passed    7.32 sec
+      Start  4: reference_cli
+ 4/13 Test  #4: reference_cli ....................   Passed    0.16 sec
+      Start  5: bench_cli
+ 5/13 Test  #5: bench_cli ........................   Passed    0.25 sec
+      Start  6: bench_gpu
+ 6/13 Test  #6: bench_gpu ........................   Passed    2.44 sec
+      Start  7: native_gui_cli
+ 7/13 Test  #7: native_gui_cli ...................   Passed    0.16 sec
+      Start  8: native_controller
+ 8/13 Test  #8: native_controller ................   Passed    3.11 sec
+      Start  9: native_gui_desktop
+ 9/13 Test  #9: native_gui_desktop ...............   Passed  114.32 sec
+      Start 10: native_gui_close-menu
+10/13 Test #10: native_gui_close-menu ............   Passed    2.33 sec
+      Start 11: native_gui_quit-menu
+11/13 Test #11: native_gui_quit-menu .............   Passed    2.31 sec
+      Start 12: native_gui_ctrl-w
+12/13 Test #12: native_gui_ctrl-w ................   Passed    1.90 sec
+      Start 13: native_gui_ctrl-q
+13/13 Test #13: native_gui_ctrl-q ................   Passed    1.91 sec
+
+100% tests passed out of 13
+
+Label Time Summary:
+gui    = 122.78 sec*proc (5 tests)
+
+Total Test time (real) = 143.45 sec

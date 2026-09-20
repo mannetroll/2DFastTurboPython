@@ -57,7 +57,9 @@ cmake --build build-linux -j2
 ./fastturbo-linux
 ```
 
-See [native Linux setup, controls and validation](native-linux/README.md).
+The Linux frontend follows [GUI.png](GUI.png), with File/Edit/Simulation/View/Window
+menus, a centered square field, a compact scrolling right inspector, transport
+overlays, focus mode and DPI scaling. See [native Linux setup, controls and validation](native-linux/README.md).
 The presentation path is X11/GLX, through XWayland on Wayland desktops. For a
 compute-only build without GUI dependencies, set `-DFASTTURBO_BUILD_NATIVE_GUI=OFF`.
 The Python/PySide6 application and canonical `reference-linux` remain available.

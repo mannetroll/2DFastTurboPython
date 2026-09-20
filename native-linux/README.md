@@ -71,31 +71,73 @@ env -u DISPLAY -u WAYLAND_DISPLAY ./build-headless/2dbench
 ## Controls and metrics
 
 The app starts running at N=2048, K0=10, seed 2, ETDRK4/stress, PAO, CFL 3,
-with automatic palinstrophy regulation off. Edit N, Reynolds, CFL, K0, seed,
-method, form, or PAO/KM3, then select **Apply and Reset**. Grid/K0 edits use the
-existing controller's Reynolds recalibration rule. Selecting CNAB2 switches
-to stress form and caps CFL at 0.25, matching the existing Linux application;
-CNAB2 requires a power-of-two grid and seed 1..5010. Invalid configurations
-produce an inline error without replacing the current run.
+with palinstrophy regulation off. Its presentation follows the repository's
+[`GUI.png`](../GUI.png): an application header, square field centered in the
+space beside a 196-logical-pixel right inspector, field legend, seed/time and
+transport overlays, and eight bottom metrics. The inspector scrolls independently.
 
-Run, Pause, Single Step, and Reset use the shared native controller. Pause
-finishes the current batch; Single Step advances exactly once. Space toggles
-running, Right steps, R resets, and Ctrl+Q or the title-bar close button exits.
-The controls support mouse, keyboard navigation, numeric editing, and an X11
-UTF-8 clipboard (small text selections). The layout scrolls on small windows.
+K0, spectrum, N, method and form selections reset immediately. Seed commits on
+Enter (Escape cancels editing). Reynolds and CFL are live edits and do not reset.
+Ctrl+click a slider for numeric entry. Grid/K0 changes retain the controller's
+Reynolds recalibration rule. CNAB2 caps CFL at 0.25 and disables Advective; its
+power-of-two N and seed 1..5010 restrictions are unchanged. Invalid edits show a
+dismissible message. No numerical behavior is implemented in the widgets.
 
-Vorticity, velocity magnitude, enstrophy, flow overlay, Aurora/Ember/Glacier/
-Inferno, exposure, sigma, and vorticity range all use the existing Linux shaders.
-The update interval defaults to **100 ms** and accepts 4..10000 ms. Turning off
-visualization or minimizing suppresses new GPU snapshots while stepping
-continues. Re-enabling it while paused publishes the current field.
+Fields appear as Enstrophy, Vorticity, Speed; palettes as Inferno, Ember, Aurora,
+Glacier. Vorticity offers Sigma or Exposure; the other fields offer Exposure.
+Velocity direction requests the existing velocity frame/flow renderer. Linux's
+Show simulation and Update interval controls follow NUMERICS under PRESENTATION.
+The interval defaults to 100 ms (4..10000 ms). Disabling visualization or minimizing
+suppresses snapshots while stepping continues. Re-enabling while paused refreshes
+the current field.
 
-The statistics distinguish **ms/step**, **steps/s**, **R_turbo** (simulation time
-per wall second), and **Rendering FPS** (UI frames submitted by this process).
-The last quantity is not monitor scanout or remote-client FPS. CFL is labeled
-as its configured target; the existing controller does not expose a measured CN.
-The initial throughput rate appears after the controller's first measurement
-interval. A very short run can therefore still show zero throughput when paused.
+The integrated menu bar stays above the header, including in focus mode:
+
+| Menu | Actions / shortcuts |
+| --- | --- |
+| File | Save Snapshot… (Ctrl+S), Close Window (Ctrl+W), About 2DFastTurbo, Quit 2DFastTurbo (Ctrl+Q) |
+| Edit | Undo (Ctrl+Z), Redo (Ctrl+Y), Cut/Copy/Paste (Ctrl+X/C/V), Select All (Ctrl+A) |
+| Simulation | Pause/Resume (Space), Single Step (Right), Reset Flow (R), New Initial Condition (Ctrl+Shift+R) |
+| View | Focus on Flow / Show Controls (F), Show Simulation, Dismiss Message |
+| Window | Minimize (Ctrl+M) |
+
+Alt enters menu navigation; arrows and Enter navigate/activate, Escape dismisses.
+Edit commands return to the active text/numeric editor with its selection and undo
+history. Plain simulation shortcuts are suppressed during editing, popup handling,
+and widget keyboard navigation. Buttons, menu items and shortcuts share handlers.
+Pause finishes the current batch; Single Step advances exactly once.
+
+F hides the inspector and metrics while retaining transport, the header and menus.
+Show Simulation restores the window and enables visualization. Both Close Window
+and Quit terminate this single-window Linux process, joining its worker cleanly;
+there is no tray/dock host to reopen a closed process. This differs from Windows'
+tray and macOS's application lifecycle and matches the Python Linux close action.
+
+Save Snapshot opens an ImGui path dialog, with overwrite confirmation, and uses the
+existing renderer's PNG export of the displayed frame and display settings. It is
+an explicit GPU readback, never part of normal rendering. The field exports at 1800×1800 pixels, matching the reference default. The dialog needs no Qt/GTK runtime.
+
+The metrics retain the reference order: simulation time per wall second
+(`R_turbo`), initial turnovers per wall second, kinetic energy/history, enstrophy,
+timestep, solver steps/s, step, GPU allocation. The reference's FPS heading has the
+explicit unit **steps/s**; its tooltip gives **ms/step** and separate rendering FPS.
+About also exposes these values. GPU allocation is labeled in its tooltip as solver
+plus VkFFT memory; the existing renderer does not expose its allocation. CFL is a
+configured target; the backend does not expose a measured CN.
+
+Ubuntu and Ubuntu Mono system fonts are used when available, with system font and
+ImGui fallbacks. Xft.dpi determines desktop scale, checked once per second; no font
+files are bundled. Override scale and initial size for reproducible checks:
+
+```sh
+./fastturbo-linux --width 1280 --height 720
+./fastturbo-linux --width 1920 --height 1080 --ui-scale 1.5
+./fastturbo-linux --focus
+```
+
+Fonts, geometry, hit targets and scrolling scale together. XWayland exposes a
+session-wide Xft DPI; compositor-specific per-monitor fractional scaling is outside
+this X11 host's interface. The window manager may constrain initial window sizes.
 
 ## Architecture and ownership
 
@@ -126,7 +168,9 @@ these additions. The clock/file/report helpers are generated from the existing
 Windows host source. Numerical kernels, initializers, FFT plans, stepping,
 regulation, state ownership, and benchmark implementation are not copied.
 
-`main.cpp` handles controls, frame selection, telemetry, and test orchestration.
+`main.cpp` handles controls, menus, frame selection and telemetry; `presentation.hpp`
+provides DPI-aware drawing over the preserved `theme.hpp`.
+`tests/desktop_checks.inc` drives the production widgets using X11 events.
 `x11_imgui.cpp` forwards X11 input and window-manager messages to ImGui.
 The existing renderer gains a small optional desktop interface in
 `python/native/linux/render_api.hpp` and `renderer.cpp`; its embedded and PNG
@@ -137,8 +181,8 @@ existing map/copy/unmap sequence makes a device-to-device copy into a persistent
 OpenGL buffer. The frame lease stays alive until the separate interop stream
 has completed; only that stream is waited on for an upload. The solver keeps
 its own stream, persistent plans and buffers. The normal GUI path performs no
-full-field or pixel CPU readback. Explicit `--capture` and `--self-test` are the
-only new pixel readback paths.
+full-field or pixel CPU readback. Explicit PNG export, `--capture` and `--self-test` perform pixel readback only
+on request.
 
 Both snapshot production and field texture updates respect the chosen interval.
 The ImGui event loop wakes immediately for X11 input. While idle, presentation
@@ -159,13 +203,18 @@ snapshot cadence. Real desktop acceptance is explicitly enabled:
 ```sh
 cmake -S . -B build-linux -DFASTTURBO_NATIVE_GUI_TESTS=ON
 ctest --test-dir build-linux --output-on-failure
-./fastturbo-linux --self-test --output native-linux/evidence/desktop-test.json \
-  --capture native-linux/evidence/desktop.png
+python3 native-linux/scripts/validate.py desktop --output native-linux/evidence/my-validation/desktop
+python3 native-linux/scripts/validate.py tests --output native-linux/evidence/my-validation/tests
+python3 native-linux/scripts/validate.py performance --output native-linux/evidence/my-validation/performance
 ```
 
-The self-test sends actual X11 button events through ImGui, verifies three
-distinct field images, reset determinism, resize, visibility changes and a
-`WM_DELETE_WINDOW` close while the solver is running. A closed process with exit status zero is part of the
+The self-test sends actual X11 pointer and keyboard events through ImGui. It
+checks field/palette pixels, paused display updates, live edits and resets, all
+methods, menu actions and keyboard navigation, text/numeric editor clipboard and
+undo, snapshot export/overwrite, scrolling, focus, DPI, resize, minimize/restore
+and `WM_DELETE_WINDOW` while running. Separate CTest cases verify File Close,
+File Quit, Ctrl+W and Ctrl+Q. ImGui retains its own undo grouping: replacing a
+selection records deletion and insertion separately. A closed process with exit status zero is part of the
 acceptance result. No mock display, CPU solver, replacement FFT, or relaxed
 numerical tolerance is used. Keep desktop tests off for unattended GPU servers.
 
@@ -185,8 +234,9 @@ ETDRK4/stress, PAO, K0=10, seed 2, Re=27898.36614974335 and CFL 3. Overhead mean
 `100 * (GUI wall ms/step / headless wall ms/step - 1)`; UI rendering time and
 snapshot costs are included in the measured controller run.
 
-See [the validation report](evidence/REPORT.md) for exact commands, dependency
-versions, numerical results, measured performance, and the captured native UI.
+See [the GUI refinement report](evidence/gui-parity-20260920/REPORT.md) for current
+commands, screenshots, numerical results, before/after performance and limitations.
+The [earlier validation report](evidence/REPORT.md) and previous evidence are retained.
 
 ## Presentation limits
 

@@ -1,0 +1,16 @@
+[
+  {
+    "argv": [
+      "ctest",
+      "--test-dir",
+      "build-linux",
+      "--output-on-failure",
+      "--output-junit",
+      "/home/tobbe/github/2DFastTurboPython/native-linux/evidence/gui-parity-20260920/final-tests/ctest.xml"
+    ],
+    "cwd": "/home/tobbe/github/2DFastTurboPython",
+    "seconds": 199.38578462600708,
+    "returncode": 8,
+    "display": ":0"
+  }
+]
