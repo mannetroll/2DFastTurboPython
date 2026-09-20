@@ -31,7 +31,7 @@ using Json=nlohmann::json;
 struct Arguments {
     turbo::Options solver;
     int device=0;
-    int width=1032,height=900;
+    int width=952,height=900;
     float scale=0;
     bool focus=false;
     double interval=.1,benchmarkSeconds=0;
@@ -278,19 +278,37 @@ class Application {
     }
     void dialogs(const turbo::ViewState& s){
         if(about){ImGui::OpenPopup("About 2DFastTurbo");about=false;}
-        ImGui::SetNextWindowSize({430*scale,0},ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize({490*scale,0},ImGuiCond_Appearing);
         if(ImGui::BeginPopupModal("About 2DFastTurbo",nullptr,ImGuiWindowFlags_AlwaysAutoResize)){
-            ImGui::TextUnformatted("2D FAST TURBO");ImGui::Spacing();
-            ImGui::TextWrapped("GPU simulation of decaying, homogeneous 2D turbulence. Fourier pseudospectral methods, 3/2-rule dealiasing and VkFFT transforms.");
-            ImGui::Separator();ImGui::TextWrapped("%s",environment.c_str());
-            ImGui::TextWrapped("OpenGL: %s",glRenderer.c_str());
-            ImGui::TextUnformatted("Native C++ / Dear ImGui / CUDA / VkFFT\nX11 / GLX (XWayland on Wayland)");
-            ImGui::Text("Rendering %.1f FPS · %llu field updates",ImGui::GetIO().Framerate,static_cast<unsigned long long>(fieldUpdates));
-            ImGui::Text("%.3f ms/step · %.1f steps/s · R_turbo %.4f",s.stepsRate>0?1000/s.stepsRate:0,s.stepsRate,s.rate);
-            ImGui::Text("CFL target %.3g · Batch %d",s.config.cfl,s.batchSteps);
-            ImGui::TextWrapped("Font: %s",desktop::fontName);
-            ImGui::Text("UI scale %.2f",scale);
-            if(ImGui::Button("OK"))ImGui::CloseCurrentPopup();
+            auto p=ImGui::GetCursorScreenPos();desktop::mark({p.x+32*scale,p.y+32*scale},32*scale);
+            ImGui::Dummy({64*scale,64*scale});ImGui::SameLine(0,18*scale);ImGui::BeginGroup();
+            ImGui::PushFont(presentation::titleFont,16);ImGui::TextUnformatted("2DFastTurbo");ImGui::PopFont();
+            ImGui::TextUnformatted("Version 1.0");ImGui::Spacing();
+            ImGui::PushFont(nullptr,13);ImGui::PushTextWrapPos(ImGui::GetCursorPosX()+360*scale);
+            ImGui::TextWrapped("GPU simulation of decaying, homogeneous 2D turbulence. Fourier pseudospectral methods with 3/2-rule dealiasing and VkFFT transforms. ETDRK4 time stepping by default.");
+            ImGui::PopTextWrapPos();ImGui::Spacing();ImGui::Spacing();
+            auto centered=[&](const char* text){
+                float inset=(360*scale-ImGui::CalcTextSize(text).x)*.5f;
+                ImGui::Indent(inset);ImGui::TextUnformatted(text);ImGui::Unindent(inset);
+            };
+            centered("Navier–Stokes equation");ImGui::Spacing();
+            ImGui::PushFont(presentation::titleFont,17);
+            centered("ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v");
+            ImGui::PopFont();ImGui::PopFont();ImGui::EndGroup();ImGui::Spacing();ImGui::Spacing();
+            if(ImGui::CollapsingHeader("Diagnostics")){
+                ImGui::TextWrapped("%s",environment.c_str());
+                ImGui::TextWrapped("OpenGL: %s",glRenderer.c_str());
+                ImGui::TextUnformatted("Native C++ / Dear ImGui / CUDA / VkFFT\nX11 / GLX (XWayland on Wayland)");
+                ImGui::Text("Rendering %.1f FPS · %llu field updates",ImGui::GetIO().Framerate,static_cast<unsigned long long>(fieldUpdates));
+                ImGui::Text("%.3f ms/step · %.1f steps/s · R_turbo %.4f",s.stepsRate>0?1000/s.stepsRate:0,s.stepsRate,s.rate);
+                ImGui::Text("CFL target %.3g · Batch %d",s.config.cfl,s.batchSteps);
+                ImGui::TextWrapped("Font: %s",desktop::fontName);
+                ImGui::Text("UI scale %.2f",scale);
+            }
+            ImGui::Spacing();ImGui::AlignTextToFramePadding();
+            ImGui::TextUnformatted("Copyright © 2026 Torbjörn Sjögren");ImGui::SameLine();
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX()+ImGui::GetContentRegionAvail().x-72*scale);
+            if(ImGui::Button("OK",{72*scale,0}))ImGui::CloseCurrentPopup();
             remember("About OK");ImGui::EndPopup();
         }
         if(saveRequested){ImGui::OpenPopup("Save Snapshot");saveRequested=false;}
