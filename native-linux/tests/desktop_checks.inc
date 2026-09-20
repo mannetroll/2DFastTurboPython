@@ -104,9 +104,11 @@
         once("CNAB2 constraints",[this](const auto& s,const auto&){check(s.config.cfl<=.25&&s.config.form==turbo::Form::stress,"CNAB2 constraints");});
         tap("Method",true);tap("Option ETD RK4");wait("Restore ETDRK4",ready);
         tap("Form",true);tap("Option Advective");wait("Form resets",[](const auto& s,const auto&){return s.config.form==turbo::Form::advective&&s.settled;});
+#ifndef NDEBUG
         tap("Update interval",true);once("Interval changed",[this](const auto&,const auto&){check(intervalMs!=100,"interval edit");});
         tap("Visualization",true);once("Visualization disabled",[this](const auto&,const auto&){check(!visualize,"visualization checkbox");});
-        menu("Simulation","Menu Resume");wait("Solver runs with visualization disabled",[](const auto& s,const auto&){return s.running&&s.stats.step>8;});
+#endif
+        menu("Simulation","Menu Resume");wait("Resume menu runs solver",[](const auto& s,const auto&){return s.running&&s.stats.step>8;});
         menu("Simulation","Menu Pause");wait("Pause menu",ready);
         menu("View","Menu Show Simulation");wait("Show Simulation restores current paused frame",[this](const auto& s,const auto&){return visualize&&shown&&shown->time==s.stats.time;});
         menu("Simulation","Menu Reset Flow");wait("Reset menu",[](const auto& s,const auto&){return s.settled&&s.stats.step==0;});

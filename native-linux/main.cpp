@@ -276,7 +276,7 @@ class Application {
         }
         menuWasOpen=menuOpen;
     }
-    void dialogs(const turbo::ViewState& s){
+    void dialogs(){
         if(about){ImGui::OpenPopup("About 2DFastTurbo");about=false;}
         ImGui::SetNextWindowSize({490*scale,0},ImGuiCond_Appearing);
         if(ImGui::BeginPopupModal("About 2DFastTurbo",nullptr,ImGuiWindowFlags_AlwaysAutoResize)){
@@ -295,16 +295,10 @@ class Application {
             ImGui::PushFont(presentation::titleFont,17);
             centered("ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v");
             ImGui::PopFont();ImGui::PopFont();ImGui::EndGroup();ImGui::Spacing();ImGui::Spacing();
-            if(ImGui::CollapsingHeader("Diagnostics")){
-                ImGui::TextWrapped("%s",environment.c_str());
-                ImGui::TextWrapped("OpenGL: %s",glRenderer.c_str());
-                ImGui::TextUnformatted("Native C++ / Dear ImGui / CUDA / VkFFT\nX11 / GLX (XWayland on Wayland)");
-                ImGui::Text("Rendering %.1f FPS · %llu field updates",ImGui::GetIO().Framerate,static_cast<unsigned long long>(fieldUpdates));
-                ImGui::Text("%.3f ms/step · %.1f steps/s · R_turbo %.4f",s.stepsRate>0?1000/s.stepsRate:0,s.stepsRate,s.rate);
-                ImGui::Text("CFL target %.3g · Batch %d",s.config.cfl,s.batchSteps);
-                ImGui::TextWrapped("Font: %s",desktop::fontName);
-                ImGui::Text("UI scale %.2f",scale);
-            }
+            ImGui::SeparatorText("System Information");
+            ImGui::TextWrapped("%s",environment.c_str());
+            ImGui::TextWrapped("OpenGL: %s",glRenderer.c_str());
+            ImGui::TextUnformatted("Native C++ / Dear ImGui / CUDA / VkFFT\nX11 / GLX (XWayland on Wayland)");
             ImGui::Spacing();ImGui::AlignTextToFramePadding();
             ImGui::TextUnformatted("Copyright © 2026 Torbjörn Sjögren");ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetCursorPosX()+ImGui::GetContentRegionAvail().x-72*scale);
@@ -441,6 +435,7 @@ class Application {
         bool cn=edit.integrator==turbo::Integrator::cnab2;
         if(presentation::slider("CFL",&edit.cfl,cn?.05f:1.f,cn?.25f:edit.integrator==turbo::Integrator::etdrk4?3.f:1.5f,value,scale))controller->live(edit.cfl,edit.reynolds);
         remember("CFL");desktop::hint("Configured CFL target. Live edit; does not restart the flow.");
+#ifndef NDEBUG
         ImGui::Spacing();ImGui::Separator();ImGui::PushFont(desktop::mono,9);ImGui::TextDisabled("PRESENTATION");ImGui::PopFont();
         if(presentation::toggle("Show simulation",&visualize,scale))nextUpdate=0;
         remember("Visualization");
@@ -449,6 +444,7 @@ class Application {
             controller->visualizationInterval(intervalMs/1000.);nextUpdate=0;
         }remember("Update interval");
         ImGui::TextDisabled("Rendering %.1f FPS",ImGui::GetIO().Framerate);
+#endif
     }
     void header(const turbo::ViewState& s,float width,float top){
         desktop::mark({45*scale,top+38.5f*scale},21*scale);
@@ -618,7 +614,7 @@ public:
             inspectorScroll=ImGui::GetScrollY();inspectorMaxScroll=ImGui::GetScrollMaxY();ImGui::EndChild();
             metrics(s,width,height-66*scale);
         }
-        dialogs(s);ImGui::End();
+        dialogs();ImGui::End();
         if(args.selfTest){
             try{selfTest(s,geometry);}
             catch(const std::exception& e){testFailure=e.what();testCapture="failure";return false;}

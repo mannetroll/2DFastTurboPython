@@ -85,8 +85,10 @@ dismissible message. No numerical behavior is implemented in the widgets.
 
 Fields appear as Enstrophy, Vorticity, Speed; palettes as Inferno, Ember, Aurora,
 Glacier. Vorticity offers Sigma or Exposure; the other fields offer Exposure.
-Velocity direction requests the existing velocity frame/flow renderer. Linux's
-Show simulation and Update interval controls follow NUMERICS under PRESENTATION.
+Velocity direction requests the existing velocity frame/flow renderer.
+The PRESENTATION section (Show simulation, Update interval and rendering FPS)
+is available only in Debug builds (`NDEBUG` undefined); the normal inspector ends
+with NUMERICS and CFL.
 The interval defaults to 100 ms (4..10000 ms). Disabling visualization or minimizing
 suppresses snapshots while stepping continues. Re-enabling while paused refreshes
 the current field.
