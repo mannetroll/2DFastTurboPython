@@ -78,6 +78,8 @@ def check(path: Path) -> tuple[str, str]:
         for prefix in ('libfastturbo.so', 'libfastturbo_gl.so', 'libcudart.so.', 'libnvrtc.so.', 'libnvrtc-builtins.so.', 'CUDA-EULA.txt', 'Linux-Libraries-LICENSE.txt'):
             assert any(n.startswith(f'fastturbo/_native/{prefix}') for n in names), prefix
         assert not any(Path(n).name.startswith(('libcuda.so', 'libcuda-', 'libnvidia-')) for n in names)
+        assert not any(Path(n).name.startswith(('libGLX', 'libOpenGL', 'libGLdispatch', 'libGL.so', 'libGL-'))
+                       for n in names), 'OpenGL loaders must come from the host driver, not the wheel'
         manifest = json.loads(archive.read('fastturbo/_native/build-manifest.json'))
         assert manifest['bundle_cuda'] == 'ON' and manifest['renderer'] == 'ON'
         assert manifest['architectures'] != 'native' and '-virtual' in manifest['architectures']
@@ -89,6 +91,8 @@ def check(path: Path) -> tuple[str, str]:
                 library.write_bytes(archive.read(name))
                 dynamic = subprocess.check_output(['readelf', '-d', str(library)], text=True)
                 assert 'Shared library: [libcuda.so' not in dynamic, name
+                if name == 'fastturbo/_native/libfastturbo_gl.so':
+                    assert 'Shared library: [libGL.so.1]' in dynamic, 'Renderer must link the system libGL ABI'
                 for line in dynamic.splitlines():
                     if '(RPATH)' in line or '(RUNPATH)' in line:
                         assert all(p.startswith('$ORIGIN') for p in line.split('[')[1].split(']')[0].split(':')), line

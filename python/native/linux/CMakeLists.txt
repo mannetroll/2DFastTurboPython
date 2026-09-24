@@ -27,10 +27,15 @@ if(NOT FASTTURBO_RENDERER MATCHES "^(AUTO|ON|OFF)$")
 endif()
 set(rendering 0)
 if(NOT FASTTURBO_RENDERER STREQUAL "OFF")
+  # Use the host's libGL ABI so Qt, CUDA and the renderer share one GLX dispatch
+  # stack. Linking split GLVND libraries causes auditwheel to bundle private
+  # copies, whose contexts the NVIDIA driver's CUDA interop cannot recognize.
+  # libGL.so.1 is a manylinux system library and stays outside the wheel.
+  set(OpenGL_GL_PREFERENCE LEGACY)
   find_package(OpenGL QUIET)
   find_package(X11 QUIET)
   find_package(PNG QUIET)
-  if(OpenGL_FOUND AND X11_FOUND AND PNG_FOUND)
+  if(OpenGL_FOUND AND OPENGL_gl_LIBRARY AND X11_FOUND AND PNG_FOUND)
     add_library(fastturbo_gl SHARED renderer.cpp)
     target_include_directories(fastturbo_gl PRIVATE "${FASTTURBO_WINDOWS}/src")
     target_link_libraries(fastturbo_gl PRIVATE CUDA::cudart OpenGL::GL X11::X11 PNG::PNG)

@@ -15,6 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--wheel', required=True, type=Path)
     parser.add_argument('--ptx', action='store_true', help='Force embedded PTX execution')
+    parser.add_argument('--gui', action='store_true', help='Also test desktop rendering and PNG export (requires PySide6 and X11/Xwayland)')
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='fastturbo-wheel-') as directory:
         root = Path(directory)
@@ -49,6 +50,22 @@ print(json.dumps({'passed': True, 'backend': fastturbo.get_backend_info(),
         if result.returncode:
             raise RuntimeError(result.stdout + result.stderr)
         report = json.loads(result.stdout)
+        if args.gui:
+            gui_environment = {**environment, **{k: v for k, v in os.environ.items()
+                if k in {'DISPLAY', 'WAYLAND_DISPLAY'}},
+                'QT_QPA_PLATFORM': 'xcb', 'XDG_CONFIG_HOME': str(root / 'config')}
+            png = root / 'flow.png'
+            result = subprocess.run([sys.executable, '-m', 'fastturbo', '--gui-benchmark',
+                '--resolution', '512', '--wall-seconds', '1', '--gui-warmup-seconds', '0.1',
+                '--export', str(png)], cwd=root, env=gui_environment,
+                capture_output=True, text=True, timeout=180)
+            if result.returncode:
+                raise RuntimeError('Wheel GUI validation failed: ' + result.stdout + result.stderr)
+            gui = json.loads(result.stdout)
+            assert gui['passed'] and gui['presentations'] > 0, gui
+            assert png.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'), 'PNG export failed'
+            report['gui'] = {key: gui[key] for key in ('passed', 'presentations', 'rendering')}
+            report['gui']['png_bytes'] = png.stat().st_size
         report.update(wheel=args.wheel.name, forced_ptx=args.ptx)
         print(json.dumps(report, indent=2))
 

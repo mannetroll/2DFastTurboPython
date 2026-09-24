@@ -93,6 +93,9 @@ the selected manylinux tag only after checking symbol versions and bundling
 remaining non-policy libraries. NVRTC builtins are staged explicitly because
 `dlopen` dependencies are not discovered by auditwheel. The container also
 includes the distro license notices for repaired graphics dependencies.
+The renderer links the system `libGL.so.1` ABI, which manylinux permits as an
+external dependency. Private copies of GLX/OpenGL dispatch libraries break
+CUDA/OpenGL context sharing and are rejected by the artifact checker.
 
 See the primary [manylinux documentation](https://github.com/pypa/manylinux) and
 [auditwheel documentation](https://github.com/pypa/auditwheel) for the build
@@ -110,8 +113,8 @@ On Windows, use `scripts/check_windows_wheel.py --wheel PATH --gui` as well.
 On Linux, run the installed wheel on a machine/container with the NVIDIA driver
 but no CUDA Toolkit, no repository and no toolkit `LD_LIBRARY_PATH`. Run
 `scripts/check_linux_wheel.py --wheel PATH`, then repeat with `--ptx` to force
-embedded PTX execution. Exercise desktop rendering separately with
-`2dfastturbo` on X11/Xwayland. Test the oldest supported distribution/dependency
+embedded PTX execution. Add `--gui` with a PySide6-enabled Python environment to
+check desktop rendering and PNG export on X11/Xwayland. Test the oldest supported distribution/dependency
 combination as well as a current desktop. Check the compressed wheel size against
 the project's PyPI upload limit before release.
 

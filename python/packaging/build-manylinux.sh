@@ -5,6 +5,10 @@ if [[ $# != 2 ]]; then
     echo 'Usage: build-manylinux.sh /input/fastturbo-VERSION.tar.gz /output' >&2
     exit 2
 fi
+if [[ ! -s "${CUDA_HOME:?CUDA_HOME must identify the release toolkit}/EULA.txt" ]]; then
+    echo 'CUDA EULA missing: rebuild fastturbo-manylinux with the current manylinux.Dockerfile.' >&2
+    exit 1
+fi
 sdist=$(realpath "$1")
 output=$(realpath "$2")
 work=$(mktemp -d)
