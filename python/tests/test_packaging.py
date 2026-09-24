@@ -1,11 +1,13 @@
 """Check the actual source archive and relocatable native runtime staging."""
 import ctypes
 import importlib.util
+import io
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tarfile
+import zipfile
 
 import pytest
 
@@ -75,3 +77,28 @@ def test_missing_reference_fails_source_archive(tmp_path):
     with pytest.raises(subprocess.CalledProcessError) as failure:
         sdist(extracted, tmp_path / 'second')
     assert 'reference-windows sources are missing' in failure.value.stderr
+
+
+@pytest.mark.parametrize('variant', ['matching', 'crlf', 'stale', 'missing', 'extra'])
+def test_release_rejects_mixed_sources_at_the_same_version(tmp_path, variant):
+    source = tmp_path / 'fastturbo-0.1.2.tar.gz'
+    module = 'fastturbo/engine.py'
+    code = b'class Configuration:\n    start_spectrum = "PAO"\n'
+    with tarfile.open(source, 'w:gz') as archive:
+        member = tarfile.TarInfo('fastturbo-0.1.2/src/' + module)
+        member.size = len(code)
+        archive.addfile(member, io.BytesIO(code))
+    wheel = tmp_path / 'fastturbo-0.1.2-py3-none-win_amd64.whl'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        if variant != 'missing':
+            content = b'class Configuration: pass\n' if variant == 'stale' else code
+            if variant == 'crlf':
+                content = content.replace(b'\n', b'\r\n')
+            archive.writestr(module, content)
+        if variant == 'extra':
+            archive.writestr('fastturbo/obsolete.py', b'pass\n')
+    if variant in {'matching', 'crlf'}:
+        checker.check_release_sources([source, wheel])
+    else:
+        with pytest.raises(AssertionError, match='Wheels do not match the sdist'):
+            checker.check_release_sources([source, wheel])

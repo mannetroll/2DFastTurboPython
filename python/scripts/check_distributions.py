@@ -99,6 +99,31 @@ def check(path: Path) -> tuple[str, str]:
         return version, 'linux'
 
 
+def check_release_sources(artifacts: list[Path]) -> None:
+    """Equal version numbers must also describe the same shared Python code."""
+    source, = [path for path in artifacts if path.name.endswith('.tar.gz')]
+    with tarfile.open(source) as archive:
+        prefix = source.name.removesuffix('.tar.gz') + '/src/'
+        expected = {member.name.removeprefix(prefix): archive.extractfile(member).read().replace(b'\r\n', b'\n')
+                    for member in archive.getmembers()
+                    if member.isfile() and member.name.startswith(prefix + 'fastturbo/')
+                    and member.name.endswith('.py')}
+    assert expected, 'Source archive has no FastTurbo Python modules'
+    differences = []
+    for path in artifacts:
+        if path.suffix != '.whl':
+            continue
+        with zipfile.ZipFile(path) as archive:
+            # Git checkout line endings can differ between Windows and Unix.
+            actual = {name: archive.read(name).replace(b'\r\n', b'\n') for name in archive.namelist()
+                      if name.startswith('fastturbo/') and name.endswith('.py')}
+        changed = sorted(name for name in expected.keys() | actual.keys()
+                         if expected.get(name) != actual.get(name))
+        if changed:
+            differences.append(f'{path.name}: {", ".join(changed)}')
+    assert not differences, 'Wheels do not match the sdist; rebuild from the same source:\n' + '\n'.join(differences)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release-set', action='store_true', help='Require macOS, Windows, Linux and sdist at one version')
@@ -108,6 +133,7 @@ def main():
     assert len({v for v, _ in checked}) == 1, 'Mixed release versions'
     if args.release_set:
         assert sorted(kind for _, kind in checked) == ['linux', 'macos', 'sdist', 'windows'], checked
+        check_release_sources(args.artifacts)
     for path in args.artifacts:
         print(f'OK {path.name}')
 

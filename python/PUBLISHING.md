@@ -145,7 +145,9 @@ uvx twine check --strict dist/release/*
 ```
 
 The artifact checker rejects generic Linux wheels, missing native resources,
-incomplete sdists and mixed versions. It complements auditwheel and runtime
+incomplete sdists and mixed versions. With `--release-set`, it also compares every
+wheel's shared Python modules with the sdist, catching stale builds that use the
+same version number. It complements auditwheel and runtime
 validation; it cannot prove binary compatibility from tags alone. Inspect the
 native manifests, notices, test results and README before uploading.
 
