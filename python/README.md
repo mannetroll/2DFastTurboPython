@@ -54,7 +54,7 @@ to require wheels and disable the source fallback.
 | Platform | Requirements |
 | --- | --- |
 | macOS | macOS 15 or later, Apple Silicon (arm64), Metal |
-| Windows | Windows 10 or 11, x64 Python, NVIDIA GPU with compute capability 8.6 or later, and a driver compatible with the bundled CUDA 13.1 runtime |
+| Windows | Windows 10 or 11, x64 Python, NVIDIA GPU with compute capability 8.6 or later, and a driver supporting CUDA 13.4 and its NVRTC-generated PTX |
 | Linux (manylinux) | x86-64, glibc 2.28 or later, NVIDIA GPU with compute capability 8.0 or later, and a driver supporting CUDA 13.1 and its NVRTC-generated PTX |
 
 Windows and Linux wheels bundle the CUDA runtime, NVRTC and its matching

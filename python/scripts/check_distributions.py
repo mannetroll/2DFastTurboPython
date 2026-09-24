@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import argparse
 from email.parser import BytesParser
+import hashlib
 import json
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import tarfile
 import tempfile
@@ -24,6 +26,24 @@ SOURCE_FILES = {
     'native/reference/Sources/FastTurboApp/TurboRendering.metal',
     'native/PortBridge.swift', 'packaging/manylinux.Dockerfile',
 }
+
+
+def check_windows_runtime(archive: zipfile.ZipFile, distinfo: str) -> None:
+    names = set(archive.namelist())
+    manifest = json.loads(archive.read('fastturbo/_native/build-manifest.json'))
+    version = re.search(r'release (\d+)\.(\d+)', manifest['nvcc'])
+    assert version, 'Windows wheel must record its CUDA toolkit version'
+    builtins = f'fastturbo/_native/nvrtc-builtins64_{version[1]}{version[2]}.dll'
+    for prefix in ('cudart64_', 'nvrtc64_', 'nvrtc-builtins64_'):
+        matches = {n for n in names if n.startswith('fastturbo/_native/' + prefix) and n.endswith('.dll')}
+        assert len(matches) == 1, f'Stale or missing Windows CUDA runtime: {matches}'
+        if prefix == 'nvrtc-builtins64_':
+            assert matches == {builtins}, f'NVRTC builtins must match CUDA {version[1]}.{version[2]}'
+    native_eula = archive.read('fastturbo/_native/CUDA-EULA.txt').replace(b'\r\n', b'\n')
+    packaged_eula = archive.read(f'{distinfo}/licenses/licenses/CUDA-EULA.txt').replace(b'\r\n', b'\n')
+    assert native_eula and native_eula == packaged_eula, 'Windows CUDA EULA copies differ'
+    assert manifest['distribution'] == 'OFF', 'Windows wheel must bundle the CUDA runtime'
+    assert 'native' not in manifest['architectures'] and '-virtual' in manifest['architectures']
 
 
 def check(path: Path) -> tuple[str, str]:
@@ -72,6 +92,7 @@ def check(path: Path) -> tuple[str, str]:
         if platforms == {'win_amd64'}:
             for prefix in ('fastturbo.dll', 'cudart64_', 'nvrtc64_', 'nvrtc-builtins64_'):
                 assert any(n.startswith(f'fastturbo/_native/{prefix}') for n in names), prefix
+            check_windows_runtime(archive, distinfo)
             return version, 'windows'
         assert platforms == {'manylinux_2_28_x86_64'}, f'Unselected Linux wheel platform: {platforms}'
         assert 'LicenseRef-NVIDIA-CUDA' in metadata['License-Expression']
@@ -89,7 +110,9 @@ def check(path: Path) -> tuple[str, str]:
                     continue
                 library = Path(directory) / Path(name).name
                 library.write_bytes(archive.read(name))
-                dynamic = subprocess.check_output(['readelf', '-d', str(library)], text=True)
+                readelf = shutil.which('readelf') or shutil.which('llvm-readelf')
+                assert readelf, 'Install readelf or llvm-readelf to inspect Linux wheels'
+                dynamic = subprocess.check_output([readelf, '-d', str(library)], text=True)
                 assert 'Shared library: [libcuda.so' not in dynamic, name
                 if name == 'fastturbo/_native/libfastturbo_gl.so':
                     assert 'Shared library: [libGL.so.1]' in dynamic, 'Renderer must link the system libGL ABI'
@@ -124,6 +147,57 @@ def check_release_sources(artifacts: list[Path]) -> None:
     assert not differences, 'Wheels do not match the sdist; rebuild from the same source:\n' + '\n'.join(differences)
 
 
+def check_native_sources(artifacts: list[Path]) -> None:
+    """Check recorded native build inputs against the distributed source archive."""
+    source, = [path for path in artifacts if path.name.endswith('.tar.gz')]
+    root = source.name.removesuffix('.tar.gz')
+    aliases = {}
+    with tarfile.open(source) as archive:
+        for member in archive.getmembers():
+            if not member.isfile():
+                continue
+            relative = member.name.removeprefix(root + '/')
+            if relative.startswith('native/reference/'):
+                logical = 'reference-macos/2DFastTurbo/' + relative.removeprefix('native/reference/')
+            elif relative.startswith('native/reference-macos/'):
+                logical = 'reference-macos/' + relative.removeprefix('native/reference-macos/')
+            elif relative.startswith('native/reference-windows/'):
+                logical = 'reference-windows/' + relative.removeprefix('native/reference-windows/')
+            else:
+                logical = 'python/' + relative
+            data = archive.extractfile(member).read()
+            aliases[member.name] = data
+            aliases[logical] = data
+    failures = []
+    for path in artifacts:
+        if path.suffix != '.whl':
+            continue
+        with zipfile.ZipFile(path) as archive:
+            manifest = json.loads(archive.read('fastturbo/_native/build-manifest.json'))
+        raw = manifest['files']
+        normalized = manifest.get('files_lf', {})
+        assert raw, f'{path.name}: no native source hashes'
+        if normalized:
+            assert normalized.keys() == raw.keys(), 'Incomplete normalized source manifest'
+        for recorded, digest in raw.items():
+            name = recorded.replace('\\', '/')
+            if name.endswith('/.DS_Store'):
+                continue
+            candidates = [key for key in aliases if name == key or name.endswith('/' + key)]
+            if not candidates:
+                failures.append(f'{path.name}: source missing: {name}')
+                continue
+            data = aliases[max(candidates, key=len)]
+            if normalized:
+                matched = hashlib.sha256(data.replace(b'\r\n', b'\n')).hexdigest() == normalized[recorded]
+            else:
+                lf = data.replace(b'\r\n', b'\n')
+                matched = digest in {hashlib.sha256(b).hexdigest() for b in (data, lf, lf.replace(b'\n', b'\r\n'))}
+            if not matched:
+                failures.append(f'{path.name}: native source differs: {name}')
+    assert not failures, '\n'.join(failures)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release-set', action='store_true', help='Require macOS, Windows, Linux and sdist at one version')
@@ -134,6 +208,7 @@ def main():
     if args.release_set:
         assert sorted(kind for _, kind in checked) == ['linux', 'macos', 'sdist', 'windows'], checked
         check_release_sources(args.artifacts)
+        check_native_sources(args.artifacts)
     for path in args.artifacts:
         print(f'OK {path.name}')
 

@@ -48,16 +48,20 @@ On Apple Silicon with macOS 15+, Xcode and its Metal tools:
 uv build --wheel --out-dir dist/release
 ```
 
-On Windows x64 with CUDA 13.1, MSVC x64 tools, CMake and Ninja:
+On Windows x64 with CUDA 13.4, MSVC x64 tools, CMake and Ninja:
 
 ```powershell
-$env:CUDA_PATH = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.1"
+$env:CUDA_PATH = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.4"
 uv build --wheel --out-dir dist/release
 ```
 
 Leave `FASTTURBO_CUDA_ARCHITECTURES` unset for the Windows release defaults:
 `86-real;89-real;120-real;86-virtual`. A `native` build is specific to the build
 machine. Collect freshly built macOS and Windows wheels into `dist/release/`.
+The build removes old CUDA runtime DLLs and installs the selected toolkit's
+matching EULA in both `_native` and the wheel's license directory. The native
+manifest preserves raw input hashes and also records LF-normalized hashes so
+mixed Windows/Unix line endings do not obscure source comparisons.
 
 ## Linux manylinux wheel
 
@@ -145,9 +149,13 @@ uvx twine check --strict dist/release/*
 ```
 
 The artifact checker rejects generic Linux wheels, missing native resources,
-incomplete sdists and mixed versions. With `--release-set`, it also compares every
-wheel's shared Python modules with the sdist, catching stale builds that use the
-same version number. It complements auditwheel and runtime
+incomplete sdists, mixed versions, stale Windows CUDA DLLs and mismatched EULAs.
+With `--release-set`, it compares every wheel's shared Python modules and recorded
+native build inputs with the sdist, catching stale builds that use the same
+version number. Windows manifests include LF-normalized hashes alongside the raw
+hashes, so CRLF or mixed line endings can be checked without rewriting evidence.
+Linux wheel inspection requires `readelf` or `llvm-readelf` on PATH.
+It complements auditwheel and runtime
 validation; it cannot prove binary compatibility from tags alone. Inspect the
 native manifests, notices, test results and README before uploading.
 

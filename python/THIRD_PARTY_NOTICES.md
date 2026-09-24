@@ -12,7 +12,7 @@ FastTurbo's own code and documentation are licensed under the MIT license in
 | Repaired Linux graphics dependencies | manylinux wheel | `_native/Linux-Libraries-LICENSE.txt` (original distro notices) |
 
 The Windows wheel bundles `cudart64_13.dll`, `nvrtc64_130_0.dll` and
-`nvrtc-builtins64_131.dll` in the 0.1.2 release (CUDA 13.1). These NVIDIA components are provided for use by
+`nvrtc-builtins64_134.dll` in the 0.1.2 release (CUDA 13.4). These NVIDIA components are provided for use by
 FastTurbo under the included CUDA agreement; FastTurbo's MIT license does not
 relicense them. `LicenseRef-NVIDIA-CUDA` in package metadata refers to that
 agreement. A compatible NVIDIA driver is installed separately.

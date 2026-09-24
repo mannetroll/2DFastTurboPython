@@ -1,7 +1,9 @@
 """Check the actual source archive and relocatable native runtime staging."""
 import ctypes
+import hashlib
 import importlib.util
 import io
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -102,3 +104,54 @@ def test_release_rejects_mixed_sources_at_the_same_version(tmp_path, variant):
     else:
         with pytest.raises(AssertionError, match='Wheels do not match the sdist'):
             checker.check_release_sources([source, wheel])
+
+
+@pytest.mark.parametrize('variant', ['matching', 'stale-dll', 'wrong-builtins', 'wrong-license'])
+def test_windows_runtime_release_checks(tmp_path, variant):
+    wheel = tmp_path / 'windows.whl'
+    distinfo = 'fastturbo-0.1.2.dist-info'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        manifest = {'nvcc': 'Cuda compilation tools, release 13.4, V13.4.92',
+                    'distribution': 'OFF', 'architectures': '86-real;86-virtual'}
+        archive.writestr('fastturbo/_native/build-manifest.json', json.dumps(manifest))
+        for name in ('cudart64_13.dll', 'nvrtc64_130_0.dll',
+                     'nvrtc-builtins64_131.dll' if variant == 'wrong-builtins' else 'nvrtc-builtins64_134.dll'):
+            archive.writestr('fastturbo/_native/' + name, b'runtime')
+        if variant == 'stale-dll':
+            archive.writestr('fastturbo/_native/nvrtc-builtins64_131.dll', b'old runtime')
+        archive.writestr('fastturbo/_native/CUDA-EULA.txt', b'current agreement\r\n')
+        archive.writestr(distinfo + '/licenses/licenses/CUDA-EULA.txt',
+                         b'old agreement' if variant == 'wrong-license' else b'current agreement\n')
+    with zipfile.ZipFile(wheel) as archive:
+        if variant == 'matching':
+            checker.check_windows_runtime(archive, distinfo)
+        else:
+            with pytest.raises(AssertionError):
+                checker.check_windows_runtime(archive, distinfo)
+
+
+@pytest.mark.parametrize('variant', ['raw', 'crlf', 'mixed', 'changed'])
+def test_native_source_manifest_comparison(tmp_path, variant):
+    source = tmp_path / 'fastturbo-0.1.2.tar.gz'
+    code = b'// native solver\nvoid step() {}\n'
+    with tarfile.open(source, 'w:gz') as archive:
+        member = tarfile.TarInfo('fastturbo-0.1.2/native/reference-windows/src/solver.cu')
+        member.size = len(code)
+        archive.addfile(member, io.BytesIO(code))
+    built = code.replace(b'\n', b'\r\n') if variant == 'crlf' else code
+    if variant == 'mixed':
+        built = code.replace(b'\n', b'\r\n', 1)
+    if variant == 'changed':
+        built = code.replace(b'step()', b'other()')
+    path = r'C:\Users\builder\2DFastTurboPython\reference-windows\src\solver.cu'
+    manifest = {'files': {path: hashlib.sha256(built).hexdigest()}}
+    if variant in ('mixed', 'changed'):
+        manifest['files_lf'] = {path: hashlib.sha256(built.replace(b'\r\n', b'\n')).hexdigest()}
+    wheel = tmp_path / 'windows.whl'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        archive.writestr('fastturbo/_native/build-manifest.json', json.dumps(manifest))
+    if variant == 'changed':
+        with pytest.raises(AssertionError, match='native source differs'):
+            checker.check_native_sources([source, wheel])
+    else:
+        checker.check_native_sources([source, wheel])

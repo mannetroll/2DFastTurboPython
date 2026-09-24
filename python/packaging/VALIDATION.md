@@ -1,85 +1,105 @@
-# PyPI preparation validation — 2026-09-24
+# PyPI 0.1.2 preparation validation — 2026-09-24
 
-The rebuilt Linux and macOS wheels and source archive in `python/dist/` pass the
-checks described below. Nothing was uploaded by the agent. The Windows rebuild
-is still pending for the complete 0.1.2 set.
+The three wheels and source archive in `python/dist/` pass the complete release
+checks. The Windows wheel was rebuilt and tested on `fractal`; the macOS wheel
+was tested on this Mac. The Linux native payload is unchanged from the earlier
+Ubuntu validation described below. No artifacts were uploaded to PyPI.
 
-## Validated Linux artifacts
+## Final artifacts
 
-- Wheel: `fastturbo-0.1.2-py3-none-manylinux_2_28_x86_64.whl`, native build at
-  18:19 with README metadata refreshed afterward, 53,090,964 bytes, SHA256
-  `b5fdfe974ecde26aff37cc64bb46eef720050aa2875467d05cd572ae17b75c5b`.
-- Source archive: `fastturbo-0.1.2.tar.gz`. All packaged Python modules and all
-  90 native build inputs recorded in the wheel match this source archive.
-- The wheel uses CUDA 13.1.115 with SM 80/86/89/90/100/120 machine code and SM 80
-  PTX. CUDA runtime, NVRTC and its builtins are bundled; the NVIDIA driver is not.
-- Strict Twine metadata checks and the structural artifact checker pass.
-  Auditwheel's symbol analysis reports manylinux_2_27 compatibility, satisfying
-  the selected manylinux_2_28 tag.
+| Artifact | Bytes | SHA256 |
+| --- | ---: | --- |
+| `fastturbo-0.1.2-py3-none-macosx_15_0_arm64.whl` | 5,851,721 | `71b336f42cbd1fe66b638add482cdc10f3e8765d02d552c1798a30cec4ebe5cd` |
+| `fastturbo-0.1.2-py3-none-manylinux_2_28_x86_64.whl` | 53,091,445 | `d303e031966883bae417f88b32e21064da42aa08b4a2e8a39947e9dce355958a` |
+| `fastturbo-0.1.2-py3-none-win_amd64.whl` | 54,211,255 | `0cf27b30d289b8368b6258ebbfc825f8285a61041f5c1b82bf81e170a2250c23` |
+| `fastturbo-0.1.2.tar.gz` | 7,938,040 | `2824a3e9429305e204a9214af0301803debaa43a6d73b8ceedee7a74ef30f9f7` |
 
-Runtime verification on native Ubuntu x86-64, Python 3.14.4, RTX 3090 and NVIDIA
-595.91.07 passes:
+## Windows build and runtime
 
-- ETDRK4 and CNAB2 each execute 17 finite timesteps, both normally and with forced
-  PTX execution. Loaded-library mappings confirm that CUDA runtime, NVRTC and
-  builtins come from the extracted wheel with toolkit environment variables cleared.
-- The desktop check passes with 77 presentations and a valid 2,606,284-byte PNG.
-- The renderer links system libGL.so.1. No private GLX/OpenGL dispatch libraries
-  are bundled. The prior invalid-context failure is fixed in this artifact.
+The Windows wheel was built from the prepared source archive in a temporary
+directory on `fractal`, using CUDA 13.4.92 and the MSVC x64 tools. The existing
+checkout and installed application were not modified.
 
-The toolkit is still installed on this validation host. Loaded paths were
-verified, but a completely toolkit-free machine and the oldest supported OS /
-PySide6 combination have not been exercised here.
+- The wheel contains `fastturbo.dll`, `cudart64_13.dll`, `nvrtc64_130_0.dll`
+  and `nvrtc-builtins64_134.dll`. The obsolete CUDA 13.1 builtins are absent.
+- Both packaged CUDA EULA copies match the selected toolkit. The README and
+  third-party notices describe CUDA 13.4 on Windows and CUDA 13.1 on Linux.
+- All 79 recorded native build inputs match the final source archive. Raw and
+  LF-normalized hashes are retained, allowing mixed Windows/Unix line endings
+  without changing the source comparison. The three earlier raw-hash
+  discrepancies were traced to mixed line endings; this clean rebuild replaces
+  that artifact.
+- On Python 3.13.11, RTX 3090 and NVIDIA driver 616.92, the extracted wheel
+  executes 17 finite timesteps at retained resolution 34 / padded resolution 51,
+  both normally and with forced PTX JIT and the CUDA cache disabled. CUDA driver
+  and runtime APIs both report 13.4.
+- With toolkit paths and CUDA environment variables cleared, the desktop check
+  passes at resolution 2048 with 41 presentations, 69 simulation steps and finite
+  diagnostics. It ran in the logged-in desktop session because an SSH session
+  does not provide the same graphics context. The temporary test task was removed.
 
-## Source fallback and packaging checks
+No `2dbench` performance workload was run.
 
-A self-contained sdist builds and can be repacked outside the repository. Missing
-native reference sources are rejected. The native core_lifecycle test passes
-from an isolated source build. Local builds with bundling disabled exclude CUDA
-runtime libraries and use MIT metadata; installation and both CLI help commands
-pass. The source archive passes the contents checker and strict Twine checks.
+## macOS runtime
 
-The Dockerfile stages the CUDA runtime RPM's own license from
-`/usr/share/licenses/cuda-cudart-13-1/LICENSE` at the toolkit-root EULA path. The
-entrypoint checks for the license before compiling.
+The final macOS wheel passes isolated runtime checks on Apple M1 Max with Python
+3.14.4. ETDRK4 and CNAB2 each execute 17 finite timesteps using the KM3 spectrum,
+reset successfully, and export nonempty PNG images. Execution uses the wheel's
+native resources outside the repository with build tools excluded from PATH.
 
-The release checker now compares every wheel's Python modules with the sdist
-when `--release-set` is used. Matching Windows CRLF line endings are accepted;
-stale, missing and extra modules are rejected. This prevents a mixed-source
-release from passing solely because filenames all say 0.1.2.
-
-## Updated macOS artifact
-
-The macOS wheel built at 18:28 passes the structural and strict Twine checks.
-After the README metadata refresh, its SHA256 is
+The wheel targets arm64 macOS 15 with Swift 6.2.4. Its 152 native build inputs
+match the source archive; two Finder `.DS_Store` entries are excluded from this
+comparison. Every `_native/` entry is byte-for-byte unchanged from the previously
+built wheel with SHA256
 `62db5540e678bcad33ff4f87af048651e7e22a0127ecc93ace160c3e1a6ad10a`.
-All shared Python modules and all 152 native build inputs match the sdist,
-excluding Finder's `.DS_Store` metadata. The wheel includes the native dylib and
-Metal library, targeting arm64 macOS 15 with Swift 6.2.4. Runtime execution on a
-Mac has not been verified by this Linux agent.
+The refresh updates the shared Windows build helper, README, notices and RECORD.
 
-## PyPI README refresh
+## Linux runtime evidence
 
-The README now describes macOS, Windows and Linux manylinux wheels, CUDA 13.1,
-desktop runtime requirements and the Linux source fallback. All three local
-wheels have the updated description in METADATA and regenerated RECORD checksums.
-Every other wheel entry, including Python code and native binaries, was verified
-byte-for-byte unchanged. The sdist was rebuilt with the same README. All four
-descriptions match `python/README.md`, and all four strict Twine checks pass.
-The public PyPI page changes when the release artifacts are uploaded.
+The Linux native payload is byte-for-byte unchanged from the earlier validated
+wheel with SHA256
+`b5fdfe974ecde26aff37cc64bb46eef720050aa2875467d05cd572ae17b75c5b`.
+The final wheel refresh updates the shared Windows build helper, README, notices,
+RECORD and the dist-info EULA to match the bundled runtime's agreement. All 90
+recorded native build inputs match the final source archive.
 
-## Remaining Windows artifact
+The earlier native Ubuntu x86-64 validation used Python 3.14.4, RTX 3090 and
+NVIDIA driver 595.91.07:
 
-The Windows wheel in `python/dist/` still contains the September 19 build, with
-its README metadata refreshed. It passes
-structural and metadata checks but contains older Python modules and fails source
-consistency, including missing start-spectrum support. The user is rebuilding it
-from current source.
+- ETDRK4 and CNAB2 each executed 17 finite timesteps, normally and with forced
+  PTX execution. Loaded-library mappings confirmed that CUDA runtime, NVRTC and
+  builtins came from the extracted wheel with toolkit variables cleared.
+- The desktop check passed with 77 presentations and a 2,606,284-byte PNG.
+- The renderer linked system `libGL.so.1`, with no private GLX/OpenGL dispatch
+  libraries bundled. Auditwheel reported manylinux_2_27 symbol compatibility,
+  satisfying the selected manylinux_2_28 tag.
 
-Replace and runtime-test the Windows wheel, then run the complete release-set
-check and Twine checks on the intended four files. The generic local Linux wheel
-has been removed from `python/dist/`; it must remain excluded from PyPI uploads.
+The native build uses CUDA 13.1.115, SM 80/86/89/90/100/120 machine code and SM 80
+PTX. Linux GPU tests were not rerun during this macOS/Windows preparation.
 
-PyPI's public JSON API reported latest version 0.1.1 and no 0.1.2 artifacts at the
-time of this check. The planned 0.1.2 version can be retained; verify filename
-availability again immediately before uploading.
+## Packaging checks
+
+- Strict Twine checks pass for all four final artifacts.
+- The complete release-set checker passes: one version, correct platform tags,
+  native resources, runtime libraries, matching EULAs, matching shared Python
+  modules, and recorded native inputs matching the source archive.
+- Every wheel RECORD hash and file size matches its contents. All four README
+  descriptions match `python/README.md`, allowing Windows CRLF line endings.
+- Packaging regression tests: **18 passed, 1 skipped** on macOS. They cover
+  isolated sdist rebuilding, missing source rejection, stale runtime cleanup,
+  toolkit upgrade staging, EULA staging and source consistency. The skipped test
+  specifically requires Linux ELF runtime staging.
+
+Run the final checks from `python/` (`readelf` or `llvm-readelf` must be on PATH
+to inspect the Linux wheel):
+
+```sh
+python scripts/check_distributions.py --release-set dist/*.whl dist/*.tar.gz
+uvx twine check --strict dist/*.whl dist/*.tar.gz
+```
+
+The GPU test hosts have toolkits installed; isolated runtime tests removed their
+paths rather than uninstalling them. The oldest supported OS/PySide6 combinations
+and a completely toolkit-free host have not been exercised. PyPI reported latest
+version 0.1.1 and no 0.1.2 files during preparation; verify filename availability
+again immediately before uploading.

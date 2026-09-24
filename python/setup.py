@@ -14,9 +14,21 @@ def native_build():
     runpy.run_path(str(Path(__file__).parent / "src/fastturbo/build.py"))["build"]()
 
 
+def stage_native_license(distribution, project):
+    """Use the bundled runtime's own agreement in dist-info as well as _native."""
+    source = project / "src/fastturbo/_native/CUDA-EULA.txt"
+    if sys.platform in ("win32", "linux") and source.is_file():
+        destination = project / "licenses/CUDA-EULA.txt"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+        distribution.metadata.license_files = sorted(set(
+            distribution.metadata.license_files or ()) | {"licenses/CUDA-EULA.txt"})
+
+
 class Build(build_py):
     def run(self):
         native_build()
+        stage_native_license(self.distribution, Path(__file__).parent)
         # setuptools otherwise retains files from an earlier bundled build.
         staged = Path(self.build_lib) / "fastturbo/_native"
         if staged.is_dir():
@@ -27,6 +39,7 @@ class Build(build_py):
 class Editable(editable_wheel):
     def run(self):
         native_build()
+        stage_native_license(self.distribution, Path(__file__).parent)
         super().run()
 
 

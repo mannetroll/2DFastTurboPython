@@ -4,11 +4,45 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
 import time
 from .build_info import vkfft_version
+
+
+def _stage_cuda_runtime(cuda: Path, native: Path, nvcc_version: str, *, bundle: bool) -> None:
+    """Stage one toolkit's runtime, discarding leftovers from earlier toolkits."""
+    patterns = ("cudart64_*.dll", "nvrtc64_*.dll", "nvrtc-builtins64_*.dll")
+    selected = {}
+    if bundle:
+        version = re.search(r"release (\d+)\.(\d+)", nvcc_version)
+        if not version:
+            raise RuntimeError("Cannot determine the CUDA toolkit version from nvcc.")
+        builtins = f"nvrtc-builtins64_{version[1]}{version[2]}.dll"
+        for pattern in patterns:
+            candidates = {}
+            for directory in (cuda / "bin", cuda / "bin/x64"):
+                for path in directory.glob(pattern):
+                    if ".alt." not in path.name and (not path.name.startswith("nvrtc-builtins") or path.name == builtins):
+                        if path.name in candidates and path.read_bytes() != candidates[path.name].read_bytes():
+                            raise RuntimeError(f"Conflicting CUDA runtimes: {path.name}")
+                        candidates[path.name] = path
+            if len(candidates) != 1:
+                raise RuntimeError(f"Expected one matching CUDA runtime for {pattern}; found {list(candidates)}")
+            selected.update(candidates)
+    if not (cuda / "EULA.txt").is_file():
+        raise RuntimeError("The selected CUDA toolkit's EULA.txt is missing.")
+    for pattern in patterns:
+        for old in native.glob(pattern):
+            if old.name not in selected:
+                old.unlink()
+    for name, source in selected.items():
+        destination = native / name
+        if not destination.is_file() or destination.read_bytes() != source.read_bytes():
+            shutil.copy2(source, destination)
+    shutil.copy2(cuda / "EULA.txt", native / "CUDA-EULA.txt")
 
 
 def build(project: Path, native: Path, force=False) -> Path:
@@ -40,6 +74,7 @@ def build(project: Path, native: Path, force=False) -> Path:
     # Ship RTX 30/40/50-series cubins plus baseline PTX for forward compatibility.
     architectures = os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "86-real;89-real;120-real;86-virtual")
     manifest = {"files": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
+                "files_lf": {str(p): hashlib.sha256(p.read_bytes().replace(b"\r\n", b"\n")).hexdigest() for p in files},
                 "cuda": str(cuda), "msvc": vs, "distribution": distribution, "architectures": architectures,
                 "vkfft_version": vkfft_version(mac / "ThirdParty/VkFFTSource/vkFFT/vkFFT.h"),
                 "nvcc": subprocess.check_output([str(cuda / "bin/nvcc.exe"), "--version"], text=True)}
@@ -73,6 +108,7 @@ def build(project: Path, native: Path, force=False) -> Path:
         try:
             stamp = native / "build-manifest.json"
             if not force and library.is_file() and stamp.is_file() and json.loads(stamp.read_text()) == manifest:
+                _stage_cuda_runtime(cuda, native, manifest["nvcc"], bundle=distribution != "ON")
                 return library
             subprocess.run([str(source / "build.cmd"), vs, str(cuda), str(source), str(directory),
                             str(reference), str(mac), architectures.replace(";", "/"), distribution, str(headers)], check=True)
@@ -81,16 +117,8 @@ def build(project: Path, native: Path, force=False) -> Path:
                     shutil.copy2(directory / name, native / name)
                 except PermissionError as error:
                     raise RuntimeError("Close running FastTurbo/Python processes before rebuilding the Windows DLL.") from error
-            if distribution != "ON":
-                for pattern in ["cudart64_*.dll", "nvrtc64_*.dll", "nvrtc-builtins64_*.dll"]:
-                    candidates = list((cuda / "bin").glob(pattern)) + list((cuda / "bin/x64").glob(pattern))
-                    if not candidates:
-                        raise RuntimeError(f"Missing CUDA runtime: {pattern}")
-                    for dll in candidates:
-                        if ".alt." not in dll.name:
-                            shutil.copy2(dll, native / dll.name)
-            for src, name in [(cuda / "EULA.txt", "CUDA-EULA.txt"),
-                (mac / "ThirdParty/VkFFTSource/LICENSE", "VkFFT-LICENSE.txt"),
+            _stage_cuda_runtime(cuda, native, manifest["nvcc"], bundle=distribution != "ON")
+            for src, name in [(mac / "ThirdParty/VkFFTSource/LICENSE", "VkFFT-LICENSE.txt"),
                 (source / "vendor/json-LICENSE.txt", "json-LICENSE.txt")]:
                 shutil.copy2(src, native / name)
             stamp.write_text(json.dumps(manifest, indent=2) + "\n")
