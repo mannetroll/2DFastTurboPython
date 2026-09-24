@@ -6,6 +6,7 @@
 | Ubuntu 26.04.1 | RTX 3090 | CUDA + VkFFT | 24 GB | 4.854 ms | 206.0 | 21.689 ms | 46.1 | 4.47× |
 | Windows 10 | RTX 3090 | CUDA + VkFFT | 24 GB | 4.943 ms | 202.3 | 21.806 ms | 45.9 | 4.41× |
 | Windows 10 | RTX 5090 | CUDA + VkFFT | 31.8 GiB | 1.498 ms | 667.6 | 12.152 ms | 82.3 | 8.11× |
+| Ubuntu 24.04.4 LTS | NVIDIA RTX PRO 6000 Blackwell Server Edition | CUDA + VkFFT | 95.0 GiB | 1.312 ms | 762.0 | 12.293 ms | 81.3 | 9.37× |
 | Linux | H100 | CUDA + VkFFT | TBD | TBD | TBD | TBD | TBD | TBD |
 
 Times are synchronized wall-clock milliseconds per simulation step. The workload
@@ -23,6 +24,7 @@ M1 Max = 1.00×.
 | Ubuntu / RTX 3090 | 2.65× | 3.80× |
 | Windows / RTX 3090 | 2.61× | 3.78× |
 | Windows / RTX 5090 | 8.60× | 6.78× |
+| Ubuntu / RTX PRO 6000 Blackwell Server Edition | 9.81× | 6.70× |
 | Linux / H100 | TBD | TBD |
 
 ## RTX 5090 on Windows
