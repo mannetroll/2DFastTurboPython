@@ -109,8 +109,10 @@ The [PyPI release](https://pypi.org/project/fastturbo/) supplies wheels for Appl
 Silicon macOS and Windows x64. They include the native engine; the Windows wheel
 also includes CUDA runtime libraries and NVRTC. No Xcode or CUDA Toolkit is
 needed to run a wheel. Windows still requires a compatible NVIDIA driver.
-Linux currently requires a source build; distributable Linux wheels are not
-supplied. Published wheels are release snapshots; use the checkout below for
+The next release layout adds a selected Linux `manylinux_2_28_x86_64` CUDA wheel
+and a self-contained sdist for local Linux builds. See the
+[publishing guide](python/PUBLISHING.md) for the container build and validation.
+Published wheels are release snapshots; use the checkout below for
 the latest changes on `main`.
 
 The Python application requires **Python 3.13+** on all platforms. Its source
@@ -229,9 +231,11 @@ To build a source archive and a wheel for the current platform, run from `python
 uv build
 ```
 
-Build each platform's wheel on that platform. Linux builds currently link to
-system CUDA/graphics libraries; a locally built Linux wheel is not a validated
-portable PyPI distribution.
+Build macOS and Windows wheels on their respective platforms. Build portable
+Linux wheels with `python/packaging/manylinux.Dockerfile` from the sdist, then
+audit and repair them. A local `linux_x86_64` wheel uses system libraries and is
+not a portable PyPI artifact. The source archive includes the native code needed
+for a fallback Linux build without a repository checkout.
 
 [Reference contract](docs/PORT_REFERENCE.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Measured performance and validation](docs/PERFORMANCE.md) · [Python API](python/README.md)

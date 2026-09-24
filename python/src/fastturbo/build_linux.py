@@ -21,6 +21,26 @@ def _configure(source: Path, directory: Path, **definitions: str | Path) -> None
         *(f"-D{key}={value}" for key, value in definitions.items())], check=True)
 
 
+def _bundle_cuda(directory: Path, native: Path, cuda: Path) -> None:
+    """Stage the redistributable runtime and NVRTC's dlopened builtins by SONAME.
+
+    auditwheel cannot discover dlopen dependencies. Keeping NVRTC and builtins
+    together also preserves the native loader's matching-version lookup.
+    """
+    libraries = [Path(p).resolve() for p in (directory / "cuda-libraries.txt").read_text().splitlines()]
+    builtins = sorted({p.resolve() for p in libraries[1].parent.glob("libnvrtc-builtins.so.*")})
+    if len(builtins) != 1:
+        raise RuntimeError(f"Expected one matching NVRTC builtins library, found {builtins}")
+    for source in [*libraries, *builtins]:
+        soname = subprocess.check_output(["patchelf", "--print-soname", str(source)], text=True).strip()
+        if not soname or Path(soname).name != soname:
+            raise RuntimeError(f"Invalid CUDA runtime SONAME: {soname!r}")
+        shutil.copy2(source, native / soname)
+    for library in native.glob("*.so*"):
+        subprocess.run(["patchelf", "--set-rpath", "$ORIGIN", str(library)], check=True)
+    shutil.copy2(cuda / "EULA.txt", native / "CUDA-EULA.txt")
+
+
 def build(project: Path, native: Path, force: bool = False) -> Path:
     library = native / "libfastturbo.so"
     reference = project.parent / "reference-windows"
@@ -29,7 +49,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     if not reference.is_dir():
         if library.is_file():
             return library
-        raise RuntimeError("CUDA reference sources missing; use the full repository or a built Linux wheel.")
+        raise RuntimeError("CUDA reference sources missing; install a FastTurbo sdist or a built Linux wheel.")
     mac = reference.parent / "reference-macos/2DFastTurbo"
     vkfft = mac / "ThirdParty/VkFFTSource/vkFFT"
     cuda = Path(os.environ.get("CUDA_HOME", "/usr/local/cuda"))
@@ -48,6 +68,13 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
         raise RuntimeError("C++ compiler not found; set CXX to the existing compiler executable.")
     cxx = str(Path(cxx).resolve())
     architectures = os.environ.get("FASTTURBO_CUDA_ARCH", os.environ.get("FASTTURBO_CUDA_ARCHITECTURES", "native"))
+    bundle = os.environ.get("FASTTURBO_BUNDLE_CUDA", "OFF").upper()
+    if bundle not in {"ON", "OFF"}:
+        raise RuntimeError("FASTTURBO_BUNDLE_CUDA must be ON or OFF.")
+    if bundle == "ON" and architectures == "native":
+        raise RuntimeError("Bundled Linux wheels require explicit FASTTURBO_CUDA_ARCHITECTURES, not native.")
+    if bundle == "ON" and not shutil.which("patchelf"):
+        raise RuntimeError("Bundled Linux wheels require patchelf on PATH.")
     if architectures != "native" and not re.fullmatch(r"\d+(?:-(?:real|virtual))?(?:;\d+(?:-(?:real|virtual))?)*", architectures):
         raise RuntimeError("FASTTURBO_CUDA_ARCH must be native or a CUDA architecture, e.g. 86 or 90.")
     renderer = os.environ.get("FASTTURBO_LINUX_RENDERER", "AUTO").upper()
@@ -65,6 +92,7 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
     manifest = {
         "files": {str(p.relative_to(project.parent)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
         "cuda": str(cuda.resolve()), "architectures": architectures,
+        "bundle_cuda": bundle,
         "vkfft_version": vkfft_version(vkfft / "vkFFT.h"),
         "renderer": renderer, "cmake_prefix_path": os.environ.get("CMAKE_PREFIX_PATH", ""),
         "nvcc": version([str(nvcc), "--version"]),
@@ -94,6 +122,12 @@ def build(project: Path, native: Path, force: bool = False) -> Path:
             os.replace(staging, native / render_library.name)
         else:
             (native / "libfastturbo_gl.so").unlink(missing_ok=True)
+        # Switching back to a local build must not leave bundled CUDA runtimes.
+        for pattern in ("libcudart.so*", "libnvrtc.so*", "libnvrtc-builtins.so*", "CUDA-EULA.txt"):
+            for old in native.glob(pattern):
+                old.unlink()
+        if bundle == "ON":
+            _bundle_cuda(directory, native, cuda)
         for src, name in [(vkfft.parent / "LICENSE", "VkFFT-LICENSE.txt"),
                           (project / "native/windows/vendor/json-LICENSE.txt", "json-LICENSE.txt")]:
             shutil.copy2(src, native / name)

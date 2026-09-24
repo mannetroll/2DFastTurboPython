@@ -8,8 +8,10 @@ recursive-include native/linux *
 include uv.lock
 include PUBLISHING.md
 include DEVELOPMENT.md
+recursive-include packaging *.Dockerfile *.sh *.txt
 recursive-include src/fastturbo/assets *.png *.svg
 recursive-include native/reference *
 recursive-include native/reference-windows *
 recursive-include native/reference-macos *
 prune src/fastturbo/_native
+global-exclude __pycache__ *.py[cod] *.so *.so.* *.dll *.dylib *.o

@@ -1,0 +1,42 @@
+name: Prepare Python distributions
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sdist:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install build twine
+      - run: python -m build --sdist --outdir dist python
+      - run: python python/scripts/check_distributions.py dist/*.tar.gz
+      - run: python -m twine check --strict dist/*.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fastturbo-sdist
+          path: dist/*.tar.gz
+  manylinux:
+    needs: sdist
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: fastturbo-sdist
+          path: dist
+      - run: docker build -f python/packaging/manylinux.Dockerfile -t fastturbo-manylinux python/packaging
+      - name: Build and repair from the published source archive
+        shell: bash
+        run: |
+          mkdir -p wheelhouse
+          archive=(dist/*.tar.gz)
+          docker run --rm -v "$PWD/dist:/input:ro" -v "$PWD/wheelhouse:/output" \
+            fastturbo-manylinux "/input/$(basename "${archive[0]}")" /output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fastturbo-manylinux-x86_64
+          path: wheelhouse/*.whl

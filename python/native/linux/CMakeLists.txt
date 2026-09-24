@@ -11,8 +11,12 @@ add_library(fastturbo SHARED bridge.cpp ui.cpp "${adapted}/controller.cpp")
 target_include_directories(fastturbo PRIVATE "${adapted}" .. ../windows/vendor)
 target_compile_options(fastturbo PRIVATE -ffp-contract=off -Wall -Wextra)
 target_link_libraries(fastturbo PRIVATE turbo_core cuda_platform)
+target_link_options(fastturbo PRIVATE -Wl,--no-undefined)
 # NVRTC finds its matching builtins next to itself. No LD_LIBRARY_PATH required.
 set_target_properties(fastturbo PROPERTIES BUILD_RPATH "${CUDAToolkit_LIBRARY_DIR}")
+# Use CMake's resolved runtime locations, including nonstandard CUDA layouts.
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/cuda-libraries.txt"
+  CONTENT "$<TARGET_FILE:CUDA::cudart>\n$<TARGET_FILE:CUDA::nvrtc>\n")
 
 # Optional presentation module. It is dlopened only for UI/PNG requests, so a
 # compute-only machine never needs to load X11 or OpenGL libraries.
