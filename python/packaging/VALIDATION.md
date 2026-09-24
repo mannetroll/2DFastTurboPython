@@ -1,14 +1,14 @@
 # PyPI preparation validation — 2026-09-24
 
-The rebuilt Linux manylinux wheel and source archive in `python/dist/` pass the
-checks described below. Nothing was uploaded by the agent. The user is rebuilding
-the macOS and Windows wheels from the current source for the complete 0.1.2 set.
+The rebuilt Linux and macOS wheels and source archive in `python/dist/` pass the
+checks described below. Nothing was uploaded by the agent. The Windows rebuild
+is still pending for the complete 0.1.2 set.
 
 ## Validated Linux artifacts
 
-- Wheel: `fastturbo-0.1.2-py3-none-manylinux_2_28_x86_64.whl`, built at 18:19,
-  53,091,003 bytes, SHA256
-  `163fe293fad1fcf8eaed9bcf374f322d6dcdb3e9220de70b6a7131887e348da3`.
+- Wheel: `fastturbo-0.1.2-py3-none-manylinux_2_28_x86_64.whl`, native build at
+  18:19 with README metadata refreshed afterward, 53,090,964 bytes, SHA256
+  `b5fdfe974ecde26aff37cc64bb46eef720050aa2875467d05cd572ae17b75c5b`.
 - Source archive: `fastturbo-0.1.2.tar.gz`. All packaged Python modules and all
   90 native build inputs recorded in the wheel match this source archive.
 - The wheel uses CUDA 13.1.115 with SM 80/86/89/90/100/120 machine code and SM 80
@@ -48,16 +48,37 @@ when `--release-set` is used. Matching Windows CRLF line endings are accepted;
 stale, missing and extra modules are rejected. This prevents a mixed-source
 release from passing solely because filenames all say 0.1.2.
 
-## Remaining cross-platform artifacts
+## Updated macOS artifact
 
-The macOS and Windows wheels currently in `python/dist/` were built on September
-19 and contain older app, controls, engine, main and build modules. They pass
-structural and metadata checks but fail source consistency, including missing
-start-spectrum support. The user is rebuilding both from current source.
+The macOS wheel built at 18:28 passes the structural and strict Twine checks.
+After the README metadata refresh, its SHA256 is
+`62db5540e678bcad33ff4f87af048651e7e22a0127ecc93ace160c3e1a6ad10a`.
+All shared Python modules and all 152 native build inputs match the sdist,
+excluding Finder's `.DS_Store` metadata. The wheel includes the native dylib and
+Metal library, targeting arm64 macOS 15 with Swift 6.2.4. Runtime execution on a
+Mac has not been verified by this Linux agent.
 
-Replace and runtime-test those two wheels, then run the complete release-set
-check and Twine checks on the intended four files. Exclude the generic
-`fastturbo-0.1.2-py3-none-linux_x86_64.whl` from PyPI uploads.
+## PyPI README refresh
+
+The README now describes macOS, Windows and Linux manylinux wheels, CUDA 13.1,
+desktop runtime requirements and the Linux source fallback. All three local
+wheels have the updated description in METADATA and regenerated RECORD checksums.
+Every other wheel entry, including Python code and native binaries, was verified
+byte-for-byte unchanged. The sdist was rebuilt with the same README. All four
+descriptions match `python/README.md`, and all four strict Twine checks pass.
+The public PyPI page changes when the release artifacts are uploaded.
+
+## Remaining Windows artifact
+
+The Windows wheel in `python/dist/` still contains the September 19 build, with
+its README metadata refreshed. It passes
+structural and metadata checks but contains older Python modules and fails source
+consistency, including missing start-spectrum support. The user is rebuilding it
+from current source.
+
+Replace and runtime-test the Windows wheel, then run the complete release-set
+check and Twine checks on the intended four files. The generic local Linux wheel
+has been removed from `python/dist/`; it must remain excluded from PyPI uploads.
 
 PyPI's public JSON API reported latest version 0.1.1 and no 0.1.2 artifacts at the
 time of this check. The planned 0.1.2 version can be retained; verify filename

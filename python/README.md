@@ -55,29 +55,34 @@ to require wheels and disable the source fallback.
 | --- | --- |
 | macOS | macOS 15 or later, Apple Silicon (arm64), Metal |
 | Windows | Windows 10 or 11, x64 Python, NVIDIA GPU with compute capability 8.6 or later, and a driver compatible with the bundled CUDA 13.1 runtime |
-| Linux wheel target | x86-64, glibc 2.28+, NVIDIA GPU with compute capability 8.0 or later, driver supporting CUDA 13.1 and its NVRTC-generated PTX; compatible PySide6/Qt runtime for the GUI |
+| Linux (manylinux) | x86-64, glibc 2.28 or later, NVIDIA GPU with compute capability 8.0 or later, and a driver supporting CUDA 13.1 and its NVRTC-generated PTX |
 
-The Windows wheel includes native code for RTX 30/40/50-series GPUs, baseline
-PTX, the CUDA runtime and NVRTC; install the NVIDIA driver separately.
-The selected Linux manylinux wheel includes CUDA runtime libraries and native
-code for Ampere, Ada, Hopper and Blackwell GPUs, plus baseline PTX. Intel Macs,
-Windows ARM64 and CPU-only execution are not supported by these wheels.
-Wheel selection uses CPU/OS/Python tags; it cannot detect an unsupported GPU or
-driver. The native wheel's glibc baseline does not override PySide6's own
-platform requirements. The Linux release target is prepared here and must pass
-the release checks in `PUBLISHING.md` before upload.
+Windows and Linux wheels bundle the CUDA runtime, NVRTC and its matching
+builtins. **Install the NVIDIA driver separately.** The Windows wheel includes
+native code for RTX 30/40/50-series GPUs; the Linux wheel includes Ampere, Ada,
+Hopper and Blackwell targets. Both also include baseline PTX.
 
-Linux source builds are tested on native Ubuntu 26.04.1 / RTX 3090, including the
-PySide6 GUI with GPU-resident OpenGL rendering. Local `linux_x86_64` wheels depend
-on system CUDA/graphics libraries and are not portable PyPI artifacts.
-Desktop builds need OpenGL/X11/libpng development files and Qt's xcb runtime
-libraries. `uv run 2dfastturbo --headless` runs without Qt/display initialization.
-The sdist contains the complete native sources and vendored headers; no source
-checkout or access to the application repository is needed. A Linux source
-installation requires CUDA Toolkit 13.x, a compatible C++ compiler, CMake 3.26+
-and Ninja. Set `CUDA_HOME` if the toolkit is outside `/usr/local/cuda`.
-The default build targets the visible GPU. Set `FASTTURBO_CUDA_ARCH=90`, for
-example, to compile for H100 without a GPU on the build machine.
+The Linux desktop uses the system's NVIDIA OpenGL driver through X11 or
+Xwayland and needs Qt's xcb runtime libraries. PySide6/Qt has its own platform
+requirements in addition to the native wheel's glibc baseline. `2dbench` and
+`2dfastturbo --headless` run without opening a display or initializing Qt.
+
+Intel Macs, Windows ARM64 and CPU-only execution are not supported. If pip
+reports no matching distribution, check your Python version, operating system
+and CPU architecture. Wheel selection cannot detect an unsupported GPU or
+driver, so the GPU requirements above still apply after installation succeeds.
+
+### Linux source builds
+
+When no compatible Linux wheel is available, pip or uv can build the source
+distribution (sdist) locally. The archive includes the native sources and
+vendored headers; no repository checkout is needed. `--only-binary=:all:` and
+`--no-build` disable this fallback.
+
+A source build requires CUDA Toolkit 13.x, a compatible C++ compiler,
+CMake 3.26+ and Ninja. Desktop builds also need OpenGL, X11 and libpng
+development files. Set `CUDA_HOME` if the toolkit is outside `/usr/local/cuda`.
+Local source builds use the installed CUDA libraries.
 
 Force a local source build when needed:
 
@@ -85,10 +90,12 @@ Force a local source build when needed:
 python -m pip install --no-binary=fastturbo fastturbo
 ```
 
+The default build targets the visible GPU. Set `FASTTURBO_CUDA_ARCH=90`, for
+example, to compile for H100 without a GPU on the build machine.
 `FASTTURBO_LINUX_RENDERER=OFF` selects a headless build; `ON` requires the desktop
 development libraries; the default `AUTO` detects them. A source build still
-requires a supported NVIDIA GPU/driver to run. See `PUBLISHING.md` and
-`DEVELOPMENT.md` in the source archive for setup and validation details.
+requires a supported NVIDIA GPU and driver to run. See `DEVELOPMENT.md` in the
+source archive for build details.
 
 ## Explore the flow
 
@@ -284,7 +291,8 @@ FastTurbo's own code, documentation and screenshot are **MIT licensed**,
 Copyright © 2026 Torbjörn Sjögren. Bundled VkFFT and nlohmann/json retain their
 MIT notices; Apple metal-cpp uses Apache-2.0. The Windows/Linux CUDA components retain
 the NVIDIA CUDA Toolkit agreement. License texts and component notices are
-included in each distribution under `fastturbo-<version>.dist-info/licenses/`.
+included under `fastturbo-<version>.dist-info/licenses/` and in the native
+package resources at `fastturbo/_native/`.
 PySide6 and Qt are installed separately under their own licenses.
 
 The screenshot above is hosted in the public
