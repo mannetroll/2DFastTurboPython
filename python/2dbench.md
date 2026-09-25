@@ -7,7 +7,7 @@
 | Windows 10 | RTX 3090 | CUDA + VkFFT | 24 GB | 4.943 ms | 202.3 | 21.806 ms | 45.9 | 4.41× |
 | Windows 10 | RTX 5090 | CUDA + VkFFT | 31.8 GiB | 1.498 ms | 667.6 | 12.152 ms | 82.3 | 8.11× |
 | Ubuntu 24.04.4 LTS | NVIDIA RTX PRO 6000 Blackwell Server Edition | CUDA + VkFFT | 95.0 GiB | 1.312 ms | 762.0 | 12.293 ms | 81.3 | 9.37× |
-| Linux | H100 | CUDA + VkFFT | TBD | TBD | TBD | TBD | TBD | TBD |
+| Ubuntu 22.04.5 LTS | [NVIDIA H100 80GB HBM3](evidence/2dbench/h100-linux.json) | CUDA + VkFFT | 79.2 GiB | 2.039 ms | 490.4 | 8.211 ms | 121.8 | 4.03× |
 
 Times are synchronized wall-clock milliseconds per simulation step. The workload
 is float32 ETDRK4 / stress, k₀=10, seed=2, CFL=3, Re=27898.36614974335, with
@@ -25,7 +25,7 @@ M1 Max = 1.00×.
 | Windows / RTX 3090 | 2.61× | 3.78× |
 | Windows / RTX 5090 | 8.60× | 6.78× |
 | Ubuntu / RTX PRO 6000 Blackwell Server Edition | 9.81× | 6.70× |
-| Linux / H100 | TBD | TBD |
+| Ubuntu / H100 | 6.31× | 10.03× |
 
 ## RTX 5090 on Windows
 
