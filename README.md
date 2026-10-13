@@ -4,6 +4,17 @@ A shared Python-hosted turbulence application for macOS, Windows and Linux, usin
 native Swift/Metal/VkFFT or C++/CUDA/VkFFT backends. Python supplies the PySide6 controls;
 all CFD timesteps, FFTs, buffers and high-rate field rendering stay native.
 
+Download the desktop app from [GitHub Releases](https://github.com/mannetroll/2DFastTurboPython/releases/latest):
+
+- **macOS:** open the Apple Silicon `.dmg` and drag the app to Applications.
+- **Linux:** extract the x86-64 `.tar.gz` and launch `2DFastTurbo.sh`.
+- **Windows:** extract the x86-64 `.zip` and run `2DFastTurbo Python.exe`.
+
+These bundles include Python, Qt and the native runtime. macOS requires Apple
+Silicon and macOS 15+; the app is ad-hoc signed, not Apple-notarized. Linux requires
+glibc 2.36+ (Debian 12 / Ubuntu 24.04 or newer) and X11/Xwayland. Windows and Linux
+require a compatible NVIDIA GPU and driver; see each download's README.
+
 For the same headless, time-based benchmark on each supported machine:
 
 ```sh
@@ -215,7 +226,7 @@ or `-AllResolutions` on the Windows test script. They now include grids through
 (24 GiB) run reached N=9216, then failed allocation at N=12288; N=16384 was not
 reached. These checks are not part of the routine commands above.
 
-To build a self-contained, locally signed macOS app, run from `python/`:
+To build a self-contained, locally signed macOS app and DMG, run from `python/`:
 
 ```sh
 uv run python scripts/package_app.py
@@ -224,7 +235,10 @@ open 'dist/2DFastTurbo Python.app'
 
 The `.app` includes Python, Qt, the native engine and shaders. It needs no terminal,
 uv, Xcode or repository checkout at runtime. It is locally signed, not notarized
-for public distribution. No app is installed into `/Applications` automatically.
+for public distribution. The versioned `.dmg` in `dist/` contains the app and an
+Applications shortcut for drag-and-drop installation. See the
+[desktop release instructions](python/PUBLISHING.md#github-desktop-releases)
+for Linux and Windows packaging and upload.
 
 To build a source archive and a wheel for the current platform, run from `python/`:
 
