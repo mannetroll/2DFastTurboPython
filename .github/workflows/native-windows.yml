@@ -1,0 +1,34 @@
+name: Build native Windows release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Native release version
+        required: true
+        default: '0.1.2'
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare verified CUDA compiler and static libraries
+        shell: pwsh
+        run: |
+          $cuda = Join-Path $env:RUNNER_TEMP 'cuda'
+          ./packaging/prepare-cuda-windows.ps1 -Destination $cuda
+          "CUDA_PATH=$cuda" >> $env:GITHUB_ENV
+      - name: Build native standalone EXE
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          ./reference-windows/scripts/package.ps1
+          New-Item -ItemType Directory -Force dist-native | Out-Null
+          Copy-Item reference-windows/dist/2DFastTurbo.exe "dist-native/2DFastTurbo-$env:RELEASE_VERSION-Windows-x86_64.exe"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fastturbo-native-windows
+          path: dist-native/*.exe
+          if-no-files-found: error
