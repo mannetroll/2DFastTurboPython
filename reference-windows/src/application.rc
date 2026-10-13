@@ -12,7 +12,7 @@ FONT 9, "Segoe UI"
 BEGIN
     ICON 1, IDC_ABOUT_ICON, 16, 18, 38, 38, SS_REALSIZECONTROL
     LTEXT "2DFastTurbo", -1, 66, 16, 244, 14
-    LTEXT "Version 1.0", -1, 66, 31, 244, 12
+    LTEXT "Version 0.1.2", -1, 66, 31, 244, 12
     LTEXT "GPU simulation of decaying, homogeneous 2D turbulence. Fourier pseudospectral methods with 3/2-rule dealiasing and VkFFT transforms. ETDRK4 time stepping by default.", -1, 66, 50, 244, 40
     CTEXT "Navier–Stokes equation", -1, 66, 96, 244, 12
     CONTROL "Navier–Stokes equation: ρ(∂v/∂t + v·∇v) = −∇p + μ∇²v", IDC_EQUATION, "STATIC", SS_OWNERDRAW, 80, 112, 216, 34

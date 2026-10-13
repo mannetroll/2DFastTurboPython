@@ -18,6 +18,7 @@
 #include <map>
 #include <set>
 #include <filesystem>
+#include "licenses.hpp"
 #include <functional>
 #include <cstdio>
 #include <X11/keysym.h>
@@ -34,7 +35,7 @@ struct Arguments {
     float scale=0;
     bool focus=false;
     double interval=.1,benchmarkSeconds=0;
-    bool visualization=true,selfTest=false,help=false;
+    bool visualization=true,selfTest=false,help=false,licenses=false;
     std::string output,capture;
     std::string testExit="wm";
     Arguments(){solver.config.n=2048;solver.config.k0=10;
@@ -52,6 +53,7 @@ Arguments parse(int argc,char** argv){
         std::string key=argv[i];
         auto value=[&]()->std::string{if(i+1==argc)throw std::invalid_argument("Missing value for "+key);return argv[++i];};
         if(key=="--help"||key=="-h")a.help=true;
+        else if(key=="--licenses")a.licenses=true;
         else if(key=="--resolution")a.solver.config.n=number<int>(value(),key);
         else if(key=="--reynolds"){a.solver.config.reynolds=number<double>(value(),key);explicitRe=true;}
         else if(key=="--k0")a.solver.config.k0=number<int>(value(),key);
@@ -75,7 +77,7 @@ Arguments parse(int argc,char** argv){
         else if(key=="--capture")a.capture=value();
         else throw std::invalid_argument("Unknown option: "+key);
     }
-    if(a.help)return a;
+    if(a.help||a.licenses)return a;
     if(a.testExit!="wm"&&(!a.selfTest||(a.testExit!="close-menu"&&a.testExit!="quit-menu"&&a.testExit!="ctrl-w"&&a.testExit!="ctrl-q")))
         throw std::invalid_argument("--test-exit requires --self-test and close-menu, quit-menu, ctrl-w or ctrl-q.");
     if(a.width<760||a.width>7680||a.height<560||a.height>4320||a.scale<0||a.scale>3||(a.scale>0&&a.scale<1))
@@ -282,7 +284,7 @@ class Application {
             auto p=ImGui::GetCursorScreenPos();desktop::mark({p.x+32*scale,p.y+32*scale},32*scale);
             ImGui::Dummy({64*scale,64*scale});ImGui::SameLine(0,18*scale);ImGui::BeginGroup();
             ImGui::PushFont(presentation::titleFont,16);ImGui::TextUnformatted("2DFastTurbo");ImGui::PopFont();
-            ImGui::TextUnformatted("Version 1.0");ImGui::Spacing();
+            ImGui::TextUnformatted("Version 0.1.2");ImGui::Spacing();
             ImGui::PushFont(nullptr,13);ImGui::PushTextWrapPos(ImGui::GetCursorPosX()+360*scale);
             ImGui::TextWrapped("GPU simulation of decaying, homogeneous 2D turbulence. Fourier pseudospectral methods with 3/2-rule dealiasing and VkFFT transforms. ETDRK4 time stepping by default.");
             ImGui::PopTextWrapPos();ImGui::Spacing();ImGui::Spacing();
@@ -684,11 +686,13 @@ public:
 int main(int argc,char** argv){
     try{
         auto args=parse(argc,argv);
+        if(args.licenses){std::cout<<fastturboLicenses;return 0;}
         if(args.help){std::cout<<"FastTurbo native Linux - Dear ImGui / CUDA / VkFFT / OpenGL\n"
             "Usage: fastturbo-linux [--resolution N] [--reynolds Re] [--k0 K] [--seed S]\n"
             "  [--cfl C] [--device D] [--paused] [--interval-ms 4..10000] [--no-visualization]\n"
             "  [--benchmark-seconds S] [--self-test] [--output report.json] [--capture window.png]\n"
             "  [--width 760..7680] [--height 560..4320] [--ui-scale 1..3] [--focus]\n"
+            "  [--licenses]\n"
             "Use reference-linux/fastturbo_reference or 2dbench for headless execution.\n";return 0;}
         initializeCudaLoader();CUDA_CHECK(cudaSetDevice(args.device));
         cudaDeviceProp prop{};CUDA_CHECK(cudaGetDeviceProperties(&prop,args.device));

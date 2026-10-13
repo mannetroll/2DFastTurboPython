@@ -1,6 +1,9 @@
-# Publishing FastTurbo
+# Publishing FastTurbo to PyPI
 
-The PyPI release contains four artifacts built from the same source version:
+Native macOS, Windows and Linux applications are published separately on GitHub;
+see [native release packaging](../packaging/README.md).
+
+The release contains four artifacts built from the same source version:
 
 | Artifact | Native payload | User requirements |
 | --- | --- | --- |
@@ -180,59 +183,3 @@ artifacts after documentation or metadata changes. FastTurbo is MIT licensed;
 the native distribution also carries platform-specific third-party terms in
 `THIRD_PARTY_NOTICES.md`, `licenses/` and `fastturbo/_native/`. Preserve the toolkit's
 matching CUDA EULA and the notices for any libraries bundled during repair.
-
-## GitHub desktop releases
-
-GitHub releases additionally provide apps that include Python and Qt. Build from
-the chosen release tag and use wheels that pass the source and native manifest
-checks above. Keep desktop bundles separate from the PyPI upload directory.
-
-On Apple Silicon, from `python/`:
-
-```sh
-uv run python scripts/package_app.py
-```
-
-This creates `dist/2DFastTurbo Python.app` and
-`dist/2DFastTurbo-Python-<version>-macOS-arm64.dmg`. The DMG contains the signed
-app, an Applications shortcut and installation instructions. The script uses
-the project version in the bundle metadata, verifies the app's signature and
-checks the DMG. Signing is ad-hoc; Apple notarization is not configured.
-Mount the DMG, copy the app out, and exercise both Metal and the GUI outside the
-checkout before uploading it.
-
-For Linux, place the validated manylinux wheel in `python/build/release-input/`
-(with no other wheels), then run from the repository root:
-
-```sh
-docker build --platform linux/amd64 -f python/packaging/linux-app.Dockerfile \
-  -t fastturbo-linux-app python
-docker run --rm --platform linux/amd64 \
-  -v "$PWD/python/build/release-input:/input:ro" \
-  -v "$PWD/python/dist:/output" fastturbo-linux-app
-```
-
-The resulting `2DFastTurbo-Python-<version>-Linux-x86_64.tar.gz` contains the
-executable, `2DFastTurbo.sh` launcher and runtime directory. Extract the complete
-archive and run the launcher. The container's Python/Qt runtime requires glibc
-2.36+ (Debian 12 / Ubuntu 24.04 or newer), even though the native wheel has an
-older manylinux baseline. X11/Xwayland and an NVIDIA driver supporting CUDA 13.1
-are required. The bundle preserves NVRTC builtins, wheel resources and license
-notices, and excludes NVIDIA/OpenGL driver libraries. Compilation and packaging
-need no GPU; GPU simulation and desktop rendering must be tested separately on
-Linux hardware. A container CLI or offscreen Qt check does not validate CUDA.
-
-On Windows, `uv run python scripts/package_windows.py` creates
-`dist/2DFastTurbo-Python-<version>-Windows-x86_64.zip`. The packager can also use
-an installed release wheel in an isolated Python environment without a CUDA
-Toolkit: keep `scripts/bundle_entry.py` and the repository's Windows icon beside
-the packaging script in their normal paths. It includes Python, Qt, CUDA and
-NVRTC; users still need a driver supporting the wheel's CUDA version.
-
-For each archive, verify extraction, runtime resources and startup outside the
-checkout. Run a short headless simulation and GUI export on suitable hardware.
-Record checksums in `SHA256SUMS.txt`, then attach the DMG, Linux tarball, Windows
-ZIP and checksum file to the release for the existing source tag. Release notes
-should give installation steps, platform requirements, macOS signing status and
-the validation actually performed. Leave PyPI artifacts unchanged when adding
-desktop downloads.

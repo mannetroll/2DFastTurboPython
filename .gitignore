@@ -1,3 +1,4 @@
 /build*/
+/dist-native/
 /reference-linux/evidence/tmp/
 /reference-linux/tests/__pycache__/

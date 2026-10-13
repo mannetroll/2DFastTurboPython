@@ -285,7 +285,7 @@ final class FastTurboAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
     @objc private func showAbout() {
         let about = NSAlert()
         about.messageText = "2DFastTurbo"
-        about.informativeText = "Version 1.0\n\n"
+        about.informativeText = "Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.2")\n\n"
             + "GPU simulation of decaying, homogeneous 2D turbulence. "
             + "Fourier pseudospectral methods with 3/2-rule dealiasing "
             + "and VkFFT transforms. ETDRK4 time stepping by default.\n\n"

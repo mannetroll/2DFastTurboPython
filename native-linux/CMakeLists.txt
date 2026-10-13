@@ -2,13 +2,37 @@
 find_package(CUDAToolkit 13.0 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
-find_package(PNG REQUIRED)
+if(FASTTURBO_DISTRIBUTION)
+  set(saved_library_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+  set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+  set(ZLIB_USE_STATIC_LIBS ON)
+  find_package(PNG REQUIRED)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES "${saved_library_suffixes}")
+else()
+  find_package(PNG REQUIRED)
+endif()
 include(FetchContent)
 FetchContent_Declare(imgui
   URL https://codeload.github.com/ocornut/imgui/tar.gz/refs/tags/v1.92.5
   URL_HASH SHA256=0eb50fe9aeba1a51f96b5843c7f630a32ed2e9362d693c61b87e4fa870cf826d
   DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
 FetchContent_MakeAvailable(imgui)
+set(license_text "2DFastTurbo native Linux third-party notices\n\n")
+set(license_files "${PROJECT_SOURCE_DIR}/python/LICENSE"
+  "${PROJECT_SOURCE_DIR}/python/licenses/VkFFT-LICENSE.txt"
+  "${PROJECT_SOURCE_DIR}/python/licenses/json-LICENSE.txt" "${imgui_SOURCE_DIR}/LICENSE.txt")
+if(FASTTURBO_DISTRIBUTION)
+  find_file(FASTTURBO_CUDA_LICENSE EULA.txt HINTS "${CUDAToolkit_LIBRARY_ROOT}"
+    "${CUDAToolkit_TARGET_DIR}" REQUIRED NO_DEFAULT_PATH)
+  list(APPEND license_files "${FASTTURBO_CUDA_LICENSE}")
+  list(APPEND license_files /usr/share/doc/libpng-dev/copyright /usr/share/doc/zlib1g-dev/copyright)
+endif()
+foreach(license_file IN LISTS license_files)
+  file(READ "${license_file}" component_license)
+  get_filename_component(license_name "${license_file}" NAME)
+  string(APPEND license_text "${license_name}\n\n${component_license}\n\n")
+endforeach()
+configure_file(licenses.hpp.in licenses.hpp @ONLY)
 add_library(fastturbo_imgui STATIC
   "${imgui_SOURCE_DIR}/imgui.cpp" "${imgui_SOURCE_DIR}/imgui_draw.cpp"
   "${imgui_SOURCE_DIR}/imgui_tables.cpp" "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
@@ -50,12 +74,15 @@ target_compile_options(fastturbo_desktop_controller PRIVATE -ffp-contract=off -W
 add_executable(fastturbo-linux main.cpp x11_imgui.cpp
   "${PROJECT_SOURCE_DIR}/python/native/linux/renderer.cpp")
 target_include_directories(fastturbo-linux PRIVATE "${PROJECT_SOURCE_DIR}/python/native/linux"
-  "${PROJECT_SOURCE_DIR}/python/native/windows/vendor")
+  "${PROJECT_SOURCE_DIR}/python/native/windows/vendor" "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(fastturbo-linux PRIVATE fastturbo_desktop_controller fastturbo_imgui
   OpenGL::GL X11::X11 PNG::PNG)
 target_compile_options(fastturbo-linux PRIVATE -ffp-contract=off -Wall -Wextra -Wpedantic)
 set_target_properties(fastturbo-linux PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
   BUILD_RPATH "${CUDAToolkit_LIBRARY_DIR}" INSTALL_RPATH "${CUDAToolkit_LIBRARY_DIR}")
+if(FASTTURBO_DISTRIBUTION)
+  set_target_properties(fastturbo-linux PROPERTIES BUILD_RPATH "" INSTALL_RPATH "" SKIP_BUILD_RPATH TRUE)
+endif()
 install(TARGETS fastturbo-linux RUNTIME DESTINATION bin COMPONENT native-gui)
 install(FILES "${imgui_SOURCE_DIR}/LICENSE.txt" DESTINATION share/licenses/fastturbo-linux
   RENAME Dear-ImGui.txt COMPONENT native-gui)

@@ -126,10 +126,3 @@ EXE folder and ZIP) or `uv build` (source archive and `py3-none-win_amd64` wheel
 folder includes Python and Qt. A wheel needs Python and the declared PySide6
 dependency. The default CUDA target is compute capability 8.6 or later; see
 `../docs/WINDOWS_PORT.md` for other build targets and the hardware validation limits.
-
-The macOS packager also creates a versioned DMG with an Applications shortcut.
-Linux desktop archives are frozen from the validated manylinux wheel using
-`packaging/linux-app.Dockerfile`; they include a `2DFastTurbo.sh` launcher and
-require glibc 2.36+, X11/Xwayland and the host NVIDIA driver. See
-[GitHub desktop releases](PUBLISHING.md#github-desktop-releases) for build and
-validation commands for all three platforms.

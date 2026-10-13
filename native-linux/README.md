@@ -5,6 +5,11 @@ solver. It runs without Python, CPython, PySide6, Qt, GTK, or a browser.
 The Python/PySide6 application remains available. `reference-linux` remains
 the canonical headless validation executable; `2dbench` remains the benchmark.
 
+[GitHub Releases](https://github.com/mannetroll/2DFastTurboPython/releases/latest)
+provide a single executable in a portable tarball, with CUDA/NVRTC and C++
+runtimes statically linked. See [native packaging](../packaging/README.md) for
+runtime requirements and reproducible distribution builds.
+
 ## Ubuntu build and run
 
 Use the working NVIDIA/CUDA installation. The tested environment is Ubuntu

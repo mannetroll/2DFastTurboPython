@@ -1,0 +1,2 @@
+#pragma once
+inline constexpr char fastturboLicenses[] = R"FT_LICENSE(@license_text@)FT_LICENSE";

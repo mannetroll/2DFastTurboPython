@@ -7,13 +7,19 @@ all CFD timesteps, FFTs, buffers and high-rate field rendering stay native.
 Download the desktop app from [GitHub Releases](https://github.com/mannetroll/2DFastTurboPython/releases/latest):
 
 - **macOS:** open the Apple Silicon `.dmg` and drag the app to Applications.
-- **Linux:** extract the x86-64 `.tar.gz` and launch `2DFastTurbo.sh`.
-- **Windows:** extract the x86-64 `.zip` and run `2DFastTurbo Python.exe`.
+- **Windows:** download and run the standalone x86-64 `.exe`.
+- **Linux:** extract the x86-64 `.tar.gz` and run the included executable.
 
-These bundles include Python, Qt and the native runtime. macOS requires Apple
-Silicon and macOS 15+; the app is ad-hoc signed, not Apple-notarized. Linux requires
-glibc 2.36+ (Debian 12 / Ubuntu 24.04 or newer) and X11/Xwayland. Windows and Linux
-require a compatible NVIDIA GPU and driver; see each download's README.
+GitHub downloads are **native applications**: Swift/Metal on macOS, C++/Direct3D
+on Windows, and C++/Dear ImGui/OpenGL on Linux. Windows and Linux contain their
+redistributable runtimes in a single executable. They need an NVIDIA driver but
+no CUDA Toolkit, Python, Qt or companion runtime directory. macOS requires Apple
+Silicon and macOS 15+; its app is ad-hoc signed, not Apple-notarized. Linux requires
+glibc 2.39+ (Ubuntu 24.04 or newer) and X11/Xwayland with NVIDIA OpenGL support.
+See [native release builds and requirements](packaging/README.md).
+
+The Python application is distributed separately as **PyPI wheels and a source
+archive**, using the same native solver with Python/PySide6 controls.
 
 For the same headless, time-based benchmark on each supported machine:
 
@@ -175,8 +181,9 @@ powershell -ExecutionPolicy Bypass -File python/scripts/test-windows.ps1
 powershell -ExecutionPolicy Bypass -File python/scripts/run-windows.ps1
 ```
 
-The portable Windows ZIP is generated under `python/dist/` by
-`python/scripts/package-windows.ps1`; it includes Python, Qt and native runtimes.
+The Python application can also be bundled locally under `python/dist/` by
+`python/scripts/package-windows.ps1`. GitHub release EXEs use the native Windows
+target described in [native packaging](packaging/README.md).
 See the [Windows port report](docs/WINDOWS_PORT.md), [GUI parity matrix](docs/GUI_PARITY.md)
 and [Windows validation evidence](python/evidence/windows/validation.json).
 Set `CUDA_PATH` if the Windows toolkit is installed outside the default
@@ -226,19 +233,17 @@ or `-AllResolutions` on the Windows test script. They now include grids through
 (24 GiB) run reached N=9216, then failed allocation at N=12288; N=16384 was not
 reached. These checks are not part of the routine commands above.
 
-To build a self-contained, locally signed macOS app and DMG, run from `python/`:
+To build the native macOS app and DMG, run from the repository root:
 
 ```sh
-uv run python scripts/package_app.py
-open 'dist/2DFastTurbo Python.app'
+bash packaging/package-macos.sh 0.1.2
+open dist-native/2DFastTurbo-0.1.2-macOS-arm64.dmg
 ```
 
-The `.app` includes Python, Qt, the native engine and shaders. It needs no terminal,
-uv, Xcode or repository checkout at runtime. It is locally signed, not notarized
-for public distribution. The versioned `.dmg` in `dist/` contains the app and an
-Applications shortcut for drag-and-drop installation. See the
-[desktop release instructions](python/PUBLISHING.md#github-desktop-releases)
-for Linux and Windows packaging and upload.
+The Swift/Metal `.app` includes its native engine and shaders. It needs no terminal,
+Python, Qt, Xcode or repository checkout at runtime. The versioned DMG contains
+the app and an Applications shortcut for drag-and-drop installation. See the
+[native release instructions](packaging/README.md) for all three platforms.
 
 To build a source archive and a wheel for the current platform, run from `python/`:
 

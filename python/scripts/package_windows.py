@@ -1,13 +1,10 @@
 """Freeze the validated Windows application with Python, Qt and native runtimes."""
 from pathlib import Path
-from importlib.metadata import version
 import os
 import shutil
 import subprocess
 import sys
-from fastturbo.build import NATIVE, build
-
-PROJECT = Path(__file__).resolve().parents[1]
+from fastturbo.build import NATIVE, PROJECT, build
 
 
 def main():
@@ -21,12 +18,11 @@ def main():
         raise RuntimeError("Package output must stay inside the project.")
     command = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--windowed", "--onedir",
         "--name", "2DFastTurbo Python", "--distpath", str(PROJECT / "dist"), "--workpath", str(work),
-        "--specpath", str(work), "--paths", str(NATIVE.parent.parent),
+        "--specpath", str(work), "--paths", str(PROJECT / "src"),
         "--icon", str(PROJECT.parent / "reference-windows/assets/2DFastTurbo.ico"),
-        "--add-data", f"{NATIVE.parent / 'assets/fastturbo.png'}:fastturbo/assets",
-        "--add-data", f"{NATIVE.parent / 'assets/navier-stokes.png'}:fastturbo/assets",
-        "--add-data", f"{NATIVE.parent / 'assets/header-hurricane.svg'}:fastturbo/assets",
-        "--copy-metadata", "fastturbo",
+        "--add-data", f"{PROJECT / 'src/fastturbo/assets/fastturbo.png'}:fastturbo/assets",
+        "--add-data", f"{PROJECT / 'src/fastturbo/assets/navier-stokes.png'}:fastturbo/assets",
+        "--add-data", f"{PROJECT / 'src/fastturbo/assets/header-hurricane.svg'}:fastturbo/assets",
         "--exclude-module", "numpy", "--exclude-module", "pytest"]
     for item in NATIVE.iterdir():
         if item.suffix == ".dll":
@@ -35,7 +31,7 @@ def main():
                 # PyInstaller places a transitive NVRTC copy at _internal's
                 # root. Its delayed builtins lookup must work beside that copy.
                 command += ["--add-binary", f"{item}:."]
-        elif item.suffix in {".txt", ".json"}:
+        elif item.suffix == ".txt":
             command += ["--add-data", f"{item}:fastturbo/_native"]
     command += [str(PROJECT / "scripts/bundle_entry.py")]
     environment = {**os.environ, "PYINSTALLER_CONFIG_DIR": str(work / "cache"),
@@ -48,7 +44,7 @@ def main():
         "Python, Qt and native runtime libraries are included.\n"
         "No Visual Studio, CMake or CUDA Toolkit installation is needed.\n"
         "Licenses are in _internal/fastturbo/_native.\n", encoding="utf-8")
-    archive = shutil.make_archive(str(PROJECT / f"dist/2DFastTurbo-Python-{version('fastturbo')}-Windows-x86_64"), "zip",
+    archive = shutil.make_archive(str(PROJECT / "dist/2DFastTurbo-Python-Windows"), "zip",
                                   root_dir=folder.parent, base_dir=folder.name)
     print(archive)
 

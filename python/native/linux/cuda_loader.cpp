@@ -11,6 +11,7 @@
 void initializeCudaLoader() {
     static std::once_flag once;
     std::call_once(once, [] {
+#ifndef FASTTURBO_STATIC_NVRTC
         // NVRTC dlopens its builtins by soname. The caller's RUNPATH is not
         // inherited by that lookup in a relocatable/user-local toolkit.
         // Resolve the library actually linked here and preload its matching
@@ -24,6 +25,7 @@ void initializeCudaLoader() {
             ("libnvrtc-builtins.so." + std::to_string(major) + "." + std::to_string(minor));
         if (!dlopen(builtins.c_str(), RTLD_NOW | RTLD_LOCAL))
             throw std::runtime_error(std::string("Cannot load matching CUDA NVRTC builtins: ") + dlerror());
+#endif
         auto result = cuInit(0);
         if (result != CUDA_SUCCESS) {
             const char* error = nullptr;
